@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "318949322959",
+    "firebase_url": "https://melochei-f078b-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "melochei-f078b",
+    "storage_bucket": "melochei-f078b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:318949322959:android:fa0bf0c2a5cd9e405e47ba",
+        "android_client_info": {
+          "package_name": "com.melochei1000.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "318949322959-7q1r03p0d40hpq9t9k6ub34jt31uiif5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEhzCJifeUe8Bzeg5F7lMbLB4raAcGRvI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "318949322959-7q1r03p0d40hpq9t9k6ub34jt31uiif5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
