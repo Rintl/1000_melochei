@@ -5,12 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.melochei1000.app.data.common.Resource
-import com.melochei1000.app.data.model.Order
-import com.melochei1000.app.data.model.Product
-import com.melochei1000.app.data.repository.OrderRepository
-import com.melochei1000.app.data.repository.ProductRepository
-import com.melochei1000.app.data.repository.CategoryRepository
+import com.yourstore.app.data.common.Resource
+import com.yourstore.app.data.model.Order
+import com.yourstore.app.data.model.Product
+import com.yourstore.app.data.repository.OrderRepository
+import com.yourstore.app.data.repository.ProductRepository
+import com.yourstore.app.data.repository.CategoryRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
