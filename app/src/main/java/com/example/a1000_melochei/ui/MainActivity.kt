@@ -1,47 +1,65 @@
-package com.example.a1000_melochei.ui
+package com.yourstore.app.ui
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.a1000_melochei.ui.theme._1000_melocheiTheme
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.yourstore.app.R
+import com.yourstore.app.data.source.local.PreferencesManager
+import com.yourstore.app.ui.admin.AdminActivity
+import com.yourstore.app.ui.auth.LoginActivity
+import com.yourstore.app.ui.customer.CustomerActivity
+import org.koin.android.ext.android.inject
 
-class MainActivity : ComponentActivity() {
+/**
+ * Главная активность - точка входа в приложение.
+ * Проверяет авторизацию и перенаправляет на соответствующий экран.
+ */
+class MainActivity : AppCompatActivity() {
+
+    private val preferencesManager: PreferencesManager by inject()
+    private val firebaseAuth: FirebaseAuth by inject()
+
+    private val TAG = "MainActivity"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            _1000_melocheiTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+        setContentView(R.layout.activity_main)
+
+        // Для предотвращения повторных переходов
+        if (isTaskRoot) {
+            // Определяем, куда направить пользователя
+            checkAuthAndRedirect()
+        } else {
+            finish()
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+    /**
+     * Проверяет состояние авторизации и перенаправляет на соответствующую активность
+     */
+    private fun checkAuthAndRedirect() {
+        val currentUser = firebaseAuth.currentUser
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    _1000_melocheiTheme {
-        Greeting("Android")
+        if (currentUser != null) {
+            Log.d(TAG, "Пользователь авторизован: ${currentUser.uid}")
+
+            // Проверяем, является ли пользователь администратором
+            val isAdmin = preferencesManager.isAdmin()
+
+            if (isAdmin) {
+                Log.d(TAG, "Перенаправление на экран администратора")
+                startActivity(Intent(this, AdminActivity::class.java))
+            } else {
+                Log.d(TAG, "Перенаправление на экран клиента")
+                startActivity(Intent(this, CustomerActivity::class.java))
+            }
+        } else {
+            Log.d(TAG, "Пользователь не авторизован, переход на экран входа")
+            startActivity(Intent(this, LoginActivity::class.java))
+        }
+
+        finish()
     }
 }
