@@ -1,59 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Отступы -->
-    <dimen name="spacing_micro">2dp</dimen>
-    <dimen name="spacing_tiny">4dp</dimen>
+    <dimen name="spacing_xxsmall">2dp</dimen>
+    <dimen name="spacing_xsmall">4dp</dimen>
     <dimen name="spacing_small">8dp</dimen>
-    <dimen name="spacing_medium">12dp</dimen>
-    <dimen name="spacing_normal">16dp</dimen>
+    <dimen name="spacing_medium">16dp</dimen>
     <dimen name="spacing_large">24dp</dimen>
     <dimen name="spacing_xlarge">32dp</dimen>
     <dimen name="spacing_xxlarge">48dp</dimen>
-
-    <!-- Радиусы скругления -->
-    <dimen name="radius_small">4dp</dimen>
-    <dimen name="radius_medium">8dp</dimen>
-    <dimen name="radius_large">16dp</dimen>
-    <dimen name="radius_circle">1000dp</dimen>
+    <dimen name="spacing_xxxlarge">64dp</dimen>
 
     <!-- Размеры текста -->
-    <dimen name="text_size_micro">10sp</dimen>
-    <dimen name="text_size_small">12sp</dimen>
-    <dimen name="text_size_medium">14sp</dimen>
-    <dimen name="text_size_normal">16sp</dimen>
+    <dimen name="text_size_xxsmall">10sp</dimen>
+    <dimen name="text_size_xsmall">12sp</dimen>
+    <dimen name="text_size_small">14sp</dimen>
+    <dimen name="text_size_medium">16sp</dimen>
     <dimen name="text_size_large">18sp</dimen>
     <dimen name="text_size_xlarge">20sp</dimen>
-    <dimen name="text_size_title">22sp</dimen>
-    <dimen name="text_size_headline">24sp</dimen>
-    <dimen name="text_size_display">34sp</dimen>
+    <dimen name="text_size_xxlarge">24sp</dimen>
+    <dimen name="text_size_xxxlarge">28sp</dimen>
+    <dimen name="text_size_headline">34sp</dimen>
 
-    <!-- Высоты элементов -->
-    <dimen name="height_button">48dp</dimen>
-    <dimen name="height_input">56dp</dimen>
-    <dimen name="height_toolbar">56dp</dimen>
-    <dimen name="height_bottom_navigation">56dp</dimen>
-    <dimen name="height_list_item">72dp</dimen>
-    <dimen name="height_card_small">160dp</dimen>
-    <dimen name="height_card_medium">200dp</dimen>
-    <dimen name="height_product_card">280dp</dimen>
-    <dimen name="height_detail_image">300dp</dimen>
+    <!-- Высота компонентов -->
+    <dimen name="button_height">48dp</dimen>
+    <dimen name="toolbar_height">56dp</dimen>
+    <dimen name="bottom_nav_height">56dp</dimen>
+    <dimen name="card_height_small">120dp</dimen>
+    <dimen name="card_height_medium">160dp</dimen>
+    <dimen name="card_height_large">200dp</dimen>
 
-    <!-- Размеры иконок -->
+    <!-- Размеры углов скругления -->
+    <dimen name="corner_radius_small">4dp</dimen>
+    <dimen name="corner_radius_medium">8dp</dimen>
+    <dimen name="corner_radius_large">12dp</dimen>
+    <dimen name="corner_radius_xlarge">16dp</dimen>
+    <dimen name="corner_radius_round">1000dp</dimen>
+
+    <!-- Размеры границ -->
+    <dimen name="border_width_small">1dp</dimen>
+    <dimen name="border_width_medium">2dp</dimen>
+    <dimen name="border_width_large">4dp</dimen>
+
+    <!-- Размеры элевации -->
+    <dimen name="elevation_none">0dp</dimen>
+    <dimen name="elevation_small">2dp</dimen>
+    <dimen name="elevation_medium">4dp</dimen>
+    <dimen name="elevation_large">8dp</dimen>
+    <dimen name="elevation_xlarge">16dp</dimen>
+
+    <!-- Размеры компонентов -->
     <dimen name="icon_size_small">16dp</dimen>
     <dimen name="icon_size_medium">24dp</dimen>
     <dimen name="icon_size_large">32dp</dimen>
     <dimen name="icon_size_xlarge">48dp</dimen>
-    
-    <!-- Другие размеры -->
-    <dimen name="avatar_size">40dp</dimen>
-    <dimen name="product_image_width">120dp</dimen>
-    <dimen name="product_image_height">120dp</dimen>
-    <dimen name="category_item_width">160dp</dimen>
-    <dimen name="category_item_height">100dp</dimen>
-    <dimen name="cart_item_image_size">80dp</dimen>
-    <dimen name="progress_size">50dp</dimen>
-    <dimen name="badge_size">16dp</dimen>
-    <dimen name="badge_text">10sp</dimen>
-    <dimen name="banner_height">180dp</dimen>
-    <dimen name="min_touch_target_size">48dp</dimen>
+    <dimen name="avatar_size_small">40dp</dimen>
+    <dimen name="avatar_size_medium">80dp</dimen>
+    <dimen name="avatar_size_large">120dp</dimen>
+    <dimen name="avatar_stroke_width">2dp</dimen>
+    <dimen name="divider_height">1dp</dimen>
+
+    <!-- Размеры макетов элементов списка -->
+    <dimen name="list_item_height_small">48dp</dimen>
+    <dimen name="list_item_height_medium">72dp</dimen>
+    <dimen name="list_item_height_large">96dp</dimen>
+    <dimen name="product_item_width">180dp</dimen>
+    <dimen name="product_item_height">260dp</dimen>
+    <dimen name="product_image_height">150dp</dimen>
+    <dimen name="category_item_width">120dp</dimen>
+    <dimen name="category_item_height">180dp</dimen>
+    <dimen name="category_image_height">120dp</dimen>
+
+    <!-- Размеры слайдера и карусели -->
+    <dimen name="slider_height">200dp</dimen>
+    <dimen name="carousel_indicator_size">8dp</dimen>
+    <dimen name="carousel_indicator_spacing">4dp</dimen>
+
+    <!-- Отступы от края экрана -->
+    <dimen name="screen_edge_margin">16dp</dimen>
+    <dimen name="screen_content_padding">16dp</dimen>
+
+    <!-- Плавающая кнопка действия (FAB) -->
+    <dimen name="fab_margin">16dp</dimen>
+
+    <!-- Размеры диалогов -->
+    <dimen name="dialog_padding">24dp</dimen>
+    <dimen name="dialog_corner_radius">16dp</dimen>
+
+    <!-- Размеры поиска -->
+    <dimen name="search_height">48dp</dimen>
+    <dimen name="search_corner_radius">24dp</dimen>
+
+    <!-- Размеры чипов -->
+    <dimen name="chip_height">32dp</dimen>
+    <dimen name="chip_spacing">8dp</dimen>
+
+    <!-- Размеры панелей инструментов и нижней навигации -->
+    <dimen name="toolbar_elevation">4dp</dimen>
+    <dimen name="bottom_nav_elevation">8dp</dimen>
+
+    <!-- Размеры для экрана детальной информации о товаре -->
+    <dimen name="product_detail_image_height">250dp</dimen>
+    <dimen name="product_detail_section_spacing">16dp</dimen>
+
+    <!-- Размеры превью изображений -->
+    <dimen name="image_preview_size">80dp</dimen>
+
+    <!-- Отступы для формы -->
+    <dimen name="form_vertical_spacing">16dp</dimen>
+    <dimen name="form_field_spacing">12dp</dimen>
 </resources>

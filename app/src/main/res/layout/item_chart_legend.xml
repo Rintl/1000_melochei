@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingVertical="4dp">
+
+    <!-- Цветовой индикатор -->
+    <View
+        android:id="@+id/colorIndicator"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:background="@drawable/bg_circle_indicator"
+        tools:backgroundTint="#FF5722"/>
+
+    <!-- Название категории/серии -->
+    <TextView
+        android:id="@+id/textLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="12dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+        tools:text="Электроинструменты"/>
+
+    <!-- Значение/процент -->
+    <TextView
+        android:id="@+id/textValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+        android:textStyle="bold"
+        tools:text="42%"/>
+
+    <!-- Абсолютное значение -->
+    <TextView
+        android:id="@+id/textAbsoluteValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+        android:textColor="@color/secondaryTextColor"
+        tools:text="126 500 ₸"/>
+
+</LinearLayout>

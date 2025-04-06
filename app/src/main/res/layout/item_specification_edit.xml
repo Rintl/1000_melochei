@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingVertical="6dp">
+
+    <!-- Название характеристики -->
+    <TextView
+        android:id="@+id/textSpecName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+        android:textColor="@color/secondaryTextColor"
+        app:layout_constraintEnd_toStartOf="@+id/textSpecValue"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.4"
+        tools:text="Мощность"/>
+
+    <!-- Значение характеристики -->
+    <TextView
+        android:id="@+id/textSpecValue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+        android:textColor="@color/primaryTextColor"
+        app:layout_constraintEnd_toStartOf="@+id/buttonEdit"
+        app:layout_constraintStart_toEndOf="@+id/textSpecName"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="1200 Вт"/>
+
+    <!-- Кнопка редактирования -->
+    <ImageButton
+        android:id="@+id/buttonEdit"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/edit"
+        android:src="@drawable/ic_edit"
+        app:layout_constraintEnd_toStartOf="@+id/buttonDelete"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/colorPrimary"/>
+
+    <!-- Кнопка удаления -->
+    <ImageButton
+        android:id="@+id/buttonDelete"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/delete"
+        android:src="@drawable/ic_delete"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/colorError"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

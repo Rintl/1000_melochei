@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="4dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp">
+
+        <!-- Иконка или изображение категории -->
+        <ImageView
+            android:id="@+id/categoryImageView"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/category_image"
+            tools:src="@drawable/placeholder_image"/>
+
+        <!-- Название категории -->
+        <TextView
+            android:id="@+id/textCategoryName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/switchCategoryActive"
+            app:layout_constraintStart_toEndOf="@+id/categoryImageView"
+            app:layout_constraintTop_toTopOf="@+id/categoryImageView"
+            tools:text="Электроинструменты"/>
+
+        <!-- Переключатель активности категории -->
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switchCategoryActive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textCategoryName"/>
+
+        <!-- Статистика по категории -->
+        <TextView
+            android:id="@+id/textProductCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            android:textColor="@color/secondaryTextColor"
+            app:layout_constraintStart_toStartOf="@+id/textCategoryName"
+            app:layout_constraintTop_toBottomOf="@+id/textCategoryName"
+            tools:text="Товаров: 42"/>
+
+        <!-- Индикатор подкатегорий -->
+        <TextView
+            android:id="@+id/textSubcategoryCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            android:textColor="@color/secondaryTextColor"
+            app:layout_constraintStart_toEndOf="@+id/textProductCount"
+            app:layout_constraintTop_toTopOf="@+id/textProductCount"
+            tools:text="Подкатегорий: 3"/>
+
+        <!-- Порядок сортировки -->
+        <TextView
+            android:id="@+id/textSortOrder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            android:textColor="@color/secondaryTextColor"
+            app:layout_constraintBottom_toBottomOf="@+id/textSubcategoryCount"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textSubcategoryCount"
+            tools:text="Позиция: 5"/>
+
+        <!-- Действия с категорией -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@+id/categoryImageView"
+            app:layout_constraintStart_toStartOf="@+id/textCategoryName"
+            app:layout_constraintTop_toBottomOf="@+id/textProductCount">
+
+            <!-- Кнопка просмотра подкатегорий -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonViewSubcategories"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="@string/view_subcategories"
+                android:textColor="@color/colorPrimary"
+                android:minWidth="0dp"
+                android:paddingHorizontal="8dp"
+                app:iconSize="16dp"
+                app:icon="@drawable/ic_navigate_next"
+                app:iconGravity="end"/>
+
+            <!-- Кнопка редактирования -->
+            <ImageButton
+                android:id="@+id/buttonEditCategory"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/edit"
+                android:src="@drawable/ic_edit"
+                app:tint="@color/colorPrimary"/>
+
+            <!-- Кнопка удаления -->
+            <ImageButton
+                android:id="@+id/buttonDeleteCategory"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/delete"
+                android:src="@drawable/ic_delete"
+                app:tint="@color/colorError"/>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

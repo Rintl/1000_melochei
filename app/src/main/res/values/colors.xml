@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Основные цвета приложения (фиолетовая гамма) -->
+    <color name="colorPrimary">#673AB7</color>         <!-- Основной цвет -->
+    <color name="colorPrimaryDark">#512DA8</color>     <!-- Темный вариант основного цвета -->
+    <color name="colorPrimaryLight">#D1C4E9</color>    <!-- Светлый вариант основного цвета -->
+    <color name="colorAccent">#FF4081</color>          <!-- Акцентный цвет -->
+    <color name="colorSecondary">#03A9F4</color>       <!-- Вторичный цвет -->
+
+    <!-- Цвета для текста -->
+    <color name="primaryTextColor">#212121</color>     <!-- Основной цвет текста -->
+    <color name="secondaryTextColor">#757575</color>   <!-- Вторичный цвет текста -->
+    <color name="textColorHint">#BDBDBD</color>        <!-- Цвет для подсказок -->
+    <color name="textColorPrimary">@color/primaryTextColor</color>
+    <color name="textColorSecondary">@color/secondaryTextColor</color>
+
+    <!-- Цвета для фона -->
+    <color name="backgroundColor">#FAFAFA</color>      <!-- Основной цвет фона -->
+    <color name="cardBackground">#FFFFFF</color>       <!-- Цвет фона для карточек -->
+    <color name="dividerColor">#E0E0E0</color>         <!-- Цвет разделителей -->
+    <color name="divider">@color/dividerColor</color>
+
+    <!-- Стандартные цвета Android -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+
+    <!-- Цвета для статусов заказов -->
+    <color name="colorPending">#FF9800</color>         <!-- В ожидании -->
+    <color name="colorProcessing">#2196F3</color>      <!-- В обработке -->
+    <color name="colorShipping">#9C27B0</color>        <!-- Доставляется -->
+    <color name="colorDelivered">#4CAF50</color>       <!-- Доставлен -->
+    <color name="colorCompleted">#8BC34A</color>       <!-- Завершен -->
+    <color name="colorCancelled">#F44336</color>       <!-- Отменен -->
+
+    <!-- Цвета для индикаторов -->
+    <color name="colorSuccess">#4CAF50</color>         <!-- Успех -->
+    <color name="colorWarning">#FFC107</color>         <!-- Предупреждение -->
+    <color name="colorError">#F44336</color>           <!-- Ошибка -->
+    <color name="colorInfo">#2196F3</color>            <!-- Информация -->
+
+    <!-- Цвета для цен и скидок -->
+    <color name="colorPrice">#1976D2</color>           <!-- Цена -->
+    <color name="colorDiscount">#FF5722</color>        <!-- Скидка -->
+    <color name="colorSale">#E91E63</color>            <!-- Распродажа -->
+    <color name="colorRating">#FFC107</color>          <!-- Рейтинг (звезды) -->
+
+    <!-- Дополнительные цвета для элементов интерфейса -->
+    <color name="colorInStock">#4CAF50</color>         <!-- В наличии -->
+    <color name="colorOutOfStock">#F44336</color>      <!-- Нет в наличии -->
+    <color name="colorLowStock">#FF9800</color>        <!-- Мало в наличии -->
+    <color name="colorFavorite">#E91E63</color>        <!-- Избранное -->
+    <color name="colorNotification">#F44336</color>    <!-- Уведомления -->
+
+    <!-- Цвета для фильтров и чипов -->
+    <color name="chipBackgroundColor">#E0E0E0</color>  <!-- Фон для чипа -->
+    <color name="chipSelectedBackgroundColor">@color/colorPrimaryLight</color> <!-- Фон для выбранного чипа -->
+    <color name="chipTextColor">@color/primaryTextColor</color> <!-- Текст для чипа -->
+    <color name="chipSelectedTextColor">@color/colorPrimary</color> <!-- Текст для выбранного чипа -->
+</resources>
