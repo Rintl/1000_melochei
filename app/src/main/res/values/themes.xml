@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Базовая тема приложения -->
+    <style name="Theme.MelocheiApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Цвета -->
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimaryDark">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/teal_500</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">@color/gray_900</item>
+        <item name="colorOnSurfaceVariant">@color/gray_600</item>
+        <item name="colorError">@color/red_500</item>
+        <item name="colorOnError">@color/white</item>
+        <item name="colorPrimaryContainer">@color/purple_100</item>
+        <item name="colorOnPrimaryContainer">@color/purple_900</item>
+        <item name="colorSecondaryContainer">@color/teal_100</item>
+        <item name="colorOnSecondaryContainer">@color/teal_900</item>
+        <item name="colorOutline">@color/gray_400</item>
+        <item name="android:windowBackground">@color/window_background</item>
+        
+        <!-- Цвета статус-бара и панели навигации -->
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="android:navigationBarColor">@color/nav_bar_color</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
+        
+        <!-- Переопределение стилей компонентов -->
+        <item name="textAppearanceHeadline1">@style/TextAppearance.MelocheiApp.Headline</item>
+        <item name="textAppearanceHeadline2">@style/TextAppearance.MelocheiApp.Title</item>
+        <item name="textAppearanceSubtitle1">@style/TextAppearance.MelocheiApp.Subtitle</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.MelocheiApp.Body</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.MelocheiApp.Body2</item>
+        <item name="textAppearanceCaption">@style/TextAppearance.MelocheiApp.Caption</item>
+        
+        <item name="materialButtonStyle">@style/Widget.MelocheiApp.Button</item>
+        <item name="bottomNavigationStyle">@style/Widget.MelocheiApp.BottomNavigationView</item>
+        <item name="toolbarStyle">@style/Widget.MelocheiApp.Toolbar</item>
+        <item name="tabStyle">@style/Widget.MelocheiApp.TabLayout</item>
+        <item name="chipStyle">@style/Widget.MelocheiApp.Chip</item>
+        <item name="materialCardViewStyle">@style/Widget.MelocheiApp.Card</item>
+        <item name="textInputStyle">@style/Widget.MelocheiApp.TextInputLayout</item>
+        <item name="switchStyle">@style/Widget.MelocheiApp.SwitchCompat</item>
+        <item name="circularProgressIndicatorStyle">@style/Widget.MelocheiApp.ProgressIndicator</item>
+        <item name="badgeStyle">@style/Widget.MelocheiApp.Badge</item>
+        <item name="materialDividerStyle">@style/Widget.MelocheiApp.Divider</item>
+        
+        <!-- Другие атрибуты -->
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="fontFamily">@font/roboto</item>
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.MelocheiApp.SmallComponent</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.MelocheiApp.MediumComponent</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.MelocheiApp.LargeComponent</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.MelocheiApp.Dialog</item>
+    </style>
+    
+    <!-- Форма компонентов -->
+    <style name="ShapeAppearance.MelocheiApp.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/radius_small</item>
+    </style>
+    
+    <style name="ShapeAppearance.MelocheiApp.MediumComponent" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/radius_medium</item>
+    </style>
+    
+    <style name="ShapeAppearance.MelocheiApp.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/radius_large</item>
+    </style>
+    
+    <!-- Тема для экрана загрузки -->
+    <style name="Theme.SplashScreen" parent="Theme.MelocheiApp">
+        <item name="android:windowBackground">@drawable/splash_background</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <!-- Тема для полноэкранного просмотра изображений -->
+    <style name="Theme.MelocheiApp.FullScreen" parent="Theme.MelocheiApp">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@color/black</item>
+    </style>
+
+    <!-- Тема для диалогов -->
+    <style name="Theme.MelocheiApp.Dialog" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/teal_500</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="android:windowMinWidthMajor">90%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
+        <item name="android:windowBackground">@drawable/dialog_background</item>
+        <item name="materialButtonStyle">@style/Widget.MelocheiApp.Button</item>
+    </style>
+
+    <!-- Тема для всплывающих сообщений (Snackbar) -->
+    <style name="ThemeOverlay.MelocheiApp.Snackbar" parent="ThemeOverlay.MaterialComponents.Snackbar">
+        <item name="colorOnSurface">@color/white</item>
+        <item name="colorSurface">@color/gray_800</item>
+        <item name="colorOnBackground">@color/white</item>
+        <item name="colorOnPrimary">@color/purple_50</item>
+    </style>
+</resources>

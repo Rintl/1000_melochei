@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.admin.categories.CategoryListFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Заголовок страницы -->
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/categories_management"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+            android:padding="16dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Статистика категорий -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/statsCardView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:cardElevation="2dp"
+            app:cardCornerRadius="8dp"
+            app:layout_constraintTop_toBottomOf="@id/titleTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <!-- Общее количество категорий -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/totalCategoriesCountText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                        android:textStyle="bold"
+                        tools:text="24" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/total_categories"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
+                </LinearLayout>
+
+                <!-- Количество корневых категорий -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/rootCategoriesCountText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                        android:textStyle="bold"
+                        tools:text="8" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/root_categories"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
+                </LinearLayout>
+
+                <!-- Количество подкатегорий -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/subcategoriesCountText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                        android:textStyle="bold"
+                        tools:text="16" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/subcategories"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Панель фильтрации и поиска -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/searchCardView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            app:cardElevation="2dp"
+            app:cardCornerRadius="8dp"
+            app:layout_constraintTop_toBottomOf="@id/statsCardView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <!-- Поисковая строка -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/searchInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:hint="@string/search_categories"
+                    app:startIconDrawable="@drawable/ic_search"
+                    app:endIconMode="clear_text"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/searchEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Фильтры -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Выпадающий список для фильтрации по типу категории -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/categoryTypeInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="4dp"
+                        android:hint="@string/category_type"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/categoryTypeAutoComplete"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Выпадающий список для сортировки -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/sortInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="4dp"
+                        android:hint="@string/sort_by"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/sortAutoComplete"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Путь навигации по категориям (хлебные крошки) -->
+        <HorizontalScrollView
+            android:id="@+id/breadcrumbsScrollView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="16dp"
+            android:scrollbars="none"
+            app:layout_constraintTop_toBottomOf="@id/searchCardView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/breadcrumbsChipGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:singleLine="true">
+
+                <!-- Чип "Все категории" -->
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/allCategoriesChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/all_categories"
+                    style="@style/Widget.MaterialComponents.Chip.Action" />
+
+                <!-- Чипы для категорий будут добавлены динамически -->
+            </com.google.android.material.chip.ChipGroup>
+        </HorizontalScrollView>
+
+        <!-- Список категорий -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/categoriesRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="16dp"
+            android:clipToPadding="false"
+            android:paddingBottom="88dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@id/breadcrumbsScrollView"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:listitem="@layout/item_category_admin" />
+
+        <!-- Пустое состояние -->
+        <LinearLayout
+            android:id="@+id/emptyStateLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/breadcrumbsScrollView"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/ic_categories_empty"
+                android:alpha="0.5"
+                android:contentDescription="@string/no_categories_found" />
+
+            <TextView
+                android:id="@+id/emptyStateText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no_categories_found"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:layout_marginTop="16dp"
+                android:gravity="center" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/addCategoryEmptyButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add_first_category"
+                android:layout_marginTop="16dp" />
+        </LinearLayout>
+
+        <!-- Индикатор загрузки -->
+        <ProgressBar
+            android:id="@+id/loadingProgressBar"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Кнопка добавления новой категории -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addCategoryFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:contentDescription="@string/add_category"
+        app:srcCompat="@drawable/ic_add" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

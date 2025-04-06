@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Жалпы қолданба жолдары -->
+    <string name="app_name">1000 ұсақ-түйек</string>
+    <string name="loading">Жүктелуде…</string>
+    <string name="error_occurred">Қате пайда болды</string>
+    <string name="retry">Қайталау</string>
+    <string name="cancel">Болдырмау</string>
+    <string name="save">Сақтау</string>
+    <string name="done">Дайын</string>
+    <string name="back">Артқа</string>
+    <string name="next">Келесі</string>
+    <string name="yes">Иә</string>
+    <string name="no">Жоқ</string>
+    <string name="ok">OK</string>
+    <string name="search">Іздеу</string>
+    <string name="empty_list">Тізім бос</string>
+    <string name="not_found">Ештеңе табылмады</string>
+    <string name="currency_format">%s ₸</string>
+    <string name="no_internet_connection">Интернет байланысы жоқ</string>
+    <string name="check_connection">Интернет байланысын тексеріп, әрекетті қайталаңыз</string>
+    <string name="no_data">Деректер жоқ</string>
+    <string name="version">Нұсқасы %s</string>
+
+    <!-- Авторизация және тіркеу -->
+    <string name="login">Кіру</string>
+    <string name="admin_login">Әкімші ретінде кіру</string>
+    <string name="register">Тіркелу</string>
+    <string name="email">Email</string>
+    <string name="password">Құпия сөз</string>
+    <string name="confirm_password">Құпия сөзді растаңыз</string>
+    <string name="forgot_password">Құпия сөзді ұмыттыңыз ба?</string>
+    <string name="reset_password">Құпия сөзді қалпына келтіру</string>
+    <string name="logout">Шығу</string>
+    <string name="no_account">Әлі тіркелгіңіз жоқ па?</string>
+    <string name="create_account">Тіркелгі жасау</string>
+    <string name="already_have_account">Тіркелгіңіз бар ма?</string>
+    <string name="login_success">Кіру сәтті өтті</string>
+    <string name="register_success">Тіркелу сәтті өтті</string>
+    <string name="password_reset_sent">Құпия сөзді қалпына келтіру нұсқаулары көрсетілген электрондық поштаға жіберілді</string>
+    <string name="name">Аты</string>
+    <string name="phone">Телефон</string>
+    <string name="admin_code">Әкімші коды</string>
+    <string name="invalid_email">Email пішімі дұрыс емес</string>
+    <string name="invalid_password">Құпия сөз кемінде 6 таңбадан тұруы керек</string>
+    <string name="passwords_not_match">Құпия сөздер сәйкес келмейді</string>
+    <string name="empty_field">Өріс бос болмауы керек</string>
+    <string name="auth_failed">Авторизация қатесі</string>
+
+    <!-- Төменгі навигация - пайдаланушы -->
+    <string name="title_home">Басты бет</string>
+    <string name="title_catalog">Каталог</string>
+    <string name="title_cart">Себет</string>
+    <string name="title_orders">Тапсырыстар</string>
+    <string name="title_profile">Профиль</string>
+
+    <!-- Төменгі навигация - әкімші -->
+    <string name="title_dashboard">Басқару панелі</string>
+    <string name="title_products">Өнімдер</string>
+    <string name="title_categories">Санаттар</string>
+    <string name="title_analytics">Талдау</string>
+
+    <!-- Экран тақырыптары -->
+    <string name="title_category">Санат</string>
+    <string name="title_product_detail">Өнім</string>
+    <string name="title_checkout">Тапсырысты рәсімдеу</string>
+    <string name="title_order_detail">Тапсырыс мәліметтері</string>
+    <string name="title_edit_profile">Профильді өңдеу</string>
+    <string name="title_address">Жеткізу мекенжайлары</string>
+    <string name="title_add_product">Өнім қосу</string>
+    <string name="title_edit_product">Өнімді өңдеу</string>
+    <string name="title_import_products">Өнімдерді импорттау</string>
+    <string name="title_add_category">Санат қосу</string>
+    <string name="title_search">Іздеу</string>
+
+    <!-- Басты бет -->
+    <string name="popular_products">Танымал өнімдер</string>
+    <string name="all_categories">Барлық санаттар</string>
+    <string name="special_offers">Арнайы ұсыныстар</string>
+    <string name="view_all">Барлығын көру</string>
+    <string name="welcome_message">Сәлеметсіз бе, %s!</string>
+    <string name="welcome_back">Қайта оралғаныңызға қуаныштымыз!</string>
+    <string name="new_items">Жаңа тауарлар</string>
+    <string name="sale">Жеңілдік</string>
+    <string name="discount">%d%% жеңілдік</string>
+
+    <!-- Каталог және өнімдер -->
+    <string name="sort">Сұрыптау</string>
+    <string name="filter">Сүзгі</string>
+    <string name="price">Бағасы</string>
+    <string name="old_price">Ескі бағасы</string>
+    <string name="in_stock">Қоймада бар</string>
+    <string name="out_of_stock">Қоймада жоқ</string>
+    <string name="sort_name_asc">Аты бойынша (А-Я)</string>
+    <string name="sort_name_desc">Аты бойынша (Я-А)</string>
+    <string name="sort_price_asc">Бағасы бойынша (арзаннан)</string>
+    <string name="sort_price_desc">Бағасы бойынша (қымбаттан)</string>
+    <string name="sort_newest">Алдымен жаңа</string>
+    <string name="sort_oldest">Алдымен ескі</string>
+    <string name="sort_by_status">Күйі бойынша</string>
+    <string name="category">Санат</string>
+    <string name="description">Сипаттама</string>
+    <string name="specifications">Сипаттамалары</string>
+    <string name="similar_products">Ұқсас өнімдер</string>
+    <string name="add_to_cart">Себетке қосу</string>
+    <string name="product_added_to_cart">Өнім себетке қосылды</string>
+    <string name="available">Қолжетімді: %d</string>
+    <string name="product_code">Артикул: %s</string>
+    <string name="quantity">Саны</string>
+    <string name="low_stock">Аз қалды</string>
+    <string name="sales_count">Сатылды: %d</string>
+    <string name="search_hint">Өнімдерді іздеу...</string>
+    <string name="search_results">Іздеу нәтижелері</string>
+    <string name="no_search_results">"%s" бойынша ештеңе табылмады</string>
+    <string name="search_history">Іздеу тарихы</string>
+    <string name="clear_history">Тарихты тазалау</string>
+
+    <!-- Себет және тапсырысты рәсімдеу -->
+    <string name="empty_cart">Сіздің себетіңіз бос</string>
+    <string name="start_shopping">Сатып алуды бастау</string>
+    <string name="subtotal">Аралық қорытынды</string>
+    <string name="delivery_fee">Жеткізу құны</string>
+    <string name="total">Барлығы</string>
+    <string name="checkout">Тапсырыс беру</string>
+    <string name="clear_cart">Себетті тазалау</string>
+    <string name="confirm_clear_cart">Себетті тазалағыңыз келетініне сенімдісіз бе?</string>
+    <string name="continue_shopping">Сатып алуды жалғастыру</string>
+    <string name="delivery_method">Алу тәсілі</string>
+    <string name="delivery">Жеткізу</string>
+    <string name="pickup">Өзі алу</string>
+    <string name="payment_method">Төлем әдісі</string>
+    <string name="cash_on_delivery">Алған кезде қолма-қол</string>
+    <string name="card_on_delivery">Алған кезде картамен</string>
+    <string name="kaspi">Kaspi аударымы</string>
+    <string name="delivery_address">Жеткізу мекенжайы</string>
+    <string name="select_address">Мекенжай таңдаңыз</string>
+    <string name="add_address">Мекенжай қосу</string>
+    <string name="delivery_date">Жеткізу күні</string>
+    <string name="delivery_time">Жеткізу уақыты</string>
+    <string name="select_date">Күнді таңдаңыз</string>
+    <string name="select_time">Уақытты таңдаңыз</string>
+    <string name="comment">Тапсырысқа түсініктеме</string>
+    <string name="comment_hint">Жеткізу үшін қосымша ақпарат</string>
+    <string name="place_order">Тапсырыс беру</string>
+    <string name="order_placed">Тапсырыс сәтті орналастырылды</string>
+    <string name="order_number">Тапсырыс нөмірі: %s</string>
+    <string name="order_confirmation">Тапсырысты растау</string>
+    <string name="confirm_order">Тапсырысты растаңыз</string>
+    <string name="order_summary">Тапсырыс қорытындысы</string>
+    <string name="items_count">Тауарлар: %d</string>
+    <string name="free_delivery">Тегін жеткізу</string>
+    <string name="minimum_order_amount">Тапсырыстың минималды сомасы: %s</string>
+    <string name="minimum_order_not_reached">Тапсырыстың минималды сомасына жетпейді</string>
+    <string name="add_more_items">Тағы %s сомаға тауарлар қосыңыз</string>
+    <string name="remove_item">Өнімді жою</string>
+    <string name="free_delivery_from">%s бастап тегін жеткізу</string>
+
+    <!-- Тапсырыстар -->
+    <string name="order">Тапсырыс</string>
+    <string name="order_date">Тапсырыс күні</string>
+    <string name="order_status">Тапсырыс мәртебесі</string>
+    <string name="order_items">Тапсырыс құрамы</string>
+    <string name="order_total">Тапсырыс сомасы</string>
+    <string name="no_orders">Сізде әлі тапсырыстар жоқ</string>
+    <string name="status_pending">Өңдеуді күтуде</string>
+    <string name="status_processing">Өңделуде</string>
+    <string name="status_shipping">Жеткізілуде</string>
+    <string name="status_delivered">Жеткізілді</string>
+    <string name="status_completed">Аяқталды</string>
+    <string name="status_cancelled">Болдырылмады</string>
+    <string name="cancel_order">Тапсырысты болдырмау</string>
+    <string name="confirm_cancel_order">Тапсырысты болдырмағыңыз келетініне сенімдісіз бе?</string>
+    <string name="order_cancelled">Тапсырыс болдырылмады</string>
+    <string name="order_details">Тапсырыс мәліметтері</string>
+    <string name="delivery_info">Жеткізу туралы ақпарат</string>
+    <string name="payment_info">Төлем туралы ақпарат</string>
+    <string name="update_status">Мәртебесін жаңарту</string>
+    <string name="customer_info">Тұтынушы туралы ақпарат</string>
+
+    <!-- Профиль -->
+    <string name="profile">Профиль</string>
+    <string name="edit_profile">Профильді өңдеу</string>
+    <string name="my_addresses">Менің мекенжайларым</string>
+    <string name="my_orders">Менің тапсырыстарым</string>
+    <string name="settings">Параметрлер</string>
+    <string name="dark_theme">Қараңғы тақырып</string>
+    <string name="notifications">Хабарландырулар</string>
+    <string name="language">Тіл</string>
+    <string name="about">Қолданба туралы</string>
+    <string name="terms_of_service">Пайдалану шарттары</string>
+    <string name="privacy_policy">Құпиялылық саясаты</string>
+    <string name="contact_us">Бізбен байланыс</string>
+    <string name="feedback">Кері байланыс</string>
+    <string name="rate_app">Қолданбаны бағалау</string>
+    <string name="share_app">Қолданбамен бөлісу</string>
+    <string name="change_password">Құпия сөзді өзгерту</string>
+    <string name="current_password">Ағымдағы құпия сөз</string>
+    <string name="new_password">Жаңа құпия сөз</string>
+    <string name="password_changed">Құпия сөз сәтті өзгертілді</string>
+    <string name="upload_photo">Фото жүктеу</string>
+    <string name="take_photo">Фото түсіру</string>
+    <string name="choose_from_gallery">Галереядан таңдау</string>
+    <string name="profile_updated">Профиль жаңартылды</string>
+
+    <!-- Мекенжайлар -->
+    <string name="address_title">Мекенжай атауы</string>
+    <string name="address_title_hint">Мысалы: Үй, Жұмыс</string>
+    <string name="address_hint">Толық мекенжай</string>
+    <string name="city">Қала</string>
+    <string name="street">Көше</string>
+    <string name="house">Үй</string>
+    <string name="apartment">Пәтер</string>
+    <string name="floor">Қабат</string>
+    <string name="entrance">Кіреберіс</string>
+    <string name="postal_code">Пошта индексі</string>
+    <string name="default_address">Әдепкі мекенжай</string>
+    <string name="add_new_address">Жаңа мекенжай қосу</string>
+    <string name="edit_address">Мекенжайды өңдеу</string>
+    <string name="delete_address">Мекенжайды жою</string>
+    <string name="confirm_delete_address">Бұл мекенжайды жойғыңыз келетініне сенімдісіз бе?</string>
+    <string name="address_added">Мекенжай қосылды</string>
+    <string name="address_updated">Мекенжай жаңартылды</string>
+    <string name="address_deleted">Мекенжай жойылды</string>
+    <string name="delivery_notes">Курьерге арналған ескертпелер</string>
+
+    <!-- Әкімші - Басқару панелі -->
+    <string name="total_orders">Барлық тапсырыстар</string>
+    <string name="new_orders">Жаңа тапсырыстар</string>
+    <string name="processing_orders">Өңделудегі тапсырыстар</string>
+    <string name="total_sales">Жалпы сатылым</string>
+    <string name="sales_today">Бүгінгі сатылым</string>
+    <string name="sales_week">Апталық сатылым</string>
+    <string name="sales_month">Айлық сатылым</string>
+    <string name="low_stock_products">Қоры аз өнімдер</string>
+    <string name="out_of_stock_products">Қоры жоқ өнімдер</string>
+    <string name="total_products">Барлық өнімдер</string>
+    <string name="latest_orders">Соңғы тапсырыстар</string>
+    <string name="average_order_value">Орташа чек</string>
+
+    <!-- Әкімші - Өнімдерді басқару -->
+    <string name="product_management">Өнімдерді басқару</string>
+    <string name="product_name">Өнім атауы</string>
+    <string name="product_price">Өнім бағасы</string>
+    <string name="product_discount_price">Жеңілдік бағасы</string>
+    <string name="product_category">Өнім санаты</string>
+    <string name="product_description">Өнім сипаттамасы</string>
+    <string name="product_sku">Артикул</string>
+    <string name="product_barcode">Штрих-код</string>
+    <string name="product_quantity">Қоймадағы саны</string>
+    <string name="product_images">Өнім суреттері</string>
+    <string name="product_specifications">Өнім сипаттамалары</string>
+    <string name="product_status">Өнім мәртебесі</string>
+    <string name="product_active">Белсенді</string>
+    <string name="product_inactive">Белсенді емес</string>
+    <string name="add_specification">Сипаттама қосу</string>
+    <string name="specification_name">Сипаттама атауы</string>
+    <string name="specification_value">Сипаттама мәні</string>
+    <string name="add_image">Сурет қосу</string>
+    <string name="select_category">Санатты таңдаңыз</string>
+    <string name="delete_product">Өнімді жою</string>
+    <string name="confirm_delete_product">Бұл өнімді жойғыңыз келетініне сенімдісіз бе?</string>
+    <string name="product_added">Өнім қосылды</string>
+    <string name="product_updated">Өнім жаңартылды</string>
+    <string name="product_deleted">Өнім жойылды</string>
+    <string name="invalid_price">Жарамсыз баға</string>
+    <string name="invalid_quantity">Жарамсыз сан</string>
+    <string name="action_add_product">Өнім қосу</string>
+    <string name="action_import_products">Өнімдерді импорттау</string>
+    <string name="action_export_orders">Тапсырыстарды экспорттау</string>
+    <string name="action_share">Бөлісу</string>
+    <string name="action_favorite">Таңдаулыларға</string>
+    <string name="action_cart">Себет</string>
+    <string name="action_search">Іздеу</string>
+    <string name="action_filter">Сүзгі</string>
+    <string name="action_sort">Сұрыптау</string>
+
+    <!-- Әкімші - Санаттарды басқару -->
+    <string name="category_management">Санаттарды басқару</string>
+    <string name="category_name">Санат атауы</string>
+    <string name="category_description">Санат сипаттамасы</string>
+    <string name="category_image">Санат суреті</string>
+    <string name="parent_category">Ата-ана санаты</string>
+    <string name="no_parent_category">Ата-ана санатынсыз</string>
+    <string name="category_order">Сұрыптау реті</string>
+    <string name="category_status">Санат мәртебесі</string>
+    <string name="category_active">Белсенді</string>
+    <string name="category_inactive">Белсенді емес</string>
+    <string name="delete_category">Санатты жою</string>
+    <string name="confirm_delete_category">Бұл санатты жойғыңыз келетініне сенімдісіз бе?</string>
+    <string name="category_added">Санат қосылды</string>
+    <string name="category_updated">Санат жаңартылды</string>
+    <string name="category_deleted">Санат жойылды</string>
+    <string name="cannot_delete_category_with_products">Өнімдері бар санатты жою мүмкін емес</string>
+
+    <!-- Әкімші - Талдау -->
+    <string name="analytics_period">Кезең</string>
+    <string name="today">Бүгін</string>
+    <string name="yesterday">Кеше</string>
+    <string name="week">Апта</string>
+    <string name="month">Ай</string>
+    <string name="year">Жыл</string>
+    <string name="custom_period">Кезеңді таңдау</string>
+    <string name="sales_analytics">Сатылым талдауы</string>
+    <string name="orders_analytics">Тапсырыс талдауы</string>
+    <string name="popular_categories">Танымал санаттар</string>
+    <string name="revenue">Түсім</string>
+    <string name="profit">Пайда</string>
+    <string name="conversion_rate">Конверсия коэффициенті</string>
+    <string name="customers">Тұтынушылар</string>
+    <string name="returning_customers">Қайта келген тұтынушылар</string>
+    <string name="new_customers">Жаңа тұтынушылар</string>
+    <string name="export_report">Есепті экспорттау</string>
+
+    <!-- Рұқсаттар -->
+    <string name="permission_camera_required">Камераны пайдалану рұқсаты қажет</string>
+    <string name="permission_storage_required">Қоймаға қатынау рұқсаты қажет</string>
+    <string name="permission_denied_explanation">Бұл рұқсатсыз функция қолжетімді емес</string>
+    <string name="go_to_settings">Параметрлерге өту</string>
+
+    <!-- Хабарландырулар -->
+    <string name="notification_channel_orders">Тапсырыстар</string>
+    <string name="notification_channel_orders_description">Тапсырыстар және олардың мәртебелері туралы хабарландырулар</string>
+    <string name="notification_channel_promo">Акциялар</string>
+    <string name="notification_channel_promo_description">Жеңілдіктер мен арнайы ұсыныстар туралы хабарландырулар</string>
+    <string name="notification_channel_system">Жүйелік</string>
+    <string name="notification_channel_system_description">Жүйелік хабарландырулар</string>
+    <string name="notification_new_order_title">Жаңа тапсырыс</string>
+    <string name="notification_new_order_text">Тапсырыс №%1$s келеді %2$s</string>
+    <string name="notification_order_status_title">Тапсырыс мәртебесі жаңартылды</string>
+    <string name="notification_order_status_text">Тапсырыс №%1$s: %2$s</string>
+    <string name="notification_promo_default_title">Арнайы ұсыныс</string>
+    <string name="notification_system_default_title">Хабарландыру</string>
+
+    <!-- Қателер -->
+    <string name="error_network">Желі қатесі. Интернет байланысын тексеріңіз.</string>
+    <string name="error_server">Сервер қатесі. Кейінірек қайталаңыз.</string>
+    <string name="error_timeout">Сұраудың күту уақыты асып кетті. Қайталаңыз.</string>
+    <string name="error_unknown">Белгісіз қате орын алды. Қайталаңыз.</string>
+    <string name="error_auth">Авторизация қатесі. Қайта кіріңіз.</string>
+    <string name="error_wrong_email_password">Қате email немесе құпия сөз</string>
+    <string name="error_email_already_used">Бұл email қазірдің өзінде қолданылуда</string>
+    <string name="error_weak_password">Тым әлсіз құпия сөз</string>
+    <string name="error_product_not_found">Өнім табылмады</string>
+    <string name="error_cart_update">Себетті жаңарту кезінде қате</string>
+    <string name="error_order_create">Тапсырыс жасау кезінде қате</string>
+    <string name="error_address_save">Мекенжайды сақтау кезінде қате</string>
+    <string name="error_upload_image">Суретті жүктеу кезінде қате</string>
+    <string name="error_import_file">Файлды импорттау кезінде қате</string>
+    <string name="error_insufficient_stock">Қоймада жеткілікті өнім жоқ</string>
+</resources>

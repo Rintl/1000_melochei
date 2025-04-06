@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Фон иконки -->
+    <path
+        android:fillColor="#673AB7"
+        android:pathData="M0,0h108v108h-108z" />
+    
+    <!-- Основная форма магазина -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M32,38L76,38L76,76L32,76Z" />
+    
+    <!-- Крыша магазина -->
+    <path
+        android:fillColor="#9C27B0"
+        android:pathData="M28,38L80,38L54,25Z" />
+    
+    <!-- Дверь -->
+    <path
+        android:fillColor="#7E57C2"
+        android:pathData="M48,58L60,58L60,76L48,76Z" />
+    
+    <!-- Вывеска с текстом "1000" -->
+    <path
+        android:fillColor="#FFD54F"
+        android:pathData="M38,45L70,45L70,52L38,52Z" />
+    
+    <!-- Декоративные элементы -->
+    <path
+        android:fillColor="#4A148C"
+        android:pathData="M34,62h10v2h-10z" />
+    
+    <path
+        android:fillColor="#4A148C"
+        android:pathData="M34,66h10v2h-10z" />
+    
+    <path
+        android:fillColor="#4A148C"
+        android:pathData="M64,62h10v2h-10z" />
+    
+    <path
+        android:fillColor="#4A148C"
+        android:pathData="M64,66h10v2h-10z" />
+</vector>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Отступы -->
+    <dimen name="spacing_micro">2dp</dimen>
+    <dimen name="spacing_tiny">4dp</dimen>
+    <dimen name="spacing_small">8dp</dimen>
+    <dimen name="spacing_medium">12dp</dimen>
+    <dimen name="spacing_normal">16dp</dimen>
+    <dimen name="spacing_large">24dp</dimen>
+    <dimen name="spacing_xlarge">32dp</dimen>
+    <dimen name="spacing_xxlarge">48dp</dimen>
+
+    <!-- Радиусы скругления -->
+    <dimen name="radius_small">4dp</dimen>
+    <dimen name="radius_medium">8dp</dimen>
+    <dimen name="radius_large">16dp</dimen>
+    <dimen name="radius_circle">1000dp</dimen>
+
+    <!-- Размеры текста -->
+    <dimen name="text_size_micro">10sp</dimen>
+    <dimen name="text_size_small">12sp</dimen>
+    <dimen name="text_size_medium">14sp</dimen>
+    <dimen name="text_size_normal">16sp</dimen>
+    <dimen name="text_size_large">18sp</dimen>
+    <dimen name="text_size_xlarge">20sp</dimen>
+    <dimen name="text_size_title">22sp</dimen>
+    <dimen name="text_size_headline">24sp</dimen>
+    <dimen name="text_size_display">34sp</dimen>
+
+    <!-- Высоты элементов -->
+    <dimen name="height_button">48dp</dimen>
+    <dimen name="height_input">56dp</dimen>
+    <dimen name="height_toolbar">56dp</dimen>
+    <dimen name="height_bottom_navigation">56dp</dimen>
+    <dimen name="height_list_item">72dp</dimen>
+    <dimen name="height_card_small">160dp</dimen>
+    <dimen name="height_card_medium">200dp</dimen>
+    <dimen name="height_product_card">280dp</dimen>
+    <dimen name="height_detail_image">300dp</dimen>
+
+    <!-- Размеры иконок -->
+    <dimen name="icon_size_small">16dp</dimen>
+    <dimen name="icon_size_medium">24dp</dimen>
+    <dimen name="icon_size_large">32dp</dimen>
+    <dimen name="icon_size_xlarge">48dp</dimen>
+    
+    <!-- Другие размеры -->
+    <dimen name="avatar_size">40dp</dimen>
+    <dimen name="product_image_width">120dp</dimen>
+    <dimen name="product_image_height">120dp</dimen>
+    <dimen name="category_item_width">160dp</dimen>
+    <dimen name="category_item_height">100dp</dimen>
+    <dimen name="cart_item_image_size">80dp</dimen>
+    <dimen name="progress_size">50dp</dimen>
+    <dimen name="badge_size">16dp</dimen>
+    <dimen name="badge_text">10sp</dimen>
+    <dimen name="banner_height">180dp</dimen>
+    <dimen name="min_touch_target_size">48dp</dimen>
+</resources>

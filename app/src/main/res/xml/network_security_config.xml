@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Конфигурация безопасности для Firebase и других доверенных доменов -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">firebase.google.com</domain>
+        <domain includeSubdomains="true">firebaseio.com</domain>
+        <domain includeSubdomains="true">googleapis.com</domain>
+        <domain includeSubdomains="true">google.com</domain>
+        <domain includeSubdomains="true">firebasestorage.googleapis.com</domain>
+        <!-- Доверенные домены для API можно добавить здесь -->
+        
+        <!-- Разрешение на использование сертификатов от конкретных CA -->
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </domain-config>
+    
+    <!-- Настройки для отладочных целей (только для debug-сборок) -->
+    <debug-overrides>
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </debug-overrides>
+    
+    <!-- Политика безопасности для всех других доменов -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

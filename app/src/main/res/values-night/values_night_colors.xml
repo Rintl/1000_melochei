@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Основная палитра цветов для темной темы -->
+    <color name="primary">#9C27B0</color>
+    <color name="primary_dark">#7B1FA2</color>
+    <color name="primary_variant">#6A0099</color>
+    <color name="secondary">#7C4DFF</color>
+    <color name="secondary_variant">#651FFF</color>
+    
+    <!-- Цвета для фона и поверхностей -->
+    <color name="background">#121212</color>
+    <color name="surface">#1E1E1E</color>
+    <color name="drawer_background">#252525</color>
+    
+    <!-- Цвета для карточек, диалогов и т.д. -->
+    <color name="card_background">#2D2D2D</color>
+    <color name="dialog_background">#383838</color>
+    
+    <!-- Цвета для текста -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#B3FFFFFF</color>
+    <color name="text_hint">#80FFFFFF</color>
+    <color name="text_disabled">#61FFFFFF</color>
+    
+    <!-- Цвета для кнопок -->
+    <color name="button_text">#FFFFFF</color>
+    <color name="button_disabled">#61000000</color>
+    
+    <!-- Цвета для иконок -->
+    <color name="icon_color">#FFFFFF</color>
+    <color name="icon_color_disabled">#80FFFFFF</color>
+    
+    <!-- Цвета статусов -->
+    <color name="status_success">#4CAF50</color>
+    <color name="status_warning">#FFC107</color>
+    <color name="status_error">#F44336</color>
+    <color name="status_info">#2196F3</color>
+    
+    <!-- Цвета для разделителей -->
+    <color name="divider">#1FFFFFFF</color>
+    
+    <!-- Цвета для товаров -->
+    <color name="product_in_stock">#4CAF50</color>
+    <color name="product_low_stock">#FFC107</color>
+    <color name="product_out_of_stock">#F44336</color>
+    <color name="product_discount_badge">#E040FB</color>
+    
+    <!-- Цвета для заказов -->
+    <color name="order_pending">#FFC107</color>
+    <color name="order_processing">#2196F3</color>
+    <color name="order_shipping">#9C27B0</color>
+    <color name="order_delivered">#4CAF50</color>
+    <color name="order_completed">#4CAF50</color>
+    <color name="order_cancelled">#F44336</color>
+    
+    <!-- Цвета для аналитики -->
+    <color name="chart_bar_1">#7C4DFF</color>
+    <color name="chart_bar_2">#E040FB</color>
+    <color name="chart_bar_3">#FF4081</color>
+    <color name="chart_bar_4">#40C4FF</color>
+    <color name="chart_line">#7C4DFF</color>
+    <color name="chart_grid">#44FFFFFF</color>
+</resources>

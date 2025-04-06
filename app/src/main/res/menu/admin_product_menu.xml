@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <item
+        android:id="@+id/action_add_product"
+        android:icon="@drawable/ic_add"
+        android:title="@string/action_add_product"
+        app:showAsAction="ifRoom" />
+        
+    <item
+        android:id="@+id/action_import_products"
+        android:icon="@drawable/ic_import"
+        android:title="@string/action_import_products"
+        app:showAsAction="never" />
+        
+    <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_search"
+        android:title="@string/action_search"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="collapseActionView|ifRoom" />
+        
+    <item
+        android:id="@+id/action_filter"
+        android:icon="@drawable/ic_filter"
+        android:title="@string/action_filter"
+        app:showAsAction="never" />
+        
+    <item
+        android:id="@+id/action_sort"
+        android:title="@string/action_sort"
+        app:showAsAction="never">
+        <menu>
+            <item
+                android:id="@+id/sort_name_asc"
+                android:title="@string/sort_name_asc" />
+            <item
+                android:id="@+id/sort_name_desc"
+                android:title="@string/sort_name_desc" />
+            <item
+                android:id="@+id/sort_price_asc"
+                android:title="@string/sort_price_asc" />
+            <item
+                android:id="@+id/sort_price_desc"
+                android:title="@string/sort_price_desc" />
+            <item
+                android:id="@+id/sort_newest"
+                android:title="@string/sort_newest" />
+        </menu>
+    </item>
+</menu>

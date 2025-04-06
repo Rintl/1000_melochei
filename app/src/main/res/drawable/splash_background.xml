@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Градиентный фон -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="linear"
+                android:startColor="#673AB7"
+                android:endColor="#9C27B0"
+                android:angle="135" />
+        </shape>
+    </item>
+    
+    <!-- Логотип по центру -->
+    <item android:gravity="center">
+        <bitmap
+            android:src="@mipmap/ic_launcher"
+            android:gravity="center" />
+    </item>
+    
+    <!-- Название приложения -->
+    <item android:bottom="100dp" android:gravity="center_horizontal|bottom">
+        <bitmap
+            android:src="@drawable/splash_title"
+            android:gravity="center" />
+    </item>
+</layer-list>

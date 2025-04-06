@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="8dp"
+    android:layout_marginVertical="4dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Маркер адреса по умолчанию -->
+        <ImageView
+            android:id="@+id/iv_default_marker"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_home_marker"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/colorPrimary"
+            android:contentDescription="@string/default_address" />
+
+        <!-- Название адреса -->
+        <TextView
+            android:id="@+id/tv_address_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/cv_default_badge"
+            app:layout_constraintStart_toEndOf="@+id/iv_default_marker"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Дом" />
+
+        <!-- Полный адрес -->
+        <TextView
+            android:id="@+id/tv_address_full"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@+id/iv_menu"
+            app:layout_constraintStart_toStartOf="@+id/tv_address_title"
+            app:layout_constraintTop_toBottomOf="@+id/tv_address_title"
+            tools:text="г. Аксай, ул. Дружбы, д. 15, кв. 42" />
+
+        <!-- Индикатор основного адреса -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_default_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/colorPrimary"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:layout_constraintEnd_toStartOf="@+id/iv_menu"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="2dp"
+                android:text="@string/default"
+                android:textColor="@android:color/white"
+                android:textSize="12sp" />
+        </androidx.cardview.widget.CardView>
+
+        <!-- Меню действий -->
+        <ImageView
+            android:id="@+id/iv_menu"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="2dp"
+            android:src="@drawable/ic_more_vert"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/more_options" />
+
+        <!-- Дополнительные данные -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/tv_address_full">
+
+            <!-- Индикатор зоны доставки -->
+            <TextView
+                android:id="@+id/tv_delivery_zone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:drawablePadding="4dp"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="12sp"
+                app:drawableStartCompat="@drawable/ic_location"
+                tools:text="Зона доставки: Центр" />
+
+            <!-- Стоимость доставки -->
+            <TextView
+                android:id="@+id/tv_delivery_cost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="4dp"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="12sp"
+                app:drawableStartCompat="@drawable/ic_delivery_cost"
+                tools:text="Доставка: 1000 ₸" />
+
+        </LinearLayout>
+
+        <!-- Кнопки действий -->
+        <LinearLayout
+            android:id="@+id/ll_address_actions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_address_full"
+            tools:visibility="visible">
+
+            <Button
+                android:id="@+id/btn_set_as_default"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/set_as_default"
+                android:textColor="@color/colorPrimary"
+                android:visibility="visible" />
+
+            <Button
+                android:id="@+id/btn_edit_address"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/edit"
+                android:textColor="@color/colorPrimary" />
+
+            <Button
+                android:id="@+id/btn_delete_address"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/delete"
+                android:textColor="@color/colorError" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

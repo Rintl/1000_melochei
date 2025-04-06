@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Общие строки приложения -->
+    <string name="app_name">1000 мелочей</string>
+    <string name="loading">Загрузка…</string>
+    <string name="error_occurred">Произошла ошибка</string>
+    <string name="retry">Повторить</string>
+    <string name="cancel">Отмена</string>
+    <string name="save">Сохранить</string>
+    <string name="done">Готово</string>
+    <string name="back">Назад</string>
+    <string name="next">Далее</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="ok">OK</string>
+    <string name="search">Поиск</string>
+    <string name="empty_list">Список пуст</string>
+    <string name="not_found">Ничего не найдено</string>
+    <string name="currency_format">%s ₸</string>
+    <string name="no_internet_connection">Нет подключения к интернету</string>
+    <string name="check_connection">Проверьте подключение к интернету и повторите попытку</string>
+    <string name="no_data">Нет данных</string>
+    <string name="version">Версия %s</string>
+
+    <!-- Авторизация и регистрация -->
+    <string name="login">Вход</string>
+    <string name="admin_login">Вход для администратора</string>
+    <string name="register">Регистрация</string>
+    <string name="email">Email</string>
+    <string name="password">Пароль</string>
+    <string name="confirm_password">Подтвердите пароль</string>
+    <string name="forgot_password">Забыли пароль?</string>
+    <string name="reset_password">Сбросить пароль</string>
+    <string name="logout">Выйти</string>
+    <string name="no_account">Ещё нет аккаунта?</string>
+    <string name="create_account">Создать аккаунт</string>
+    <string name="already_have_account">Уже есть аккаунт?</string>
+    <string name="login_success">Вход выполнен успешно</string>
+    <string name="register_success">Регистрация выполнена успешно</string>
+    <string name="password_reset_sent">Инструкции по сбросу пароля отправлены на указанный email</string>
+    <string name="name">Имя</string>
+    <string name="phone">Телефон</string>
+    <string name="admin_code">Код администратора</string>
+    <string name="invalid_email">Неверный формат email</string>
+    <string name="invalid_password">Пароль должен содержать не менее 6 символов</string>
+    <string name="passwords_not_match">Пароли не совпадают</string>
+    <string name="empty_field">Поле не может быть пустым</string>
+    <string name="auth_failed">Ошибка авторизации</string>
+
+    <!-- Нижняя навигация - пользователь -->
+    <string name="title_home">Главная</string>
+    <string name="title_catalog">Каталог</string>
+    <string name="title_cart">Корзина</string>
+    <string name="title_orders">Заказы</string>
+    <string name="title_profile">Профиль</string>
+
+    <!-- Нижняя навигация - администратор -->
+    <string name="title_dashboard">Панель</string>
+    <string name="title_products">Товары</string>
+    <string name="title_categories">Категории</string>
+    <string name="title_analytics">Аналитика</string>
+
+    <!-- Заголовки экранов -->
+    <string name="title_category">Категория</string>
+    <string name="title_product_detail">Товар</string>
+    <string name="title_checkout">Оформление заказа</string>
+    <string name="title_order_detail">Детали заказа</string>
+    <string name="title_edit_profile">Редактирование профиля</string>
+    <string name="title_address">Адреса доставки</string>
+    <string name="title_add_product">Добавление товара</string>
+    <string name="title_edit_product">Редактирование товара</string>
+    <string name="title_import_products">Импорт товаров</string>
+    <string name="title_add_category">Добавление категории</string>
+    <string name="title_search">Поиск</string>
+
+    <!-- Главная страница -->
+    <string name="popular_products">Популярные товары</string>
+    <string name="all_categories">Все категории</string>
+    <string name="special_offers">Специальные предложения</string>
+    <string name="view_all">Смотреть все</string>
+    <string name="welcome_message">Здравствуйте, %s!</string>
+    <string name="welcome_back">С возвращением!</string>
+    <string name="new_items">Новинки</string>
+    <string name="sale">Распродажа</string>
+    <string name="discount">Скидка %d%%</string>
+
+    <!-- Каталог и товары -->
+    <string name="sort">Сортировка</string>
+    <string name="filter">Фильтр</string>
+    <string name="price">Цена</string>
+    <string name="old_price">Старая цена</string>
+    <string name="in_stock">В наличии</string>
+    <string name="out_of_stock">Нет в наличии</string>
+    <string name="sort_name_asc">По имени (А-Я)</string>
+    <string name="sort_name_desc">По имени (Я-А)</string>
+    <string name="sort_price_asc">По цене (сначала дешевле)</string>
+    <string name="sort_price_desc">По цене (сначала дороже)</string>
+    <string name="sort_newest">Сначала новые</string>
+    <string name="sort_oldest">Сначала старые</string>
+    <string name="sort_by_status">По статусу</string>
+    <string name="category">Категория</string>
+    <string name="description">Описание</string>
+    <string name="specifications">Характеристики</string>
+    <string name="similar_products">Похожие товары</string>
+    <string name="add_to_cart">Добавить в корзину</string>
+    <string name="product_added_to_cart">Товар добавлен в корзину</string>
+    <string name="available">Доступно: %d</string>
+    <string name="product_code">Артикул: %s</string>
+    <string name="quantity">Количество</string>
+    <string name="low_stock">Осталось мало</string>
+    <string name="sales_count">Продано: %d</string>
+    <string name="search_hint">Поиск товаров...</string>
+    <string name="search_results">Результаты поиска</string>
+    <string name="no_search_results">По запросу "%s" ничего не найдено</string>
+    <string name="search_history">История поиска</string>
+    <string name="clear_history">Очистить историю</string>
+
+    <!-- Корзина и оформление заказа -->
+    <string name="empty_cart">Ваша корзина пуста</string>
+    <string name="start_shopping">Начать покупки</string>
+    <string name="subtotal">Промежуточный итог</string>
+    <string name="delivery_fee">Стоимость доставки</string>
+    <string name="total">Итого</string>
+    <string name="checkout">Оформить заказ</string>
+    <string name="clear_cart">Очистить корзину</string>
+    <string name="confirm_clear_cart">Вы уверены, что хотите очистить корзину?</string>
+    <string name="continue_shopping">Продолжить покупки</string>
+    <string name="delivery_method">Способ получения</string>
+    <string name="delivery">Доставка</string>
+    <string name="pickup">Самовывоз</string>
+    <string name="payment_method">Способ оплаты</string>
+    <string name="cash_on_delivery">Наличными при получении</string>
+    <string name="card_on_delivery">Картой при получении</string>
+    <string name="kaspi">Перевод на Kaspi</string>
+    <string name="delivery_address">Адрес доставки</string>
+    <string name="select_address">Выберите адрес</string>
+    <string name="add_address">Добавить адрес</string>
+    <string name="delivery_date">Дата доставки</string>
+    <string name="delivery_time">Время доставки</string>
+    <string name="select_date">Выберите дату</string>
+    <string name="select_time">Выберите время</string>
+    <string name="comment">Комментарий к заказу</string>
+    <string name="comment_hint">Дополнительная информация для доставки</string>
+    <string name="place_order">Оформить заказ</string>
+    <string name="order_placed">Заказ успешно оформлен</string>
+    <string name="order_number">Номер заказа: %s</string>
+    <string name="order_confirmation">Подтверждение заказа</string>
+    <string name="confirm_order">Подтвердите заказ</string>
+    <string name="order_summary">Сводка заказа</string>
+    <string name="items_count">Товаров: %d</string>
+    <string name="free_delivery">Бесплатная доставка</string>
+    <string name="minimum_order_amount">Минимальная сумма заказа: %s</string>
+    <string name="minimum_order_not_reached">Не достигнута минимальная сумма заказа</string>
+    <string name="add_more_items">Добавьте товары еще на %s</string>
+    <string name="remove_item">Удалить товар</string>
+    <string name="free_delivery_from">Бесплатная доставка от %s</string>
+
+    <!-- Заказы -->
+    <string name="order">Заказ</string>
+    <string name="order_date">Дата заказа</string>
+    <string name="order_status">Статус заказа</string>
+    <string name="order_items">Состав заказа</string>
+    <string name="order_total">Сумма заказа</string>
+    <string name="no_orders">У вас пока нет заказов</string>
+    <string name="status_pending">Ожидает обработки</string>
+    <string name="status_processing">В обработке</string>
+    <string name="status_shipping">Доставляется</string>
+    <string name="status_delivered">Доставлен</string>
+    <string name="status_completed">Завершен</string>
+    <string name="status_cancelled">Отменен</string>
+    <string name="cancel_order">Отменить заказ</string>
+    <string name="confirm_cancel_order">Вы уверены, что хотите отменить заказ?</string>
+    <string name="order_cancelled">Заказ отменен</string>
+    <string name="order_details">Детали заказа</string>
+    <string name="delivery_info">Информация о доставке</string>
+    <string name="payment_info">Информация об оплате</string>
+    <string name="update_status">Обновить статус</string>
+    <string name="customer_info">Информация о клиенте</string>
+
+    <!-- Профиль -->
+    <string name="profile">Профиль</string>
+    <string name="edit_profile">Редактировать профиль</string>
+    <string name="my_addresses">Мои адреса</string>
+    <string name="my_orders">Мои заказы</string>
+    <string name="settings">Настройки</string>
+    <string name="dark_theme">Темная тема</string>
+    <string name="notifications">Уведомления</string>
+    <string name="language">Язык</string>
+    <string name="about">О приложении</string>
+    <string name="terms_of_service">Условия использования</string>
+    <string name="privacy_policy">Политика конфиденциальности</string>
+    <string name="contact_us">Связаться с нами</string>
+    <string name="feedback">Обратная связь</string>
+    <string name="rate_app">Оценить приложение</string>
+    <string name="share_app">Поделиться приложением</string>
+    <string name="change_password">Сменить пароль</string>
+    <string name="current_password">Текущий пароль</string>
+    <string name="new_password">Новый пароль</string>
+    <string name="password_changed">Пароль успешно изменен</string>
+    <string name="upload_photo">Загрузить фото</string>
+    <string name="take_photo">Сделать фото</string>
+    <string name="choose_from_gallery">Выбрать из галереи</string>
+    <string name="profile_updated">Профиль обновлен</string>
+
+    <!-- Адреса -->
+    <string name="address_title">Название адреса</string>
+    <string name="address_title_hint">Например: Дом, Работа</string>
+    <string name="address_hint">Полный адрес</string>
+    <string name="city">Город</string>
+    <string name="street">Улица</string>
+    <string name="house">Дом</string>
+    <string name="apartment">Квартира</string>
+    <string name="floor">Этаж</string>
+    <string name="entrance">Подъезд</string>
+    <string name="postal_code">Почтовый индекс</string>
+    <string name="default_address">Адрес по умолчанию</string>
+    <string name="add_new_address">Добавить новый адрес</string>
+    <string name="edit_address">Редактировать адрес</string>
+    <string name="delete_address">Удалить адрес</string>
+    <string name="confirm_delete_address">Вы уверены, что хотите удалить этот адрес?</string>
+    <string name="address_added">Адрес добавлен</string>
+    <string name="address_updated">Адрес обновлен</string>
+    <string name="address_deleted">Адрес удален</string>
+    <string name="delivery_notes">Примечания для курьера</string>
+
+    <!-- Администратор - Панель управления -->
+    <string name="total_orders">Всего заказов</string>
+    <string name="new_orders">Новые заказы</string>
+    <string name="processing_orders">Заказы в обработке</string>
+    <string name="total_sales">Общие продажи</string>
+    <string name="sales_today">Продажи за сегодня</string>
+    <string name="sales_week">Продажи за неделю</string>
+    <string name="sales_month">Продажи за месяц</string>
+    <string name="low_stock_products">Товары с низким остатком</string>
+    <string name="out_of_stock_products">Товары без остатка</string>
+    <string name="total_products">Всего товаров</string>
+    <string name="latest_orders">Последние заказы</string>
+    <string name="average_order_value">Средний чек</string>
+
+    <!-- Администратор - Управление товарами -->
+    <string name="product_management">Управление товарами</string>
+    <string name="product_name">Название товара</string>
+    <string name="product_price">Цена товара</string>
+    <string name="product_discount_price">Цена со скидкой</string>
+    <string name="product_category">Категория товара</string>
+    <string name="product_description">Описание товара</string>
+    <string name="product_sku">Артикул</string>
+    <string name="product_barcode">Штрих-код</string>
+    <string name="product_quantity">Количество на складе</string>
+    <string name="product_images">Изображения товара</string>
+    <string name="product_specifications">Характеристики товара</string>
+    <string name="product_status">Статус товара</string>
+    <string name="product_active">Активен</string>
+    <string name="product_inactive">Неактивен</string>
+    <string name="add_specification">Добавить характеристику</string>
+    <string name="specification_name">Название характеристики</string>
+    <string name="specification_value">Значение характеристики</string>
+    <string name="add_image">Добавить изображение</string>
+    <string name="select_category">Выберите категорию</string>
+    <string name="delete_product">Удалить товар</string>
+    <string name="confirm_delete_product">Вы уверены, что хотите удалить этот товар?</string>
+    <string name="product_added">Товар добавлен</string>
+    <string name="product_updated">Товар обновлен</string>
+    <string name="product_deleted">Товар удален</string>
+    <string name="invalid_price">Неверная цена</string>
+    <string name="invalid_quantity">Неверное количество</string>
+    <string name="action_add_product">Добавить товар</string>
+    <string name="action_import_products">Импортировать товары</string>
+    <string name="action_export_orders">Экспорт заказов</string>
+    <string name="action_share">Поделиться</string>
+    <string name="action_favorite">В избранное</string>
+    <string name="action_cart">Корзина</string>
+    <string name="action_search">Поиск</string>
+    <string name="action_filter">Фильтр</string>
+    <string name="action_sort">Сортировка</string>
+
+    <!-- Администратор - Управление категориями -->
+    <string name="category_management">Управление категориями</string>
+    <string name="category_name">Название категории</string>
+    <string name="category_description">Описание категории</string>
+    <string name="category_image">Изображение категории</string>
+    <string name="parent_category">Родительская категория</string>
+    <string name="no_parent_category">Без родительской категории</string>
+    <string name="category_order">Порядок сортировки</string>
+    <string name="category_status">Статус категории</string>
+    <string name="category_active">Активна</string>
+    <string name="category_inactive">Неактивна</string>
+    <string name="delete_category">Удалить категорию</string>
+    <string name="confirm_delete_category">Вы уверены, что хотите удалить эту категорию?</string>
+    <string name="category_added">Категория добавлена</string>
+    <string name="category_updated">Категория обновлена</string>
+    <string name="category_deleted">Категория удалена</string>
+    <string name="cannot_delete_category_with_products">Невозможно удалить категорию, содержащую товары</string>
+
+    <!-- Администратор - Аналитика -->
+    <string name="analytics_period">Период</string>
+    <string name="today">Сегодня</string>
+    <string name="yesterday">Вчера</string>
+    <string name="week">Неделя</string>
+    <string name="month">Месяц</string>
+    <string name="year">Год</string>
+    <string name="custom_period">Выбрать период</string>
+    <string name="sales_analytics">Аналитика продаж</string>
+    <string name="orders_analytics">Аналитика заказов</string>
+    <string name="popular_categories">Популярные категории</string>
+    <string name="revenue">Доход</string>
+    <string name="profit">Прибыль</string>
+    <string name="conversion_rate">Коэффициент конверсии</string>
+    <string name="customers">Клиенты</string>
+    <string name="returning_customers">Вернувшиеся клиенты</string>
+    <string name="new_customers">Новые клиенты</string>
+    <string name="export_report">Экспорт отчета</string>
+
+    <!-- Разрешения -->
+    <string name="permission_camera_required">Требуется разрешение на использование камеры</string>
+    <string name="permission_storage_required">Требуется разрешение на доступ к хранилищу</string>
+    <string name="permission_denied_explanation">Без этого разрешения функция недоступна</string>
+    <string name="go_to_settings">Перейти в настройки</string>
+
+    <!-- Уведомления -->
+    <string name="notification_channel_orders">Заказы</string>
+    <string name="notification_channel_orders_description">Уведомления о заказах и их статусах</string>
+    <string name="notification_channel_promo">Акции</string>
+    <string name="notification_channel_promo_description">Уведомления о скидках и специальных предложениях</string>
+    <string name="notification_channel_system">Системные</string>
+    <string name="notification_channel_system_description">Системные уведомления</string>
+    <string name="notification_new_order_title">Новый заказ</string>
+    <string name="notification_new_order_text">Заказ №%1$s от %2$s</string>
+    <string name="notification_order_status_title">Статус заказа обновлен</string>
+    <string name="notification_order_status_text">Заказ №%1$s: %2$s</string>
+    <string name="notification_promo_default_title">Специальное предложение</string>
+    <string name="notification_system_default_title">Уведомление</string>
+
+    <!-- Ошибки -->
+    <string name="error_network">Ошибка сети. Проверьте подключение к интернету.</string>
+    <string name="error_server">Ошибка сервера. Пожалуйста, повторите позже.</string>
+    <string name="error_timeout">Превышено время ожидания запроса. Пожалуйста, повторите.</string>
+    <string name="error_unknown">Произошла неизвестная ошибка. Пожалуйста, повторите.</string>
+    <string name="error_auth">Ошибка авторизации. Пожалуйста, войдите снова.</string>
+    <string name="error_wrong_email_password">Неверный email или пароль</string>
+    <string name="error_email_already_used">Этот email уже используется</string>
+    <string name="error_weak_password">Слишком слабый пароль</string>
+    <string name="error_product_not_found">Товар не найден</string>
+    <string name="error_cart_update">Ошибка при обновлении корзины</string>
+    <string name="error_order_create">Ошибка при создании заказа</string>
+    <string name="error_address_save">Ошибка при сохранении адреса</string>
+    <string name="error_upload_image">Ошибка при загрузке изображения</string>
+    <string name="error_import_file">Ошибка при импорте файла</string>
+    <string name="error_insufficient_stock">Недостаточно товара на складе</string>
+</resources>

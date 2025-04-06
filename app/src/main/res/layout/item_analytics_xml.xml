@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Заголовок метрики -->
+        <TextView
+            android:id="@+id/tv_metric_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/iv_info"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Выручка" />
+
+        <!-- Иконка информации -->
+        <ImageView
+            android:id="@+id/iv_info"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="4dp"
+            android:src="@drawable/ic_info"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/more_info" />
+
+        <!-- Период -->
+        <TextView
+            android:id="@+id/tv_metric_period"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_metric_title"
+            tools:text="За последние 30 дней" />
+
+        <!-- Основной показатель -->
+        <TextView
+            android:id="@+id/tv_metric_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textColor="@color/colorPrimary"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_metric_period"
+            tools:text="1 235 750 ₸" />
+
+        <!-- Изменение с прошлым периодом -->
+        <LinearLayout
+            android:id="@+id/ll_change_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_metric_value"
+            app:layout_constraintStart_toEndOf="@+id/tv_metric_value">
+
+            <ImageView
+                android:id="@+id/iv_trend_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_trend_up"
+                app:tint="@color/colorPositive"
+                android:contentDescription="@string/trend" />
+
+            <TextView
+                android:id="@+id/tv_change_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:textColor="@color/colorPositive"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:text="+15.3%" />
+
+        </LinearLayout>
+
+        <!-- Контейнер для графика -->
+        <FrameLayout
+            android:id="@+id/fl_chart_container"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_chart_container"
+            app:layout_constraintTop_toBottomOf="@+id/tv_metric_value">
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chart"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp" />
+
+            <!-- Заглушка для прогресса загрузки -->
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+        </FrameLayout>
+
+        <!-- Легенда -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/fl_chart_container">
+
+            <!-- Текущий период -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:background="@color/colorPrimary" />
+
+                <TextView
+                    android:id="@+id/tv_current_period_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="12sp"
+                    tools:text="Текущий период" />
+
+            </LinearLayout>
+
+            <!-- Предыдущий период -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:background="@color/colorSecondary" />
+
+                <TextView
+                    android:id="@+id/tv_previous_period_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="12sp"
+                    tools:text="Предыдущий период" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

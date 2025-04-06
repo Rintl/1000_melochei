@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.admin.products.ImportProductsActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light"
+            app:title="@string/import_products" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Карточка с инструкциями по импорту -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/import_instructions_title"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/import_instructions_text"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+
+                    <!-- Ссылка на шаблон для скачивания -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/downloadTemplateButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/download_template"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_marginTop="8dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Выбор файла для импорта -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/import_file_title"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                        android:layout_marginBottom="8dp" />
+
+                    <!-- Переключатель типа файла -->
+                    <RadioGroup
+                        android:id="@+id/fileTypeRadioGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="16dp">
+
+                        <RadioButton
+                            android:id="@+id/csvRadioButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/csv_file"
+                            android:checked="true"
+                            android:layout_marginEnd="16dp" />
+
+                        <RadioButton
+                            android:id="@+id/excelRadioButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/excel_file" />
+                    </RadioGroup>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <!-- Отображение выбранного файла -->
+                        <TextView
+                            android:id="@+id/selectedFileText"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                            tools:text="products_import.csv"
+                            android:layout_marginEnd="8dp"
+                            android:hint="@string/no_file_selected" />
+
+                        <!-- Кнопка выбора файла -->
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/selectFileButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/select_file"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Настройки импорта -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/import_settings_title"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                        android:layout_marginBottom="8dp" />
+
+                    <!-- Настройка заголовков -->
+                    <CheckBox
+                        android:id="@+id/hasHeadersCheckBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/file_has_headers"
+                        android:checked="true"
+                        android:layout_marginBottom="8dp" />
+
+                    <!-- Настройка разделителя для CSV -->
+                    <LinearLayout
+                        android:id="@+id/csvDelimiterLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/csv_delimiter"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                            android:layout_marginEnd="16dp" />
+
+                        <Spinner
+                            android:id="@+id/delimiterSpinner"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:entries="@array/csv_delimiters" />
+                    </LinearLayout>
+
+                    <!-- Настройка листа для Excel -->
+                    <LinearLayout
+                        android:id="@+id/excelSheetLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/excel_sheet"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                            android:layout_marginEnd="16dp" />
+
+                        <Spinner
+                            android:id="@+id/sheetSpinner"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
+                    </LinearLayout>
+
+                    <!-- Настройка обновления существующих товаров -->
+                    <CheckBox
+                        android:id="@+id/updateExistingCheckBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/update_existing_products"
+                        android:checked="true" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Предпросмотр и импорт -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/preview_and_import_title"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                        android:layout_marginBottom="8dp" />
+
+                    <!-- Кнопки предпросмотра и импорта -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="end">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/previewButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/preview_data"
+                            android:layout_marginEnd="8dp"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/importButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/start_import"
+                            android:enabled="false" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Результаты предпросмотра -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/previewCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/preview_results_title"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                        android:layout_marginBottom="8dp" />
+
+                    <!-- Информация о количестве товаров -->
+                    <TextView
+                        android:id="@+id/previewCountText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                        android:layout_marginBottom="8dp"
+                        tools:text="Найдено товаров: 156" />
+
+                    <!-- Таблица с предпросмотром -->
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TableLayout
+                            android:id="@+id/previewTable"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:stretchColumns="*">
+
+                            <!-- Заголовок таблицы -->
+                            <TableRow
+                                android:background="@color/colorPrimaryLight"
+                                android:padding="4dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:padding="4dp"
+                                    android:text="SKU"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:padding="4dp"
+                                    android:text="@string/product_name"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:padding="4dp"
+                                    android:text="@string/product_category"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:padding="4dp"
+                                    android:text="@string/product_price"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:padding="4dp"
+                                    android:text="@string/product_quantity"
+                                    android:textStyle="bold" />
+                            </TableRow>
+
+                            <!-- Здесь будут динамически добавляться строки с данными -->
+                        </TableLayout>
+                    </HorizontalScrollView>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Результаты импорта (показывается после завершения импорта) -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/resultsCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/import_results_title"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                        android:layout_marginBottom="8dp" />
+
+                    <!-- Информация о результатах импорта -->
+                    <TextView
+                        android:id="@+id/importSuccessText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                        android:layout_marginBottom="4dp"
+                        tools:text="Успешно импортировано: 120" />
+
+                    <TextView
+                        android:id="@+id/importErrorText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                        android:layout_marginBottom="4dp"
+                        tools:text="Ошибки при импорте: 5" />
+
+                    <!-- Кнопка для скачивания отчета с ошибками -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/downloadErrorsButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/download_error_report"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_marginTop="8dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Индикатор загрузки -->
+    <FrameLayout
+        android:id="@+id/loadingIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@drawable/bg_rounded_white"
+            android:layout_gravity="center">
+
+            <ProgressBar
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center_horizontal"
+                android:indeterminate="true" />
+
+            <TextView
+                android:id="@+id/loadingText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:text="@string/importing_data" />
+        </LinearLayout>
+    </FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

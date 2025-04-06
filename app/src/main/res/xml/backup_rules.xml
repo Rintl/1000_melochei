@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <!-- Включение всех общих настроек приложения в резервное копирование -->
+    <include domain="sharedpref" path="." />
+    
+    <!-- Включаем в резервное копирование данные корзины -->
+    <include domain="file" path="cart_cache.json" />
+    
+    <!-- Локальную базу данных (если используется) -->
+    <include domain="database" path="melochei_db" />
+    
+    <!-- Исключаем временные и кэш-файлы из резервного копирования -->
+    <exclude domain="file" path="temp/" />
+    <exclude domain="file" path="temp_images/" />
+    <exclude domain="external" path="images/" />
+    <exclude domain="cache" path="." />
+    <exclude domain="external_cache" path="." />
+    
+    <!-- Исключаем данные аутентификации и безопасности -->
+    <exclude domain="sharedpref" path="auth_prefs.xml" />
+    <exclude domain="sharedpref" path="security_tokens.xml" />
+    <exclude domain="file" path="secrets/" />
+    
+    <!-- Исключаем аналитические и логи данные -->
+    <exclude domain="file" path="logs/" />
+    <exclude domain="database" path="analytics.db" />
+    
+    <!-- Исключаем большие объемы данных, которые могут быть загружены повторно -->
+    <exclude domain="file" path="downloads/" />
+    <exclude domain="file" path="product_images/" />
+</full-backup-content>

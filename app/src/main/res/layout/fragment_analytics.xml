@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.admin.analytics.AnalyticsFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Заголовок страницы -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/analytics_title"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Период для анализа -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/analytics_period"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
+
+                    <!-- Кнопки выбора периода -->
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scrollbars="none">
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/periodChipGroup"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:singleSelection="true"
+                            app:selectionRequired="true"
+                            app:chipSpacingHorizontal="8dp">
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/todayChip"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/period_today"
+                                style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/yesterdayChip"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/period_yesterday"
+                                style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/weekChip"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/period_week"
+                                style="@style/Widget.MaterialComponents.Chip.Choice"
+                                android:checked="true" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/monthChip"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/period_month"
+                                style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/yearChip"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/period_year"
+                                style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/customPeriodChip"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/period_custom"
+                                style="@style/Widget.MaterialComponents.Chip.Choice" />
+                        </com.google.android.material.chip.ChipGroup>
+                    </HorizontalScrollView>
+
+                    <!-- Календарь для выбора произвольного периода -->
+                    <LinearLayout
+                        android:id="@+id/customPeriodLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="8dp"
+                        android:visibility="gone">
+
+                        <!-- Дата начала -->
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/startDateInputLayout"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="4dp"
+                            android:hint="@string/date_from"
+                            app:startIconDrawable="@drawable/ic_calendar"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/startDateEditText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="none"
+                                android:focusable="false"
+                                android:clickable="true" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <!-- Дата окончания -->
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/endDateInputLayout"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="4dp"
+                            android:hint="@string/date_to"
+                            app:startIconDrawable="@drawable/ic_calendar"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/endDateEditText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="none"
+                                android:focusable="false"
+                                android:clickable="true" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
+
+                    <!-- Кнопка применения периода -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/applyPeriodButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/apply_period"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="8dp"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Основные показатели -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/analytics_key_metrics"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Первый ряд показателей -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="16dp">
+
+                        <!-- Выручка -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:background="@drawable/bg_metric_card"
+                            android:padding="12dp">
+
+                            <TextView
+                                android:id="@+id/totalRevenueText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                                android:textStyle="bold"
+                                tools:text="564 300 ₸" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/analytics_revenue"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
+
+                            <TextView
+                                android:id="@+id/revenueChangeText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                                android:textColor="@color/colorSuccess"
+                                android:layout_marginTop="4dp"
+                                tools:text="+12.5%" />
+                        </LinearLayout>
+
+                        <!-- Количество заказов -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:background="@drawable/bg_metric_card"
+                            android:padding="12dp"
+                            android:layout_marginStart="8dp">
+
+                            <TextView
+                                android:id="@+id/totalOrdersText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                                android:textStyle="bold"
+                                tools:text="75" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/analytics_orders"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
+
+                            <TextView
+                                android:id="@+id/ordersChangeText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                                android:textColor="@color/colorSuccess"
+                                android:layout_marginTop="4dp"
+                                tools:text="+8.7%" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Второй ряд показателей -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <!-- Средний чек -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:background="@drawable/bg_metric_card"
+                            android:padding="12dp">
+
+                            <TextView
+                                android:id="@+id/averageOrderText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                                android:textStyle="bold"
+                                tools:text="7 524 ₸" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/analytics_avg_order"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
+
+                            <TextView
+                                android:id="@+id/avgOrderChangeText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                                android:textColor="@color/colorSuccess"
+                                android:layout_marginTop="4dp"
+                                tools:text="+3.2%" />
+                        </LinearLayout>
+
+                        <!-- Количество проданных товаров -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:background="@drawable/bg_metric_card"
+                            android:padding="12dp"
+                            android:layout_marginStart="8dp">
+
+                            <TextView
+                                android:id="@+id/totalProductsSoldText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                                android:textStyle="bold"
+                                tools:text="243" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/analytics_products_sold"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
+
+                            <TextView
+                                android:id="@+id/productsSoldChangeText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                                android:textColor="@color/colorSuccess"
+                                android:layout_marginTop="4dp"
+                                tools:text="+15.1%" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- График продаж -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/analytics_sales_chart"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
+
+                    <!-- Переключатель типа графика -->
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/chartTypeChipGroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        app:singleSelection="true"
+                        app:selectionRequired="true">
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/revenueChartChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/chart_revenue"
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
+                            android:checked="true" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/ordersChartChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/chart_orders"
+                            style="@style/Widget.MaterialComponents.Chip.Choice" />
+                    </com.google.android.material.chip.ChipGroup>
+
+                    <!-- Контейнер для графика -->
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="250dp">
+
+                        <!-- Заглушка для графика (в реальном приложении будет View для графика) -->
+                        <com.github.mikephil.charting.charts.LineChart
+                            android:id="@+id/salesChart"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                        <!-- Индикатор загрузки для графика -->
+                        <ProgressBar
+                            android:id="@+id/chartLoadingProgressBar"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_gravity="center"
+                            android:visibility="gone" />
+                    </FrameLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Популярные товары -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/analytics_popular_products"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
+
+                    <!-- Список популярных товаров -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/popularProductsRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:itemCount="5"
+                        tools:listitem="@layout/item_popular_product" />
+
+                    <!-- Кнопка "Показать все" -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/viewAllPopularButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/view_all"
+                        android:layout_gravity="end"
+                        style="@style/Widget.MaterialComponents.Button.TextButton" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Статистика по категориям -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/analytics_category_stats"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
+
+                    <!-- Контейнер для круговой диаграммы -->
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="220dp"
+                        android:layout_marginBottom="8dp">
+
+                        <!-- Круговая диаграмма по категориям -->
+                        <com.github.mikephil.charting.charts.PieChart
+                            android:id="@+id/categoriesChart"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                        <!-- Индикатор загрузки для диаграммы -->
+                        <ProgressBar
+                            android:id="@+id/categoriesChartLoadingProgressBar"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_gravity="center"
+                            android:visibility="gone" />
+                    </FrameLayout>
+
+                    <!-- Список категорий с цветовыми индикаторами -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/categoriesLegendRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:itemCount="5"
+                        tools:listitem="@layout/item_chart_legend" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Кнопка экспорта отчета -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/exportReportButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/export_report"
+                app:icon="@drawable/ic_export"
+                android:layout_marginBottom="16dp" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Индикатор загрузки -->
+    <FrameLayout
+        android:id="@+id/loadingIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ProgressBar
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center"
+            android:indeterminate="true" />
+    </FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

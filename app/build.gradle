@@ -1,12 +1,12 @@
 plugins {
-    id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
-    id 'kotlin-kapt'
-    id 'com.google.gms.google-services'
-    id 'com.google.firebase.crashlytics'
-    id 'com.google.devtools.ksp'
-    id 'androidx.navigation.safeargs.kotlin'
-    id 'kotlin-parcelize'
+    id 'com.android.application' version '8.1.0' apply true
+    id 'org.jetbrains.kotlin.android' version '1.9.0' apply true
+    id 'kotlin-kapt' // Не требует версии, так как применяется через buildscript
+    id 'com.google.gms.google-services' version '4.4.0' apply true
+    id 'com.google.firebase.crashlytics' version '2.9.9' apply true
+    id 'com.google.devtools.ksp' version '1.9.0-1.0.13' apply true
+    id 'androidx.navigation.safeargs.kotlin' version '2.7.5' apply true
+    id 'kotlin-parcelize' // Не требует версии, так как встроен в Kotlin
 }
 
 android {
@@ -15,7 +15,7 @@ android {
 
     defaultConfig {
         applicationId "com.yourstore.app"
-        minSdk 24
+        minSdk 26
         targetSdk 34
         versionCode 1
         versionName "1.0"

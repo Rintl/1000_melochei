@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <item
+        android:id="@+id/action_search_order"
+        android:icon="@drawable/ic_search"
+        android:title="@string/action_search"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="collapseActionView|ifRoom" />
+        
+    <item
+        android:id="@+id/action_filter_orders"
+        android:icon="@drawable/ic_filter"
+        android:title="@string/action_filter"
+        app:showAsAction="never" />
+        
+    <item
+        android:id="@+id/action_sort_orders"
+        android:title="@string/action_sort"
+        app:showAsAction="never">
+        <menu>
+            <item
+                android:id="@+id/sort_orders_newest"
+                android:title="@string/sort_newest" />
+            <item
+                android:id="@+id/sort_orders_oldest"
+                android:title="@string/sort_oldest" />
+            <item
+                android:id="@+id/sort_orders_status"
+                android:title="@string/sort_by_status" />
+            <item
+                android:id="@+id/sort_orders_price_high"
+                android:title="@string/sort_price_desc" />
+            <item
+                android:id="@+id/sort_orders_price_low"
+                android:title="@string/sort_price_asc" />
+        </menu>
+    </item>
+    
+    <item
+        android:id="@+id/action_export_orders"
+        android:title="@string/action_export_orders"
+        app:showAsAction="never" />
+</menu>

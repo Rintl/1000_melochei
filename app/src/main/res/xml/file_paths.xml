@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Пути для общего доступа к файлам через FileProvider -->
+    
+    <!-- Внутренние файлы приложения -->
+    <files-path
+        name="internal_files"
+        path="." />
+    
+    <!-- Кэш приложения -->
+    <cache-path
+        name="cache"
+        path="." />
+    
+    <!-- Внешнее хранилище (приватная директория приложения) -->
+    <external-files-path
+        name="external_files"
+        path="." />
+    
+    <!-- Внешний кэш -->
+    <external-cache-path
+        name="external_cache"
+        path="." />
+    
+    <!-- Директория для изображений -->
+    <external-files-path
+        name="images"
+        path="Pictures" />
+    
+    <!-- Директория для временных файлов камеры -->
+    <external-files-path
+        name="camera_images"
+        path="DCIM" />
+    
+    <!-- Директория для загрузок -->
+    <external-files-path
+        name="downloads"
+        path="Download" />
+    
+    <!-- Общая директория для документов -->
+    <external-files-path
+        name="documents"
+        path="Documents" />
+    
+    <!-- Внешнее хранилище (общая область) -->
+    <external-path
+        name="external_storage"
+        path="." />
+</paths>

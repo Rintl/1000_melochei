@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Состояние при нажатии -->
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="#5E35B1" /> <!-- Темнее основного цвета -->
+            <corners android:radius="8dp" />
+            <padding android:left="16dp" android:right="16dp" android:top="12dp" android:bottom="12dp" />
+        </shape>
+    </item>
+    
+    <!-- Состояние при отключении -->
+    <item android:state_enabled="false">
+        <shape android:shape="rectangle">
+            <solid android:color="#9E9E9E" /> <!-- Серый цвет для отключенного состояния -->
+            <corners android:radius="8dp" />
+            <padding android:left="16dp" android:right="16dp" android:top="12dp" android:bottom="12dp" />
+        </shape>
+    </item>
+    
+    <!-- Обычное состояние -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#673AB7" /> <!-- Основной фиолетовый цвет -->
+            <corners android:radius="8dp" />
+            <padding android:left="16dp" android:right="16dp" android:top="12dp" android:bottom="12dp" />
+        </shape>
+    </item>
+</selector>

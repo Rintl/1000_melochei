@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.admin.orders.AdminOrdersFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Заголовок страницы -->
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/orders_management"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+            android:padding="16dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Статистика заказов -->
+        <HorizontalScrollView
+            android:id="@+id/statsScrollView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:scrollbars="none"
+            app:layout_constraintTop_toBottomOf="@id/titleTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/statsChipGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:singleSelection="true"
+                app:chipSpacingHorizontal="8dp">
+
+                <!-- Чип "Все заказы" -->
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/allOrdersChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/all_orders"
+                    app:chipIcon="@drawable/ic_orders"
+                    app:chipIconTint="@color/colorPrimary"
+                    app:checkedIconVisible="true"
+                    android:checked="true"
+                    style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+                <!-- Чип "Новые" -->
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/newOrdersChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/new_orders"
+                    app:chipIcon="@drawable/ic_new_order"
+                    app:chipIconTint="@color/colorAccent"
+                    app:checkedIconVisible="true"
+                    style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+                <!-- Чип "В обработке" -->
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/processingOrdersChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/processing_orders"
+                    app:chipIcon="@drawable/ic_processing"
+                    app:chipIconTint="@color/colorProcessing"
+                    app:checkedIconVisible="true"
+                    style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+                <!-- Чип "Доставляются" -->
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/shippingOrdersChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/shipping_orders"
+                    app:chipIcon="@drawable/ic_shipping"
+                    app:chipIconTint="@color/colorShipping"
+                    app:checkedIconVisible="true"
+                    style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+                <!-- Чип "Доставлены" -->
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/deliveredOrdersChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/delivered_orders"
+                    app:chipIcon="@drawable/ic_delivered"
+                    app:chipIconTint="@color/colorDelivered"
+                    app:checkedIconVisible="true"
+                    style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+                <!-- Чип "Завершены" -->
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/completedOrdersChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/completed_orders"
+                    app:chipIcon="@drawable/ic_completed"
+                    app:chipIconTint="@color/colorCompleted"
+                    app:checkedIconVisible="true"
+                    style="@style/Widget.MaterialComponents.Chip.Choice" />
+
+                <!-- Чип "Отменены" -->
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/cancelledOrdersChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cancelled_orders"
+                    app:chipIcon="@drawable/ic_cancelled"
+                    app:chipIconTint="@color/colorCancelled"
+                    app:checkedIconVisible="true"
+                    style="@style/Widget.MaterialComponents.Chip.Choice" />
+            </com.google.android.material.chip.ChipGroup>
+        </HorizontalScrollView>
+
+        <!-- Панель фильтрации и поиска -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/searchCardView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            app:cardElevation="2dp"
+            app:cardCornerRadius="8dp"
+            app:layout_constraintTop_toBottomOf="@id/statsScrollView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <!-- Поисковая строка -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/searchInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:hint="@string/search_orders"
+                    app:startIconDrawable="@drawable/ic_search"
+                    app:endIconMode="clear_text"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/searchEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Фильтры -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Выбор даты "От" -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/dateFromInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="4dp"
+                        android:hint="@string/date_from"
+                        app:startIconDrawable="@drawable/ic_calendar"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/dateFromEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            android:focusable="false"
+                            android:clickable="true" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Выбор даты "До" -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/dateToInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="4dp"
+                        android:hint="@string/date_to"
+                        app:startIconDrawable="@drawable/ic_calendar"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/dateToEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            android:focusable="false"
+                            android:clickable="true" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Индикатор количества заказов и очистка фильтров -->
+        <LinearLayout
+            android:id="@+id/filterInfoLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/searchCardView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- Информация о количестве заказов -->
+            <TextView
+                android:id="@+id/ordersCountTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                tools:text="Найдено заказов: 24" />
+
+            <!-- Кнопка очистки фильтров -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/clearFiltersButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/clear_filters"
+                android:textSize="12sp"
+                app:icon="@drawable/ic_clear_filters"
+                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <!-- Список заказов -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/ordersRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:clipToPadding="false"
+            android:paddingBottom="16dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@id/filterInfoLayout"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:listitem="@layout/item_order_admin" />
+
+        <!-- Пустое состояние -->
+        <LinearLayout
+            android:id="@+id/emptyStateLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/filterInfoLayout"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/ic_orders_empty"
+                android:alpha="0.5"
+                android:contentDescription="@string/no_orders_found" />
+
+            <TextView
+                android:id="@+id/emptyStateText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no_orders_found"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:layout_marginTop="16dp"
+                android:gravity="center" />
+
+            <TextView
+                android:id="@+id/emptyStateSubtext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no_orders_found_subtext"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:layout_marginHorizontal="32dp" />
+        </LinearLayout>
+
+        <!-- Индикатор загрузки -->
+        <ProgressBar
+            android:id="@+id/loadingProgressBar"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Кнопка обновления -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/refreshFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:contentDescription="@string/refresh_orders"
+        app:srcCompat="@drawable/ic_refresh" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

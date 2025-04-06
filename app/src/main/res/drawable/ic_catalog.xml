@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    
+    <!-- Верхняя полка -->
+    <path
+        android:fillColor="#673AB7"
+        android:pathData="M4,4h16v4h-16z" />
+    
+    <!-- Средняя полка -->
+    <path
+        android:fillColor="#9C27B0"
+        android:pathData="M4,10h16v4h-16z" />
+    
+    <!-- Нижняя полка -->
+    <path
+        android:fillColor="#7E57C2"
+        android:pathData="M4,16h16v4h-16z" />
+    
+    <!-- Предметы на верхней полке -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M6,5h2v2h-2z" />
+    
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M10,5h2v2h-2z" />
+    
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M14,5h2v2h-2z" />
+    
+    <!-- Предметы на средней полке -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M7,11h3v2h-3z" />
+    
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M13,11h3v2h-3z" />
+    
+    <!-- Предметы на нижней полке -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M6,17h4v2h-4z" />
+    
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,17h5v2h-5z" />
+</vector>

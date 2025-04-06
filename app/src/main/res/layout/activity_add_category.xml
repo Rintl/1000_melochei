@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.admin.categories.AddCategoryActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light"
+            app:title="@string/add_category" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Основная информация о категории -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/category_basic_info"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Поле ввода названия категории -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/nameInputLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:hint="@string/category_name"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/nameEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:maxLength="50" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Поле ввода описания категории -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/descriptionInputLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:hint="@string/category_description"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/descriptionEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textMultiLine"
+                            android:minLines="3"
+                            android:gravity="top|start" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Выбор родительской категории -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/parentCategoryInputLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:hint="@string/parent_category"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/parentCategoryAutoComplete"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Поле ввода порядка сортировки -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/sortOrderInputLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:hint="@string/sort_order"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/sortOrderEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="number"
+                            android:text="0" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Переключатель активности категории -->
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/activeSwitch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/category_active"
+                        android:checked="true" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Изображение категории -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/category_image"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Контейнер для изображения категории -->
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp">
+
+                        <!-- Заглушка для изображения (показывается, если изображение не выбрано) -->
+                        <LinearLayout
+                            android:id="@+id/imagePlaceholderLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="160dp"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:background="@drawable/bg_image_placeholder">
+
+                            <ImageView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:src="@drawable/ic_image"
+                                android:alpha="0.5"
+                                android:contentDescription="@string/no_image" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/no_image_selected"
+                                android:layout_marginTop="8dp"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
+                        </LinearLayout>
+
+                        <!-- Контейнер для выбранного изображения -->
+                        <FrameLayout
+                            android:id="@+id/selectedImageLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="160dp"
+                            android:visibility="gone">
+
+                            <ImageView
+                                android:id="@+id/categoryImageView"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"
+                                android:contentDescription="@string/category_image" />
+
+                            <!-- Кнопка удаления изображения -->
+                            <ImageButton
+                                android:id="@+id/removeImageButton"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:layout_gravity="top|end"
+                                android:layout_margin="8dp"
+                                android:background="@drawable/bg_circle_button"
+                                android:src="@drawable/ic_close"
+                                android:contentDescription="@string/remove_image" />
+                        </FrameLayout>
+                    </FrameLayout>
+
+                    <!-- Кнопки для выбора изображения -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/selectFromGalleryButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/select_from_gallery"
+                            app:icon="@drawable/ic_gallery"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_marginEnd="4dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/takePhotoButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/take_photo"
+                            app:icon="@drawable/ic_camera"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_marginStart="4dp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Кнопки отмены и сохранения -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="end">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/cancelButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cancel"
+                    android:layout_marginEnd="8dp"
+                    style="@style/Widget.MaterialComponents.Button.TextButton" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/saveButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/save" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Индикатор загрузки -->
+    <FrameLayout
+        android:id="@+id/loadingIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ProgressBar
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center"
+            android:indeterminate="true" />
+    </FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
