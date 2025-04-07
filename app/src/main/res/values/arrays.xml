@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Разделители для CSV файлов -->
+    <string-array name="csv_delimiters">
+        <item>Запятая (,)</item>
+        <item>Точка с запятой (;)</item>
+        <item>Табуляция (\\t)</item>
+        <item>Вертикальная черта (|)</item>
+    </string-array>
+
+    <!-- Массив для месяцев -->
+    <string-array name="months">
+        <item>Январь</item>
+        <item>Февраль</item>
+        <item>Март</item>
+        <item>Апрель</item>
+        <item>Май</item>
+        <item>Июнь</item>
+        <item>Июль</item>
+        <item>Август</item>
+        <item>Сентябрь</item>
+        <item>Октябрь</item>
+        <item>Ноябрь</item>
+        <item>Декабрь</item>
+    </string-array>
+
+    <!-- Массив для статусов заказа -->
+    <string-array name="order_statuses">
+        <item>Новый</item>
+        <item>В обработке</item>
+        <item>Доставляется</item>
+        <item>Доставлен</item>
+        <item>Завершен</item>
+        <item>Отменен</item>
+    </string-array>
+
+    <!-- Массив для способов сортировки товаров -->
+    <string-array name="sort_options">
+        <item>По названию (А-Я)</item>
+        <item>По названию (Я-А)</item>
+        <item>По цене (возрастание)</item>
+        <item>По цене (убывание)</item>
+        <item>По популярности</item>
+        <item>По новизне</item>
+    </string-array>
+
+    <!-- Массив для периодов времени -->
+    <string-array name="time_periods">
+        <item>Сегодня</item>
+        <item>Вчера</item>
+        <item>Неделя</item>
+        <item>Месяц</item>
+        <item>Квартал</item>
+        <item>Год</item>
+    </string-array>
+</resources>

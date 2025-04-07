@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Состояние для выбранной вкладки -->
+    <item android:state_selected="true">
+        <shape android:shape="oval">
+            <solid android:color="@color/colorPrimary" />
+            <size android:width="8dp" android:height="8dp" />
+        </shape>
+    </item>
+
+    <!-- Состояние для невыбранной вкладки -->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/colorPrimaryLight" />
+            <size android:width="8dp" android:height="8dp" />
+        </shape>
+    </item>
+</selector>

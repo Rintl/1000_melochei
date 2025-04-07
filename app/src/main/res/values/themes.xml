@@ -1,129 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Базовая тема приложения (светлая) -->
+    <!-- Основная тема приложения -->
     <style name="Theme.MelocheiApp" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <!-- Основные цвета приложения -->
+        <!-- Основные цвета -->
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
         <item name="colorOnPrimary">@color/white</item>
+
         <item name="colorSecondary">@color/colorAccent</item>
-        <item name="colorSecondaryVariant">@color/colorAccent</item>
+        <item name="colorSecondaryVariant">@color/colorAccentDark</item>
         <item name="colorOnSecondary">@color/white</item>
+
+        <item name="android:colorBackground">@color/colorBackground</item>
+        <item name="colorSurface">@color/colorSurface</item>
         <item name="colorError">@color/colorError</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="colorSurface">@color/white</item>
-        <item name="colorOnSurface">@color/primaryTextColor</item>
-        <item name="android:colorBackground">@color/backgroundColor</item>
+
         <item name="colorOnBackground">@color/primaryTextColor</item>
+        <item name="colorOnSurface">@color/primaryTextColor</item>
+        <item name="colorOnError">@color/white</item>
 
-        <!-- Кастомные атрибуты -->
-        <item name="textColorPrimary">@color/primaryTextColor</item>
-        <item name="textColorSecondary">@color/secondaryTextColor</item>
-        <item name="textColorHint">@color/textColorHint</item>
-        <item name="colorControlNormal">@color/secondaryTextColor</item>
-        <item name="colorControlActivated">@color/colorPrimary</item>
-        <item name="colorControlHighlight">@color/colorPrimaryLight</item>
-
-        <!-- Настройки окон и строк состояния -->
+        <!-- Статус бар и панель навигации -->
         <item name="android:statusBarColor">@color/colorPrimaryDark</item>
-        <item name="android:navigationBarColor">@color/white</item>
-        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">@color/colorBackground</item>
         <item name="android:windowLightNavigationBar">true</item>
-        <item name="android:windowActivityTransitions">true</item>
-        <item name="android:windowContentTransitions">true</item>
 
-        <!-- Настройки форм и компонентов -->
-        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.App.SmallComponent</item>
-        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.App.MediumComponent</item>
-        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.App.LargeComponent</item>
+        <!-- Шрифты -->
+        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
 
         <!-- Стили компонентов -->
-        <item name="materialButtonStyle">@style/Widget.App.Button</item>
-        <item name="materialButtonOutlinedStyle">@style/Widget.App.Button.OutlinedButton</item>
-        <item name="materialCardViewStyle">@style/Widget.App.CardView</item>
-        <item name="textInputStyle">@style/Widget.App.TextInputLayout</item>
-        <item name="chipStyle">@style/Widget.App.Chip</item>
-        <item name="chipGroupStyle">@style/Widget.MaterialComponents.ChipGroup</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="tabStyle">@style/Widget.App.TabLayout</item>
-        <item name="switchStyle">@style/Widget.App.SwitchCompat</item>
-        <item name="searchViewStyle">@style/Widget.App.SearchView</item>
+        <item name="textAppearanceHeadline1">@style/TextAppearance.MelocheiApp.Headline1</item>
+        <item name="textAppearanceHeadline2">@style/TextAppearance.MelocheiApp.Headline2</item>
+        <item name="textAppearanceHeadline3">@style/TextAppearance.MelocheiApp.Headline3</item>
+        <item name="textAppearanceHeadline4">@style/TextAppearance.MelocheiApp.Headline4</item>
+        <item name="textAppearanceHeadline5">@style/TextAppearance.MelocheiApp.Headline5</item>
+        <item name="textAppearanceHeadline6">@style/TextAppearance.MelocheiApp.Headline6</item>
+        <item name="textAppearanceSubtitle1">@style/TextAppearance.MelocheiApp.Subtitle1</item>
+        <item name="textAppearanceSubtitle2">@style/TextAppearance.MelocheiApp.Subtitle2</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.MelocheiApp.Body1</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.MelocheiApp.Body2</item>
+        <item name="textAppearanceButton">@style/TextAppearance.MelocheiApp.Button</item>
+        <item name="textAppearanceCaption">@style/TextAppearance.MelocheiApp.Caption</item>
+        <item name="textAppearanceOverline">@style/TextAppearance.MelocheiApp.Overline</item>
 
-        <!-- Стили диалогов -->
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.Dialog</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
-
-        <!-- Типографика -->
-        <item name="textAppearanceHeadline1">@style/TextAppearance.App.Headline1</item>
-        <item name="textAppearanceHeadline2">@style/TextAppearance.App.Headline2</item>
-        <item name="textAppearanceHeadline3">@style/TextAppearance.App.Headline3</item>
-        <item name="textAppearanceHeadline4">@style/TextAppearance.App.Headline4</item>
-        <item name="textAppearanceHeadline5">@style/TextAppearance.App.Headline5</item>
-        <item name="textAppearanceHeadline6">@style/TextAppearance.App.Headline6</item>
-        <item name="textAppearanceSubtitle1">@style/TextAppearance.App.Subtitle1</item>
-        <item name="textAppearanceSubtitle2">@style/TextAppearance.App.Subtitle2</item>
-        <item name="textAppearanceBody1">@style/TextAppearance.App.Body1</item>
-        <item name="textAppearanceBody2">@style/TextAppearance.App.Body2</item>
-        <item name="textAppearanceCaption">@style/TextAppearance.App.Caption</item>
-        <item name="textAppearanceButton">@style/TextAppearance.App.Button</item>
-
-        <!-- Шрифты для всего приложения -->
-        <item name="android:fontFamily">@font/roboto_regular</item>
-        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="materialButtonStyle">@style/Widget.MelocheiApp.Button</item>
+        <item name="materialButtonOutlinedStyle">@style/Widget.MelocheiApp.Button.OutlinedButton</item>
+        <item name="materialCardViewStyle">@style/Widget.MelocheiApp.CardView</item>
+        <item name="textInputStyle">@style/Widget.MelocheiApp.TextInputLayout</item>
     </style>
 
-    <!-- Стили для форм разных размеров -->
-    <style name="ShapeAppearance.App.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">@dimen/corner_radius_small</item>
-    </style>
-
-    <style name="ShapeAppearance.App.MediumComponent" parent="ShapeAppearance.MaterialComponents.MediumComponent">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">@dimen/corner_radius_medium</item>
-    </style>
-
-    <style name="ShapeAppearance.App.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">@dimen/corner_radius_large</item>
-    </style>
-
-    <!-- Тема для экрана-заставки -->
+    <!-- Тема экрана-заставки -->
     <style name="Theme.SplashScreen" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_background</item>
         <item name="android:statusBarColor">@color/colorPrimaryDark</item>
         <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowLightNavigationBar">false</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowFullscreen">true</item>
-    </style>
-
-    <!-- Тема для диалогов -->
-    <style name="Theme.MelocheiApp.Dialog" parent="Theme.MaterialComponents.Light.Dialog">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowMinWidthMajor">80%</item>
-        <item name="android:windowMinWidthMinor">80%</item>
-        <item name="dialogCornerRadius">@dimen/dialog_corner_radius</item>
-    </style>
-
-    <!-- Тема для полноэкранных диалогов -->
-    <style name="Theme.MelocheiApp.Dialog.FullScreen" parent="Theme.MaterialComponents.Light.Dialog">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:windowBackground">@color/white</item>
-        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
-        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
-    </style>
-
-    <!-- Тема для настроек с использованием PreferenceFragmentCompat -->
-    <style name="Theme.MelocheiApp.Settings" parent="Theme.MelocheiApp">
-        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
-        <item name="android:listDivider">@drawable/divider</item>
     </style>
 </resources>

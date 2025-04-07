@@ -98,7 +98,7 @@
                     android:layout_marginStart="8dp"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                     android:textColor="@color/secondaryTextColor"
-                    android:textDecoration="line-through"
+                    android:paintFlags="STRIKE_THRU_TEXT_FLAG"
                     android:visibility="gone"
                     tools:text="15 000 ₸"
                     tools:visibility="visible" />

@@ -1,368 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Базовые стили текста -->
-    <style name="TextAppearance.App.Headline1" parent="TextAppearance.MaterialComponents.Headline1">
-        <item name="fontFamily">@font/roboto_regular</item>
-        <item name="android:fontFamily">@font/roboto_regular</item>
-        <item name="android:textSize">34sp</item>
-        <item name="android:textColor">@color/primaryTextColor</item>
+    <!-- Базовые стили для элементов интерфейса -->
+    <style name="Widget.MelocheiApp.Button" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="cornerRadius">8dp</item>
     </style>
 
-    <style name="TextAppearance.App.Headline2" parent="TextAppearance.MaterialComponents.Headline2">
-        <item name="fontFamily">@font/roboto_regular</item>
-        <item name="android:fontFamily">@font/roboto_regular</item>
-        <item name="android:textSize">28sp</item>
-        <item name="android:textColor">@color/primaryTextColor</item>
+    <style name="Widget.MelocheiApp.Button.OutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="cornerRadius">8dp</item>
     </style>
 
-    <style name="TextAppearance.App.Headline3" parent="TextAppearance.MaterialComponents.Headline3">
-        <item name="fontFamily">@font/roboto_regular</item>
-        <item name="android:fontFamily">@font/roboto_regular</item>
-        <item name="android:textSize">24sp</item>
-        <item name="android:textColor">@color/primaryTextColor</item>
+    <style name="Widget.MelocheiApp.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusBottomEnd">8dp</item>
+        <item name="boxCornerRadiusBottomStart">8dp</item>
+        <item name="boxCornerRadiusTopEnd">8dp</item>
+        <item name="boxCornerRadiusTopStart">8dp</item>
     </style>
 
-    <style name="TextAppearance.App.Headline4" parent="TextAppearance.MaterialComponents.Headline4">
+    <style name="Widget.MelocheiApp.CardView" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">8dp</item>
+        <item name="cardElevation">2dp</item>
+        <item name="contentPadding">16dp</item>
+    </style>
+
+    <!-- Стили для текста -->
+    <style name="TextAppearance.MelocheiApp.Headline1" parent="TextAppearance.MaterialComponents.Headline1">
         <item name="fontFamily">@font/roboto_medium</item>
         <item name="android:fontFamily">@font/roboto_medium</item>
-        <item name="android:textSize">20sp</item>
-        <item name="android:textColor">@color/primaryTextColor</item>
     </style>
 
-    <style name="TextAppearance.App.Headline5" parent="TextAppearance.MaterialComponents.Headline5">
+    <style name="TextAppearance.MelocheiApp.Headline2" parent="TextAppearance.MaterialComponents.Headline2">
         <item name="fontFamily">@font/roboto_medium</item>
         <item name="android:fontFamily">@font/roboto_medium</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:textColor">@color/primaryTextColor</item>
     </style>
 
-    <style name="TextAppearance.App.Headline6" parent="TextAppearance.MaterialComponents.Headline6">
+    <style name="TextAppearance.MelocheiApp.Headline3" parent="TextAppearance.MaterialComponents.Headline3">
         <item name="fontFamily">@font/roboto_medium</item>
         <item name="android:fontFamily">@font/roboto_medium</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/primaryTextColor</item>
     </style>
 
-    <style name="TextAppearance.App.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
+    <style name="TextAppearance.MelocheiApp.Headline4" parent="TextAppearance.MaterialComponents.Headline4">
         <item name="fontFamily">@font/roboto_medium</item>
         <item name="android:fontFamily">@font/roboto_medium</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/primaryTextColor</item>
     </style>
 
-    <style name="TextAppearance.App.Subtitle2" parent="TextAppearance.MaterialComponents.Subtitle2">
+    <style name="TextAppearance.MelocheiApp.Headline5" parent="TextAppearance.MaterialComponents.Headline5">
         <item name="fontFamily">@font/roboto_medium</item>
         <item name="android:fontFamily">@font/roboto_medium</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/primaryTextColor</item>
     </style>
 
-    <style name="TextAppearance.App.Body1" parent="TextAppearance.MaterialComponents.Body1">
+    <style name="TextAppearance.MelocheiApp.Headline6" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="fontFamily">@font/roboto_medium</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+    </style>
+
+    <style name="TextAppearance.MelocheiApp.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="fontFamily">@font/roboto_medium</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+    </style>
+
+    <style name="TextAppearance.MelocheiApp.Subtitle2" parent="TextAppearance.MaterialComponents.Subtitle2">
+        <item name="fontFamily">@font/roboto_medium</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+    </style>
+
+    <style name="TextAppearance.MelocheiApp.Body1" parent="TextAppearance.MaterialComponents.Body1">
         <item name="fontFamily">@font/roboto_regular</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/primaryTextColor</item>
     </style>
 
-    <style name="TextAppearance.App.Body2" parent="TextAppearance.MaterialComponents.Body2">
+    <style name="TextAppearance.MelocheiApp.Body2" parent="TextAppearance.MaterialComponents.Body2">
         <item name="fontFamily">@font/roboto_regular</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/primaryTextColor</item>
     </style>
 
-    <style name="TextAppearance.App.Caption" parent="TextAppearance.MaterialComponents.Caption">
-        <item name="fontFamily">@font/roboto_regular</item>
-        <item name="android:fontFamily">@font/roboto_regular</item>
-        <item name="android:textSize">12sp</item>
-        <item name="android:textColor">@color/secondaryTextColor</item>
-    </style>
-
-    <style name="TextAppearance.App.Button" parent="TextAppearance.MaterialComponents.Button">
+    <style name="TextAppearance.MelocheiApp.Button" parent="TextAppearance.MaterialComponents.Button">
         <item name="fontFamily">@font/roboto_medium</item>
         <item name="android:fontFamily">@font/roboto_medium</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:letterSpacing">0.02</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="android:textColor">@color/white</item>
     </style>
 
-    <!-- Стили для кнопок -->
-    <style name="Widget.App.Button" parent="Widget.MaterialComponents.Button">
-        <item name="android:textAppearance">@style/TextAppearance.App.Button</item>
-        <item name="backgroundTint">@color/colorPrimary</item>
-        <item name="cornerRadius">@dimen/corner_radius_medium</item>
-        <item name="android:paddingStart">@dimen/spacing_medium</item>
-        <item name="android:paddingEnd">@dimen/spacing_medium</item>
-        <item name="android:minHeight">@dimen/button_height</item>
-        <item name="android:letterSpacing">0.02</item>
-        <item name="android:textAllCaps">false</item>
+    <style name="TextAppearance.MelocheiApp.Caption" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
     </style>
 
-    <style name="Widget.App.Button.OutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="android:textAppearance">@style/TextAppearance.App.Button</item>
-        <item name="android:textColor">@color/colorPrimary</item>
-        <item name="cornerRadius">@dimen/corner_radius_medium</item>
-        <item name="strokeColor">@color/colorPrimary</item>
-        <item name="android:paddingStart">@dimen/spacing_medium</item>
-        <item name="android:paddingEnd">@dimen/spacing_medium</item>
-        <item name="android:minHeight">@dimen/button_height</item>
-        <item name="android:letterSpacing">0.02</item>
-        <item name="android:textAllCaps">false</item>
+    <style name="TextAppearance.MelocheiApp.Overline" parent="TextAppearance.MaterialComponents.Overline">
+        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
     </style>
 
-    <style name="Widget.App.Button.TextButton" parent="Widget.MaterialComponents.Button.TextButton">
-        <item name="android:textAppearance">@style/TextAppearance.App.Button</item>
-        <item name="android:textColor">@color/colorPrimary</item>
-        <item name="android:paddingStart">@dimen/spacing_medium</item>
-        <item name="android:paddingEnd">@dimen/spacing_medium</item>
-        <item name="android:minHeight">@dimen/button_height</item>
-        <item name="android:letterSpacing">0.02</item>
-        <item name="android:textAllCaps">false</item>
-    </style>
-
-    <style name="Widget.App.Button.IconButton" parent="Widget.MaterialComponents.Button.TextButton">
-        <item name="android:padding">@dimen/spacing_small</item>
-        <item name="android:minWidth">48dp</item>
-        <item name="android:minHeight">48dp</item>
-        <item name="iconPadding">0dp</item>
-        <item name="iconGravity">textStart</item>
-        <item name="iconTint">@color/colorPrimary</item>
-    </style>
-
-    <!-- Стили для полей ввода -->
-    <style name="Widget.App.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="boxStrokeColor">@color/colorPrimary</item>
-        <item name="boxStrokeWidth">@dimen/border_width_small</item>
-        <item name="boxCornerRadiusBottomEnd">@dimen/corner_radius_medium</item>
-        <item name="boxCornerRadiusBottomStart">@dimen/corner_radius_medium</item>
-        <item name="boxCornerRadiusTopEnd">@dimen/corner_radius_medium</item>
-        <item name="boxCornerRadiusTopStart">@dimen/corner_radius_medium</item>
-        <item name="hintTextColor">@color/colorPrimary</item>
-        <item name="endIconTint">@color/colorPrimary</item>
-        <item name="startIconTint">@color/colorPrimary</item>
-    </style>
-
-    <style name="Widget.App.TextInputLayout.Dropdown" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
-        <item name="boxStrokeColor">@color/colorPrimary</item>
-        <item name="boxStrokeWidth">@dimen/border_width_small</item>
-        <item name="boxCornerRadiusBottomEnd">@dimen/corner_radius_medium</item>
-        <item name="boxCornerRadiusBottomStart">@dimen/corner_radius_medium</item>
-        <item name="boxCornerRadiusTopEnd">@dimen/corner_radius_medium</item>
-        <item name="boxCornerRadiusTopStart">@dimen/corner_radius_medium</item>
-        <item name="hintTextColor">@color/colorPrimary</item>
-        <item name="endIconTint">@color/colorPrimary</item>
-        <item name="startIconTint">@color/colorPrimary</item>
-    </style>
-
-    <style name="Widget.App.TextInputLayout.Password" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="boxStrokeColor">@color/colorPrimary</item>
-        <item name="boxStrokeWidth">@dimen/border_width_small</item>
-        <item name="boxCornerRadiusBottomEnd">@dimen/corner_radius_medium</item>
-        <item name="boxCornerRadiusBottomStart">@dimen/corner_radius_medium</item>
-        <item name="boxCornerRadiusTopEnd">@dimen/corner_radius_medium</item>
-        <item name="boxCornerRadiusTopStart">@dimen/corner_radius_medium</item>
-        <item name="hintTextColor">@color/colorPrimary</item>
-        <item name="endIconTint">@color/colorPrimary</item>
-        <item name="startIconTint">@color/colorPrimary</item>
-        <item name="endIconMode">password_toggle</item>
-    </style>
-
-    <!-- Стили для карточек -->
-    <style name="Widget.App.CardView" parent="Widget.MaterialComponents.CardView">
-        <item name="cardCornerRadius">@dimen/corner_radius_medium</item>
-        <item name="cardElevation">@dimen/elevation_small</item>
-        <item name="contentPadding">@dimen/spacing_medium</item>
-        <item name="cardBackgroundColor">@color/cardBackground</item>
-    </style>
-
-    <style name="Widget.App.CardView.Clickable" parent="Widget.App.CardView">
-        <item name="android:clickable">true</item>
-        <item name="android:focusable">true</item>
-        <item name="android:foreground">?attr/selectableItemBackground</item>
-    </style>
-
-    <style name="Widget.App.CardView.Elevated" parent="Widget.App.CardView">
-        <item name="cardElevation">@dimen/elevation_medium</item>
-    </style>
-
-    <!-- Стили для списков -->
-    <style name="Widget.App.RecyclerView" parent="Widget.AppCompat.ListView">
-        <item name="android:scrollbars">vertical</item>
-        <item name="android:clipToPadding">false</item>
-        <item name="android:paddingBottom">@dimen/spacing_medium</item>
-    </style>
-
-    <style name="Widget.App.RecyclerView.Horizontal" parent="Widget.App.RecyclerView">
-        <item name="android:scrollbars">horizontal</item>
-        <item name="android:paddingBottom">0dp</item>
-        <item name="android:paddingStart">@dimen/spacing_medium</item>
-        <item name="android:paddingEnd">@dimen/spacing_medium</item>
-    </style>
-
-    <!-- Стили для чипов -->
-    <style name="Widget.App.Chip" parent="Widget.MaterialComponents.Chip.Action">
-        <item name="chipBackgroundColor">@color/chipBackgroundColor</item>
-        <item name="chipStrokeColor">@color/colorPrimary</item>
-        <item name="chipStrokeWidth">0dp</item>
-        <item name="chipCornerRadius">@dimen/corner_radius_large</item>
-        <item name="chipEndPadding">@dimen/spacing_small</item>
-        <item name="chipStartPadding">@dimen/spacing_small</item>
-        <item name="chipMinHeight">@dimen/chip_height</item>
-    </style>
-
-    <style name="Widget.App.Chip.Filter" parent="Widget.MaterialComponents.Chip.Filter">
-        <item name="chipBackgroundColor">@color/chipBackgroundColor</item>
-        <item name="chipStrokeColor">@color/colorPrimary</item>
-        <item name="chipStrokeWidth">0dp</item>
-        <item name="chipCornerRadius">@dimen/corner_radius_large</item>
-        <item name="checkedIconVisible">false</item>
-        <item name="checkable">true</item>
-    </style>
-
-    <style name="Widget.App.Chip.Choice" parent="Widget.MaterialComponents.Chip.Choice">
-        <item name="chipBackgroundColor">@color/chipBackgroundColor</item>
-        <item name="chipStrokeColor">@color/colorPrimary</item>
-        <item name="chipStrokeWidth">0dp</item>
-        <item name="chipCornerRadius">@dimen/corner_radius_large</item>
-        <item name="checkedIconVisible">false</item>
-        <item name="checkable">true</item>
-    </style>
-
-    <!-- Стили для статусов заказов -->
-    <style name="Widget.App.OrderStatus" parent="Widget.MaterialComponents.Chip.Action">
-        <item name="chipCornerRadius">@dimen/corner_radius_large</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="chipIcon">@null</item>
-        <item name="chipIconVisible">false</item>
-        <item name="closeIcon">@null</item>
-        <item name="closeIconVisible">false</item>
-        <item name="chipEndPadding">@dimen/spacing_small</item>
-        <item name="chipStartPadding">@dimen/spacing_small</item>
-    </style>
-
-    <style name="Widget.App.OrderStatus.Pending" parent="Widget.App.OrderStatus">
-        <item name="chipBackgroundColor">@color/colorPending</item>
-    </style>
-
-    <style name="Widget.App.OrderStatus.Processing" parent="Widget.App.OrderStatus">
-        <item name="chipBackgroundColor">@color/colorProcessing</item>
-    </style>
-
-    <style name="Widget.App.OrderStatus.Shipping" parent="Widget.App.OrderStatus">
-        <item name="chipBackgroundColor">@color/colorShipping</item>
-    </style>
-
-    <style name="Widget.App.OrderStatus.Delivered" parent="Widget.App.OrderStatus">
-        <item name="chipBackgroundColor">@color/colorDelivered</item>
-    </style>
-
-    <style name="Widget.App.OrderStatus.Completed" parent="Widget.App.OrderStatus">
-        <item name="chipBackgroundColor">@color/colorCompleted</item>
-    </style>
-
-    <style name="Widget.App.OrderStatus.Cancelled" parent="Widget.App.OrderStatus">
-        <item name="chipBackgroundColor">@color/colorCancelled</item>
-    </style>
-
-    <!-- Стили для переключателей -->
-    <style name="Widget.App.SwitchCompat" parent="Widget.MaterialComponents.CompoundButton.Switch">
-        <item name="android:colorControlActivated">@color/colorPrimary</item>
-    </style>
-
-    <!-- Стили для диалогов -->
-    <style name="ThemeOverlay.App.Dialog" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="buttonBarPositiveButtonStyle">@style/Widget.App.Button.TextButton</item>
-        <item name="buttonBarNegativeButtonStyle">@style/Widget.App.Button.TextButton</item>
-        <item name="buttonBarNeutralButtonStyle">@style/Widget.App.Button.TextButton</item>
-    </style>
-
-    <!-- Стили для нижнего листа -->
-    <style name="ThemeOverlay.App.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
-        <item name="bottomSheetStyle">@style/Widget.App.BottomSheet</item>
-    </style>
-
-    <style name="Widget.App.BottomSheet" parent="Widget.MaterialComponents.BottomSheet.Modal">
-        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.App.BottomSheet</item>
-        <item name="backgroundTint">@color/cardBackground</item>
-    </style>
-
-    <style name="ShapeAppearanceOverlay.App.BottomSheet" parent="">
-        <item name="cornerSizeTopLeft">@dimen/corner_radius_large</item>
-        <item name="cornerSizeTopRight">@dimen/corner_radius_large</item>
-        <item name="cornerSizeBottomLeft">0dp</item>
-        <item name="cornerSizeBottomRight">0dp</item>
-    </style>
-
-    <!-- Стили для панелей инструментов -->
-    <style name="Widget.App.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
-        <item name="titleTextAppearance">@style/TextAppearance.App.Headline6</item>
-        <item name="titleTextColor">@color/white</item>
-        <item name="subtitleTextAppearance">@style/TextAppearance.App.Subtitle1</item>
-        <item name="subtitleTextColor">@color/white</item>
-        <item name="android:elevation">@dimen/toolbar_elevation</item>
-    </style>
-
-    <style name="Widget.App.Toolbar.Surface" parent="Widget.MaterialComponents.Toolbar.Surface">
-        <item name="titleTextAppearance">@style/TextAppearance.App.Headline6</item>
-        <item name="titleTextColor">@color/primaryTextColor</item>
-        <item name="subtitleTextAppearance">@style/TextAppearance.App.Subtitle1</item>
-        <item name="subtitleTextColor">@color/secondaryTextColor</item>
-        <item name="android:elevation">@dimen/toolbar_elevation</item>
-        <item name="android:background">@color/white</item>
-    </style>
-
-    <!-- Стили для поиска -->
-    <style name="Widget.App.SearchView" parent="Widget.AppCompat.SearchView">
-        <item name="queryBackground">@android:color/transparent</item>
-        <item name="submitBackground">@android:color/transparent</item>
-        <item name="closeIcon">@drawable/ic_close</item>
-        <item name="searchIcon">@drawable/ic_search</item>
-    </style>
-
-    <!-- Стили для вкладок -->
-    <style name="Widget.App.TabLayout" parent="Widget.MaterialComponents.TabLayout">
-        <item name="tabGravity">fill</item>
-        <item name="tabMode">fixed</item>
-        <item name="tabIndicatorColor">@color/colorPrimary</item>
-        <item name="tabIndicatorHeight">@dimen/border_width_medium</item>
-        <item name="tabSelectedTextColor">@color/colorPrimary</item>
-        <item name="tabTextAppearance">@style/TextAppearance.App.Tab</item>
-    </style>
-
-    <style name="TextAppearance.App.Tab" parent="TextAppearance.MaterialComponents.Button">
-        <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/secondaryTextColor</item>
+    <!-- Специальные стили для конкретных элементов -->
+    <style name="AppTabTextAppearance" parent="TextAppearance.Design.Tab">
         <item name="textAllCaps">false</item>
+        <item name="android:textSize">14sp</item>
         <item name="fontFamily">@font/roboto_medium</item>
-    </style>
-
-    <!-- Стили для нижней навигации -->
-    <style name="Widget.App.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView">
-        <item name="itemIconTint">@color/colorPrimary</item>
-        <item name="itemTextColor">@color/colorPrimary</item>
-        <item name="itemTextAppearanceActive">@style/TextAppearance.App.BottomNavigationView.Active</item>
-        <item name="itemTextAppearanceInactive">@style/TextAppearance.App.BottomNavigationView.Inactive</item>
-        <item name="android:background">@color/white</item>
-        <item name="elevation">@dimen/bottom_nav_elevation</item>
-    </style>
-
-    <style name="TextAppearance.App.BottomNavigationView.Active" parent="TextAppearance.MaterialComponents.Caption">
-        <item name="android:textSize">12sp</item>
-        <item name="fontFamily">@font/roboto_medium</item>
-    </style>
-
-    <style name="TextAppearance.App.BottomNavigationView.Inactive" parent="TextAppearance.MaterialComponents.Caption">
-        <item name="android:textSize">12sp</item>
-        <item name="fontFamily">@font/roboto_regular</item>
-    </style>
-
-    <!-- Стили для экрана-заставки -->
-    <style name="Theme.SplashScreen" parent="Theme.MaterialComponents.NoActionBar">
-        <item name="android:windowBackground">@drawable/splash_background</item>
-        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
-        <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
-        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
     </style>
 </resources>

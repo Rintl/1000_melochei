@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-extraction-rules>
+    <cloud-backup>
+        <!-- Включаем базовые настройки приложения в резервное копирование -->
+        <include domain="sharedpref" path="."/>
+        <include domain="file" path="." />
+        <exclude domain="file" path="temp/" />
+        <exclude domain="file" path="logs/" />
+        <exclude domain="file" path="cache/" />
+    </cloud-backup>
+    <device-transfer>
+        <!-- Включаем базовые настройки приложения при передаче данных между устройствами -->
+        <include domain="sharedpref" path="."/>
+        <include domain="file" path="." />
+        <exclude domain="file" path="temp/" />
+        <exclude domain="file" path="logs/" />
+        <exclude domain="file" path="cache/" />
+    </device-transfer>
+</data-extraction-rules>
