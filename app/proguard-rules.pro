@@ -14,7 +14,7 @@
 -keep class com.google.firebase.crashlytics.** { *; }
 
 # Models (keep your data models to ensure proper Firebase serialization)
--keep class com.melochei1000.app.data.model.** { *; }
+-keep class com.yourstore.app.data.model.** { *; }
 
 # Glide
 -keep public class * implements com.bumptech.glide.module.GlideModule
