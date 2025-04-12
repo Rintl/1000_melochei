@@ -96,7 +96,6 @@
     <string name="title_add_product">Добавление товара</string>
     <string name="title_edit_product">Редактирование товара</string>
     <string name="title_add_category">Добавление категории</string>
-    <string name="title_import_products">Импорт товаров</string>
 
     <!-- Главная страница клиента -->
     <string name="popular_categories">Популярные категории</string>
@@ -113,7 +112,6 @@
     <string name="all_categories">Все категории</string>
     <string name="product_name">Название товара</string>
     <string name="product_price">Цена</string>
-    <string name="price">Цена</string>
     <string name="discount_price">Цена со скидкой</string>
     <string name="discount">Скидка</string>
     <string name="old_price">Старая цена</string>
@@ -318,7 +316,6 @@
     <string name="set_as_default">Сделать основным</string>
     <string name="default_address">Адрес по умолчанию</string>
     <string name="default_main">Основной</string>
-    <string name="default_value">По умолчанию</string>
     <string name="settings">Настройки</string>
     <string name="dark_mode">Темная тема</string>
     <string name="dark_mode_description">Включить темную тему интерфейса</string>
@@ -386,7 +383,6 @@
     <string name="name_za">Название: Я-А</string>
     <string name="newest_first">Сначала новые</string>
     <string name="oldest_first">Сначала старые</string>
-    <string name="import_products">Импорт товаров</string>
     <string name="error_upload_image">Ошибка при загрузке изображения</string>
     <string name="invalid_price">Некорректная цена</string>
     <string name="invalid_quantity">Некорректное количество</string>
@@ -400,7 +396,6 @@
     <string name="file_has_headers">Файл содержит заголовки</string>
     <string name="error_import_file">Ошибка при импорте файла</string>
     <string name="import_instructions_title">Инструкции по импорту</string>
-    <string name="import_instructions_text">Загрузите CSV или Excel файл с товарами. Файл должен содержать следующие колонки: Артикул, Название, Цена, Количество, Категория</string>
     <string name="import_file_title">Выбор файла</string>
     <string name="import_settings_title">Настройки импорта</string>
     <string name="csv_delimiter">Разделитель CSV</string>
@@ -541,6 +536,11 @@
     <!-- Количество товаров в категории -->
     <string name="items_count">%d товаров</string>
 
+    <string name="price">Цена</string>
+    <string name="import_products">Импорт товаров</string>
+    <string name="default_value">По умолчанию</string>
+    <string name="title_import_products">Импорт товаров</string>
+
     <string name="no_image">Нет изображения</string>
     <string name="no_image_selected">Изображение не выбрано</string>
     <string name="price_and_inventory">Цены и наличие</string>
@@ -573,35 +573,10 @@
     <string name="reset_password">Сбросить пароль</string>
     <string name="search_hint">Поиск…</string>
 
-    <string name="app_name">1000 Мелочей</string>
-    <string name="default_text">По умолчанию</string>
-    <string name="default">По умолчанию</string>
-
     <!-- Строки для заказов -->
     <string name="process_order">Обработать заказ</string>
-    <string name="process_orders">Обработать заказы</string>
 
     <!-- Строки для импорта CSV -->
-    <string name="csv_file">CSV файл</string>
-    <string name="excel_file">Excel файл</string>
-    <string name="import_products">Импорт товаров</string>
-    <string name="import_instructions_title">Инструкции по импорту</string>
     <string name="import_instructions_text">Загрузите файл CSV или Excel со списком товаров. Файл должен содержать следующие столбцы: SKU, Название, Категория, Цена, Количество.</string>
-    <string name="download_template">Скачать шаблон</string>
-    <string name="import_file_title">Выберите файл</string>
-    <string name="no_file_selected">Файл не выбран</string>
-    <string name="select_file">Выбрать файл</string>
-    <string name="import_settings_title">Настройки импорта</string>
-    <string name="file_has_headers">Файл содержит заголовки</string>
-    <string name="csv_delimiter">Разделитель CSV</string>
-    <string name="excel_sheet">Лист Excel</string>
-    <string name="update_existing_products">Обновлять существующие товары</string>
-    <string name="preview_and_import_title">Предпросмотр и импорт</string>
-    <string name="preview_data">Предпросмотр</string>
-    <string name="start_import">Начать импорт</string>
-    <string name="preview_results_title">Результаты предпросмотра</string>
-    <string name="import_results_title">Результаты импорта</string>
-    <string name="download_error_report">Скачать отчет об ошибках</string>
-    <string name="importing_data">Импортирую данные...</string>
 
 </resources>

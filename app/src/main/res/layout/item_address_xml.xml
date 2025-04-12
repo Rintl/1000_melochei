@@ -73,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="8dp"
                 android:paddingVertical="2dp"
-                android:text="@string/default"
+                android:text="@string/default_value"
                 android:textColor="@android:color/white"
                 android:textSize="12sp" />
         </androidx.cardview.widget.CardView>

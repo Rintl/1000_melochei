@@ -1,4 +1,4 @@
-package com..app.ui.admin.dashboard.viewmodel
+package com.yourstore.app.ui.admin.dashboard.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.LiveData

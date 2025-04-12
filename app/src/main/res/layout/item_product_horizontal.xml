@@ -101,7 +101,6 @@
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                     android:textColor="@color/textSecondary"
                     android:layout_marginStart="8dp"
-                    android:textDecoration="line-through"
                     tools:text="35 990 ₸"/>
             </LinearLayout>
         </LinearLayout>
