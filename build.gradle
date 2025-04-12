@@ -21,28 +21,6 @@ plugins {
     id 'com.google.devtools.ksp' version '1.9.0-1.0.13' apply false
 }
 
-// Configuration for all projects/modules
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    // Add options to fix kapt and JDK issues
-    tasks.withType(JavaCompile).configureEach {
-        options.compilerArgs += [
-                '--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED',
-                '--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
-                '--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED',
-                '--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED',
-                '--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
-                '--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED',
-                '--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED',
-                '--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED'
-        ]
-    }
-}
-
 // Clean task
 tasks.register('clean', Delete) {
     delete rootProject.buildDir
