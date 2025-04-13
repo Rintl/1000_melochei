@@ -127,4 +127,65 @@ object Constants {
     // Константы для системных настроек
     const val DEFAULT_DELIVERY_COST = 1000               // Стоимость доставки в тенге
     const val FREE_DELIVERY_THRESHOLD = 20000            // Порог бесплатной доставки в тенге
+
+    const val NOTIFICATION_CHANNEL_ORDER_ID = "channel_orders"
+    const val NOTIFICATION_CHANNEL_PROMO_ID = "channel_promo"
+    const val NOTIFICATION_CHANNEL_SYSTEM_ID = "channel_system"
+
+    // ID уведомлений
+    const val NOTIFICATION_NEW_ORDER_ID = 1001
+    const val NOTIFICATION_ORDER_STATUS_ID = 1002
+    const val NOTIFICATION_PROMO_ID = 2001
+    const val NOTIFICATION_SYSTEM_ID = 3001
+
+    // Действия для broadcast receiver
+    const val ACTION_UPDATE_DATA = "com.yourstore.app.ACTION_UPDATE_DATA"
+
+    // Ключи для SharedPreferences
+    const val PREF_USER_ID = "user_id"
+    const val PREF_FCM_TOKEN = "fcm_token"
+    const val PREF_DARK_MODE = "dark_mode"
+    const val PREF_NOTIFICATIONS_ENABLED = "notifications_enabled"
+
+    // Ключи для Intent
+    const val EXTRA_PRODUCT_ID = "PRODUCT_ID"
+    const val EXTRA_CATEGORY_ID = "CATEGORY_ID"
+    const val EXTRA_ORDER_ID = "ORDER_ID"
+
+    const val USERS_COLLECTION = "users"
+    const val PRODUCTS_COLLECTION = "products"
+    const val CATEGORIES_COLLECTION = "categories"
+    const val ORDERS_COLLECTION = "orders"
+    const val CARTS_COLLECTION = "carts"
+
+    // Константы для Intent Actions
+    const val ACTION_UPDATE_DATA = "com.yourstore.app.ACTION_UPDATE_DATA"
+    const val ACTION_VIEW_PRODUCT = "com.yourstore.app.ACTION_VIEW_PRODUCT"
+    const val ACTION_VIEW_CATEGORY = "com.yourstore.app.ACTION_VIEW_CATEGORY"
+    const val ACTION_VIEW_ORDER = "com.yourstore.app.ACTION_VIEW_ORDER"
+
+    // Константы для уведомлений
+    const val NOTIFICATION_CHANNEL_ORDER_ID = "order_notifications"
+    const val NOTIFICATION_CHANNEL_PROMO_ID = "promo_notifications"
+    const val NOTIFICATION_CHANNEL_SYSTEM_ID = "system_notifications"
+
+    const val NOTIFICATION_NEW_ORDER_ID = 1001
+    const val NOTIFICATION_ORDER_STATUS_ID = 1002
+    const val NOTIFICATION_PROMO_ID = 1003
+    const val NOTIFICATION_SYSTEM_ID = 1004
+
+    // Константы для FileProvider
+    const val FILE_PROVIDER_AUTHORITY = "com.yourstore.app.fileprovider"
+
+    // Лимиты и ограничения
+    const val MAX_PRODUCT_IMAGES = 5
+    const val MAX_CART_ITEMS = 99
+    const val PRICE_DECIMALS = 2
+
+    // Константы для аналитики заказов
+    const val MIN_ORDER_AMOUNT = 1000.0 // Минимальная сумма заказа
+    const val FREE_DELIVERY_THRESHOLD = 10000.0 // Порог для бесплатной доставки
+
+    // Лимиты для пагинации
+    const val DEFAULT_PAGE_SIZE = 20
 }

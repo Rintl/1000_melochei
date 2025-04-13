@@ -2,6 +2,7 @@ package com.yourstore.app.data.common
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
@@ -14,25 +15,27 @@ abstract class NetworkBoundResource<ResultType, RequestType> {
     fun asFlow() = flow {
         // Сначала загружаем данные из кэша
         val dbSource = loadFromDb()
-        emit(Resource.loading())
+        emit(Resource.Loading())
 
-        if (shouldFetch(dbSource)) {
+        // Получаем первое значение из потока для проверки необходимости обновления
+        val firstDbValue = dbSource.first()
+
+        if (shouldFetch(firstDbValue)) {
             // Если данные нужно обновить из сети
-            emit(Resource.loading())
             try {
                 // Выполняем сетевой запрос
                 val apiResponse = fetchFromNetwork()
                 // Сохраняем результат в кэш
                 saveNetworkResult(apiResponse)
                 // Возвращаем обновленные данные из кэша
-                emitAll(loadFromDb().map { Resource.success(it) })
+                emitAll(loadFromDb().map { Resource.Success(it) })
             } catch (e: Exception) {
                 // В случае ошибки загружаем данные из кэша, если они есть
-                emit(Resource.error(e.message, dbSource))
+                emit(Resource.Error(e.message, firstDbValue))
             }
         } else {
             // Если обновление не требуется, возвращаем кэшированные данные
-            emitAll(loadFromDb().map { Resource.success(it) })
+            emitAll(loadFromDb().map { Resource.Success(it) })
         }
     }
 
@@ -43,6 +46,7 @@ abstract class NetworkBoundResource<ResultType, RequestType> {
 
     /**
      * Определение необходимости обновления данных из сети
+     * @param data Данные из локального кэша
      */
     protected abstract fun shouldFetch(data: ResultType?): Boolean
 

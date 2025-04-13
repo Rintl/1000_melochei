@@ -12,6 +12,7 @@ import com.yourstore.app.data.source.local.PreferencesManager
 import com.yourstore.app.di.appModule
 import com.yourstore.app.di.dataModule
 import com.yourstore.app.di.viewModelModule
+import com.yourstore.app.util.NotificationHelper
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -42,6 +43,9 @@ class MyApplication : Application() {
 
         // Set up theme based on saved preference
         setupTheme()
+
+        // Инициализируем каналы уведомлений
+        NotificationHelper.createNotificationChannels(this)
 
         // Setup crash reporting
         setupCrashReporting()

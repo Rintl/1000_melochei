@@ -37,7 +37,7 @@ val appModule = module {
 
     // Локальные компоненты
     single { PreferencesManager(androidContext()) }
-    single { CartCache(get()) }
+    single { CartCache(androidContext()) }
     single { NotificationService(androidContext()) }
 
     // Сервисы данных
@@ -50,12 +50,13 @@ val appModule = module {
  * Модуль источников данных и репозиториев
  */
 val dataModule = module {
-    // Репозитории
-    single { UserRepository(get(), get()) }
-    single { ProductRepository(get(), get()) }
-    single { CategoryRepository(get(), get()) }
-    single { CartRepository(get(), get()) }
-    single { OrderRepository(get(), get(), get()) }
+    // Репозитории по порядку зависимостей
+    single { UserRepository(get<FirebaseAuthSource>(), get<FirestoreSource>()) }
+    single { ProductRepository(get<FirestoreSource>(), get<StorageSource>()) }
+    single { CategoryRepository(get<FirestoreSource>(), get<StorageSource>()) }
+    single { CartRepository(get<FirestoreSource>(), get<CartCache>(), get<FirebaseAuth>()) }
+    // OrderRepository зависит от CartRepository, поэтому определяем его последним
+    single { OrderRepository(get<FirestoreSource>(), get<CartRepository>(), get<CartCache>()) }
 }
 
 /**
@@ -63,20 +64,20 @@ val dataModule = module {
  */
 val viewModelModule = module {
     // Авторизация
-    viewModel { AuthViewModel(get(), get()) }
+    viewModel { AuthViewModel(get<UserRepository>(), get<PreferencesManager>()) }
 
     // Пользовательские экраны
-    viewModel { HomeViewModel(get(), get(), get()) }
-    viewModel { CatalogViewModel(get(), get()) }
-    viewModel { ProductViewModel(get(), get()) }
-    viewModel { CartViewModel(get(), get()) }
-    viewModel { OrderViewModel(get()) }
-    viewModel { ProfileViewModel(get(), get()) }
+    viewModel { HomeViewModel(get<CategoryRepository>(), get<ProductRepository>()) }
+    viewModel { CatalogViewModel(get<CategoryRepository>(), get<ProductRepository>()) }
+    viewModel { ProductViewModel(get<ProductRepository>(), get<CartRepository>()) }
+    viewModel { CartViewModel(get<CartRepository>(), get<UserRepository>()) }
+    viewModel { OrderViewModel(get<OrderRepository>()) }
+    viewModel { ProfileViewModel(get<UserRepository>(), get<PreferencesManager>()) }
 
     // Административные экраны
-    viewModel { DashboardViewModel(get(), get(), get()) }
-    viewModel { AdminProductViewModel(get(), get()) }
-    viewModel { CategoryViewModel(get()) }
-    viewModel { AdminOrderViewModel(get()) }
-    viewModel { AnalyticsViewModel(get(), get()) }
+    viewModel { DashboardViewModel(get<OrderRepository>(), get<ProductRepository>(), get<CategoryRepository>()) }
+    viewModel { AdminProductViewModel(get<ProductRepository>(), get<CategoryRepository>()) }
+    viewModel { CategoryViewModel(get<CategoryRepository>()) }
+    viewModel { AdminOrderViewModel(get<OrderRepository>()) }
+    viewModel { AnalyticsViewModel(get<OrderRepository>(), get<ProductRepository>()) }
 }

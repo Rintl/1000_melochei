@@ -3,6 +3,7 @@
     <!-- Жалпы қолданба жолдары -->
     <string name="app_name">1000 ұсақ-түйек</string>
     <string name="loading">Жүктелуде…</string>
+    <string name="change">Өзгерту</string>
     <string name="error_occurred">Қате пайда болды</string>
     <string name="retry">Қайталау</string>
     <string name="cancel">Болдырмау</string>
@@ -13,6 +14,7 @@
     <string name="yes">Иә</string>
     <string name="no">Жоқ</string>
     <string name="ok">OK</string>
+    <string name="add">Қосу</string>
     <string name="search">Іздеу</string>
     <string name="empty_list">Тізім бос</string>
     <string name="not_found">Ештеңе табылмады</string>
@@ -24,13 +26,17 @@
 
     <!-- Авторизация және тіркеу -->
     <string name="login">Кіру</string>
+    <string name="register_prompt">" Әлі тіркелгіңіз жоқ па? Тіркелу"</string>
     <string name="admin_login">Әкімші ретінде кіру</string>
+    <string name="login_title">Аккаунтқа кіру</string>
     <string name="register">Тіркелу</string>
+    <string name="register_description">Сатып алу және тапсырыстарыңызды бақылау үшін тіркеліңіз</string>
     <string name="email">Email</string>
     <string name="password">Құпия сөз</string>
     <string name="confirm_password">Құпия сөзді растаңыз</string>
     <string name="forgot_password">Құпия сөзді ұмыттыңыз ба?</string>
     <string name="reset_password">Құпия сөзді қалпына келтіру</string>
+    <string name="admin_login_warning">Тек уәкілетті қызметкерлерге рұқсат</string>
     <string name="logout">Шығу</string>
     <string name="no_account">Әлі тіркелгіңіз жоқ па?</string>
     <string name="create_account">Тіркелгі жасау</string>
@@ -38,9 +44,11 @@
     <string name="login_success">Кіру сәтті өтті</string>
     <string name="register_success">Тіркелу сәтті өтті</string>
     <string name="password_reset_sent">Құпия сөзді қалпына келтіру нұсқаулары көрсетілген электрондық поштаға жіберілді</string>
+    <string name="full_name">Толық аты-жөні</string>
     <string name="name">Аты</string>
     <string name="phone">Телефон</string>
     <string name="admin_code">Әкімші коды</string>
+    <string name="password_requirements">Құпия сөз кемінде 6 таңбадан тұруы керек</string>
     <string name="invalid_email">Email пішімі дұрыс емес</string>
     <string name="invalid_password">Құпия сөз кемінде 6 таңбадан тұруы керек</string>
     <string name="passwords_not_match">Құпия сөздер сәйкес келмейді</string>
@@ -82,6 +90,7 @@
     <string name="welcome_back">Қайта оралғаныңызға қуаныштымыз!</string>
     <string name="new_items">Жаңа тауарлар</string>
     <string name="sale">Жеңілдік</string>
+    <string name="discount_price">Жеңілдікті баға</string>
     <string name="discount">%d%% жеңілдік</string>
 
     <!-- Каталог және өнімдер -->
@@ -89,8 +98,10 @@
     <string name="filter">Сүзгі</string>
     <string name="price">Бағасы</string>
     <string name="old_price">Ескі бағасы</string>
+    <string name="remove_image">Сөретті жою</string>
     <string name="in_stock">Қоймада бар</string>
     <string name="out_of_stock">Қоймада жоқ</string>
+    <string name="sort_products">Тауарларды сұрыптау</string>
     <string name="sort_name_asc">Аты бойынша (А-Я)</string>
     <string name="sort_name_desc">Аты бойынша (Я-А)</string>
     <string name="sort_price_asc">Бағасы бойынша (арзаннан)</string>
@@ -98,11 +109,13 @@
     <string name="sort_newest">Алдымен жаңа</string>
     <string name="sort_oldest">Алдымен ескі</string>
     <string name="sort_by_status">Күйі бойынша</string>
+    <string name="catalog">Каталог</string>
     <string name="category">Санат</string>
     <string name="description">Сипаттама</string>
     <string name="specifications">Сипаттамалары</string>
     <string name="similar_products">Ұқсас өнімдер</string>
     <string name="add_to_cart">Себетке қосу</string>
+    <string name="add_to_favorites">Таңдаулыларға қосыңыз</string>
     <string name="product_added_to_cart">Өнім себетке қосылды</string>
     <string name="available">Қолжетімді: %d</string>
     <string name="product_code">Артикул: %s</string>
@@ -111,11 +124,14 @@
     <string name="sales_count">Сатылды: %d</string>
     <string name="search_hint">Өнімдерді іздеу...</string>
     <string name="search_results">Іздеу нәтижелері</string>
+    <string name="no_products_found">Өнімдер табылмады</string>
+    <string name="no_products_message">Сұрауыңызға сәйкес ешбір өнім табылмады.</string>
     <string name="no_search_results">"%s" бойынша ештеңе табылмады</string>
     <string name="search_history">Іздеу тарихы</string>
     <string name="clear_history">Тарихты тазалау</string>
 
     <!-- Себет және тапсырысты рәсімдеу -->
+    <string name="cart_title">Себет</string>
     <string name="empty_cart">Сіздің себетіңіз бос</string>
     <string name="start_shopping">Сатып алуды бастау</string>
     <string name="subtotal">Аралық қорытынды</string>
@@ -206,6 +222,7 @@
     <string name="address_title">Мекенжай атауы</string>
     <string name="address_title_hint">Мысалы: Үй, Жұмыс</string>
     <string name="address_hint">Толық мекенжай</string>
+    <string name="address">Адрес</string>
     <string name="city">Қала</string>
     <string name="street">Көше</string>
     <string name="house">Үй</string>
@@ -246,15 +263,19 @@
     <string name="product_description">Өнім сипаттамасы</string>
     <string name="product_sku">Артикул</string>
     <string name="product_barcode">Штрих-код</string>
+    <string name="available_quantity">Қол жетімді мөлшер</string>
     <string name="product_quantity">Қоймадағы саны</string>
     <string name="product_images">Өнім суреттері</string>
     <string name="product_specifications">Өнім сипаттамалары</string>
     <string name="product_status">Өнім мәртебесі</string>
+    <string name="product_information">Өнім туралы ақпарат</string>
     <string name="product_active">Белсенді</string>
+    <string name="product_active_status">Белсенді</string>
     <string name="product_inactive">Белсенді емес</string>
     <string name="add_specification">Сипаттама қосу</string>
     <string name="specification_name">Сипаттама атауы</string>
     <string name="specification_value">Сипаттама мәні</string>
+    <string name="no_images_added">Ешқандай сөрет қосылмаған</string>
     <string name="add_image">Сурет қосу</string>
     <string name="select_category">Санатты таңдаңыз</string>
     <string name="delete_product">Өнімді жою</string>
@@ -347,4 +368,29 @@
     <string name="error_upload_image">Суретті жүктеу кезінде қате</string>
     <string name="error_import_file">Файлды импорттау кезінде қате</string>
     <string name="error_insufficient_stock">Қоймада жеткілікті өнім жоқ</string>
+    <string name="delete">Кетіру</string>
+    <string name="edit">Дұрыстау</string>
+    <string name="register_title">Тіркелу</string>
+    <string name="terms_agreement">Мен пайдалану шарттарымен келісемін</string>
+    <string name="product_image">Өнім суреті</string>
+    <string name="search_products">Өнімдерді іздеу</string>
+    <string name="no_products">Өнімдер жоқ</string>
+    <string name="filter_all">Бәрі</string>
+    <string name="filter_popular">Танымал</string>
+    <string name="filter_discount">Жеңілдікпен</string>
+    <string name="filter_new">Жаңа</string>
+    <string name="category_title">Категория</string>
+    <string name="sort_by">Бойынша сұрыптау</string>
+    <string name="filters">Фильтры</string>
+    <string name="filter_and_sort">Фильтры и сортировка</string>
+    <string name="price_range">Баға диапазоны</string>
+    <string name="min_price">Мин. бағасы</string>
+    <string name="max_price">Макс. бағасы</string>
+    <string name="in_stock_only">Тек қоймада</string>
+    <string name="active_only">Тек белсенді</string>
+    <string name="discounted_only">Тек жеңілдікпен</string>
+    <string name="reset">Қалпына келтіру</string>
+    <string name="apply">Қолдану</string>
+    <string name="close">Жабу</string>
+    <string name="empty_cart_title">Сіздің арбаңыз бос</string>
 </resources>

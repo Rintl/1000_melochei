@@ -39,7 +39,7 @@
     <string name="forgot_password">Забыли пароль?</string>
     <string name="register_prompt">Еще нет аккаунта? Зарегистрироваться</string>
     <string name="admin_login">Войти как администратор</string>
-    <string name="admin_login_title">Вход для администратора</string>
+    <string name="admin_login_title" translatable="false">Вход для администратора</string>
     <string name="admin_code">Код администратора</string>
     <string name="admin_login_warning">Доступ только для авторизованного персонала</string>
     <string name="logout">Выйти</string>
@@ -126,9 +126,7 @@
     <string name="specification_name">Название характеристики</string>
     <string name="specification_value">Значение</string>
     <string name="product_images">Изображения товара</string>
-    <string name="product_info">Информация о товаре</string>
     <string name="product_information">Информация о товаре</string>
-    <string name="product_active">Товар активен</string>
     <string name="product_active_status">Активен</string>
     <string name="product_inactive">Товар неактивен</string>
     <string name="similar_products">Похожие товары</string>
@@ -193,7 +191,7 @@
     <string name="cart_title">Корзина</string>
     <string name="empty_cart">Корзина пуста</string>
     <string name="empty_cart_title">Ваша корзина пуста</string>
-    <string name="empty_cart_message">Добавьте товары в корзину, чтобы оформить заказ</string>
+    <string name="empty_cart_message" translatable="false">Добавьте товары в корзину, чтобы оформить заказ</string>
     <string name="start_shopping">Начать покупки</string>
     <string name="continue_shopping">Продолжить покупки</string>
     <string name="clear_cart">Очистить корзину</string>
@@ -204,32 +202,32 @@
     <string name="delivery_fee">Стоимость доставки</string>
     <string name="total">Итого</string>
     <string name="checkout">Оформить заказ</string>
-    <string name="proceed_to_checkout">Перейти к оформлению</string>
-    <string name="checkout_title">Оформление заказа</string>
+    <string name="proceed_to_checkout" translatable="false">Перейти к оформлению</string>
+    <string name="checkout_title" translatable="false">Оформление заказа</string>
     <string name="order_confirmation">Подтверждение заказа</string>
     <string name="confirm_order">Подтвердить заказ</string>
     <string name="delivery_method">Способ получения</string>
-    <string name="delivery_to_address">Доставка по адресу</string>
-    <string name="pickup_from_store">Самовывоз из магазина</string>
+    <string name="delivery_to_address" translatable="false">Доставка по адресу</string>
+    <string name="pickup_from_store" translatable="false">Самовывоз из магазина</string>
     <string name="delivery_address">Адрес доставки</string>
-    <string name="add_delivery_address">Добавить адрес доставки</string>
+    <string name="add_delivery_address" translatable="false">Добавить адрес доставки</string>
     <string name="select_address">Выбрать адрес</string>
-    <string name="change_address">Изменить адрес</string>
-    <string name="pickup_point">Пункт самовывоза</string>
-    <string name="select_pickup_point">Выберите пункт самовывоза</string>
+    <string name="change_address" translatable="false">Изменить адрес</string>
+    <string name="pickup_point" translatable="false">Пункт самовывоза</string>
+    <string name="select_pickup_point" translatable="false">Выберите пункт самовывоза</string>
     <string name="delivery_time">Время доставки</string>
-    <string name="date">Дата</string>
-    <string name="time">Время</string>
+    <string name="date" translatable="false">Дата</string>
+    <string name="time" translatable="false">Время</string>
     <string name="select_date">Выберите дату</string>
     <string name="select_time">Выберите время</string>
     <string name="payment_method">Способ оплаты</string>
-    <string name="payment_cash">Наличными при получении</string>
-    <string name="payment_card">Картой при получении</string>
-    <string name="payment_kaspi">Kaspi перевод</string>
+    <string name="payment_cash" translatable="false">Наличными при получении</string>
+    <string name="payment_card" translatable="false">Картой при получении</string>
+    <string name="payment_kaspi" translatable="false">Kaspi перевод</string>
     <string name="cash_on_delivery">Наличными при получении</string>
     <string name="card_on_delivery">Картой при получении</string>
     <string name="kaspi">Kaspi перевод</string>
-    <string name="order_comment">Комментарий к заказу</string>
+    <string name="order_comment" translatable="false">Комментарий к заказу</string>
     <string name="comment">Комментарий</string>
     <string name="comment_hint">Напишите комментарий к заказу (необязательно)</string>
     <string name="order_items">Состав заказа</string>
@@ -241,28 +239,28 @@
     <string name="error_product_not_found">Товар не найден</string>
     <string name="minimum_order_amount">Минимальная сумма заказа</string>
     <string name="minimum_order_not_reached">Минимальная сумма заказа не достигнута</string>
-    <string name="delivery_cost">Стоимость доставки</string>
-    <string name="edit_order">Редактировать заказ</string>
-    <string name="increase_quantity">Увеличить количество</string>
-    <string name="decrease_quantity">Уменьшить количество</string>
-    <string name="delete_item">Удалить товар</string>
+    <string name="delivery_cost" translatable="false">Стоимость доставки</string>
+    <string name="edit_order" translatable="false">Редактировать заказ</string>
+    <string name="increase_quantity" translatable="false">Увеличить количество</string>
+    <string name="decrease_quantity" translatable="false">Уменьшить количество</string>
+    <string name="delete_item" translatable="false">Удалить товар</string>
     <string name="remove_item">Удалить</string>
     <string name="delivery_notes">Примечания к доставке</string>
 
     <!-- Заказы -->
-    <string name="orders_title">Мои заказы</string>
+    <string name="orders_title" translatable="false">Мои заказы</string>
     <string name="order">Заказ</string>
     <string name="order_details">Детали заказа</string>
-    <string name="order_detail_title">Детали заказа</string>
+    <string name="order_detail_title" translatable="false">Детали заказа</string>
     <string name="order_summary">Сводка заказа</string>
     <string name="order_status">Статус заказа</string>
     <string name="order_date">Дата заказа</string>
     <string name="order_total">Сумма заказа</string>
-    <string name="all_orders">Все заказы</string>
-    <string name="active_orders">Активные</string>
-    <string name="completed_orders">Завершенные</string>
+    <string name="all_orders" translatable="false">Все заказы</string>
+    <string name="active_orders" translatable="false">Активные</string>
+    <string name="completed_orders" translatable="false">Завершенные</string>
     <string name="cancel_order">Отменить заказ</string>
-    <string name="repeat_order">Повторить заказ</string>
+    <string name="repeat_order" translatable="false">Повторить заказ</string>
     <string name="confirm_cancel_order">Вы уверены, что хотите отменить заказ?</string>
     <string name="order_cancelled">Заказ отменен</string>
     <string name="update_status">Обновить статус</string>
@@ -273,29 +271,29 @@
     <string name="status_completed">Завершен</string>
     <string name="status_cancelled">Отменен</string>
     <string name="no_orders">Нет заказов</string>
-    <string name="no_orders_title">У вас пока нет заказов</string>
-    <string name="no_orders_message">Здесь будут отображаться ваши заказы</string>
-    <string name="no_orders_found">Заказы не найдены</string>
-    <string name="no_orders_found_subtext">Попробуйте изменить параметры поиска</string>
+    <string name="no_orders_title" translatable="false">У вас пока нет заказов</string>
+    <string name="no_orders_message" translatable="false">Здесь будут отображаться ваши заказы</string>
+    <string name="no_orders_found" translatable="false">Заказы не найдены</string>
+    <string name="no_orders_found_subtext" translatable="false">Попробуйте изменить параметры поиска</string>
     <string name="sort_by_status">По статусу</string>
     <string name="my_orders">Мои заказы</string>
-    <string name="details">Подробнее</string>
-    <string name="total_amount">Итоговая сумма</string>
-    <string name="order_tracking">Отслеживание заказа</string>
-    <string name="order_status_pending">Принят</string>
-    <string name="order_status_processing">В обработке</string>
-    <string name="order_status_shipping">Доставляется</string>
-    <string name="order_status_delivered">Доставлен</string>
-    <string name="order_status_completed">Завершен</string>
+    <string name="details" translatable="false">Подробнее</string>
+    <string name="total_amount" translatable="false">Итоговая сумма</string>
+    <string name="order_tracking" translatable="false">Отслеживание заказа</string>
+    <string name="order_status_pending" translatable="false">Принят</string>
+    <string name="order_status_processing" translatable="false">В обработке</string>
+    <string name="order_status_shipping" translatable="false">Доставляется</string>
+    <string name="order_status_delivered" translatable="false">Доставлен</string>
+    <string name="order_status_completed" translatable="false">Завершен</string>
 
     <!-- Профиль -->
-    <string name="profile_title">Профиль</string>
+    <string name="profile_title" translatable="false">Профиль</string>
     <string name="edit_profile">Редактировать профиль</string>
-    <string name="edit_profile_title">Редактирование профиля</string>
-    <string name="save_changes">Сохранить изменения</string>
-    <string name="change_photo">Изменить фото</string>
+    <string name="edit_profile_title" translatable="false">Редактирование профиля</string>
+    <string name="save_changes" translatable="false">Сохранить изменения</string>
+    <string name="change_photo" translatable="false">Изменить фото</string>
     <string name="change_password">Изменить пароль</string>
-    <string name="delivery_addresses">Адреса доставки</string>
+    <string name="delivery_addresses" translatable="false">Адреса доставки</string>
     <string name="my_addresses">Мои адреса</string>
     <string name="add_address">Добавить адрес</string>
     <string name="add_new_address">Добавить новый адрес</string>
@@ -309,22 +307,22 @@
     <string name="address_updated">Адрес обновлен</string>
     <string name="address_deleted">Адрес удален</string>
     <string name="error_address_save">Ошибка при сохранении адреса</string>
-    <string name="no_addresses">Нет сохраненных адресов</string>
-    <string name="no_addresses_title">У вас нет сохраненных адресов</string>
-    <string name="no_addresses_message">Добавьте адрес для быстрого оформления заказов</string>
-    <string name="make_default_address">Сделать адресом по умолчанию</string>
-    <string name="set_as_default">Сделать основным</string>
+    <string name="no_addresses" translatable="false">Нет сохраненных адресов</string>
+    <string name="no_addresses_title" translatable="false">У вас нет сохраненных адресов</string>
+    <string name="no_addresses_message" translatable="false">Добавьте адрес для быстрого оформления заказов</string>
+    <string name="make_default_address" translatable="false">Сделать адресом по умолчанию</string>
+    <string name="set_as_default" translatable="false">Сделать основным</string>
     <string name="default_address">Адрес по умолчанию</string>
-    <string name="default_main">Основной</string>
+    <string name="default_main" translatable="false">Основной</string>
     <string name="settings">Настройки</string>
-    <string name="dark_mode">Темная тема</string>
-    <string name="dark_mode_description">Включить темную тему интерфейса</string>
+    <string name="dark_mode" translatable="false">Темная тема</string>
+    <string name="dark_mode_description" translatable="false">Включить темную тему интерфейса</string>
     <string name="dark_theme">Темная тема</string>
     <string name="notifications">Уведомления</string>
-    <string name="notifications_description">Получать уведомления о заказах и акциях</string>
+    <string name="notifications_description" translatable="false">Получать уведомления о заказах и акциях</string>
     <string name="language">Язык</string>
-    <string name="support">Служба поддержки</string>
-    <string name="about_app">О приложении</string>
+    <string name="support" translatable="false">Служба поддержки</string>
+    <string name="about_app" translatable="false">О приложении</string>
     <string name="feedback">Обратная связь</string>
     <string name="rate_app">Оценить приложение</string>
     <string name="share_app">Поделиться приложением</string>
@@ -334,153 +332,153 @@
     <string name="version">Версия</string>
     <string name="profile_updated">Профиль обновлен</string>
     <string name="about">О нас</string>
-    <string name="more_info">Подробнее</string>
-    <string name="more_options">Опции</string>
+    <string name="more_info" translatable="false">Подробнее</string>
+    <string name="more_options" translatable="false">Опции</string>
 
     <!-- Панель администратора -->
-    <string name="dashboard_title">Панель управления</string>
-    <string name="orders_management">Управление заказами</string>
-    <string name="products_management">Управление товарами</string>
-    <string name="categories_management">Управление категориями</string>
-    <string name="analytics_title">Аналитика</string>
+    <string name="dashboard_title" translatable="false">Панель управления</string>
+    <string name="orders_management" translatable="false">Управление заказами</string>
+    <string name="products_management" translatable="false">Управление товарами</string>
+    <string name="categories_management" translatable="false">Управление категориями</string>
+    <string name="analytics_title" translatable="false">Аналитика</string>
     <string name="new_orders">Новые заказы</string>
-    <string name="today_sales">Продажи сегодня</string>
-    <string name="low_stock_items">Товары на исходе</string>
-    <string name="total_customers">Всего клиентов</string>
-    <string name="sales_chart">График продаж</string>
-    <string name="recent_orders">Последние заказы</string>
-    <string name="quick_actions">Быстрые действия</string>
-    <string name="add_product">Добавить товар</string>
-    <string name="process_orders">Обработать заказы</string>
-    <string name="update_inventory">Обновить наличие</string>
-    <string name="create_promotion">Создать акцию</string>
-    <string name="this_week">На этой неделе</string>
-    <string name="orders">Заказы</string>
-    <string name="sales">Продажи</string>
-    <string name="inventory">Запасы</string>
+    <string name="today_sales" translatable="false">Продажи сегодня</string>
+    <string name="low_stock_items" translatable="false">Товары на исходе</string>
+    <string name="total_customers" translatable="false">Всего клиентов</string>
+    <string name="sales_chart" translatable="false">График продаж</string>
+    <string name="recent_orders" translatable="false">Последние заказы</string>
+    <string name="quick_actions" translatable="false">Быстрые действия</string>
+    <string name="add_product" translatable="false">Добавить товар</string>
+    <string name="process_orders" translatable="false">Обработать заказы</string>
+    <string name="update_inventory" translatable="false">Обновить наличие</string>
+    <string name="create_promotion" translatable="false">Создать акцию</string>
+    <string name="this_week" translatable="false">На этой неделе</string>
+    <string name="orders" translatable="false">Заказы</string>
+    <string name="sales" translatable="false">Продажи</string>
+    <string name="inventory" translatable="false">Запасы</string>
     <string name="customers">Клиенты</string>
     <string name="action_add_product">Добавить товар</string>
     <string name="action_import_products">Импорт товаров</string>
     <string name="action_export_orders">Экспорт заказов</string>
-    <string name="refresh_orders">Обновить список заказов</string>
+    <string name="refresh_orders" translatable="false">Обновить список заказов</string>
 
     <!-- Управление товарами -->
-    <string name="add_product_title">Добавление товара</string>
-    <string name="edit_product">Редактирование товара</string>
-    <string name="product_main_info">Основная информация</string>
-    <string name="product_price_and_availability">Цены и наличие</string>
+    <string name="add_product_title" translatable="false">Добавление товара</string>
+    <string name="edit_product" translatable="false">Редактирование товара</string>
+    <string name="product_main_info" translatable="false">Основная информация</string>
+    <string name="product_price_and_availability" translatable="false">Цены и наличие</string>
     <string name="add_specification">Добавить характеристику</string>
-    <string name="save_product">Сохранить товар</string>
+    <string name="save_product" translatable="false">Сохранить товар</string>
     <string name="product_added">Товар добавлен</string>
     <string name="product_updated">Товар обновлен</string>
     <string name="product_deleted">Товар удален</string>
     <string name="delete_product">Удалить товар</string>
     <string name="confirm_delete_product">Вы уверены, что хотите удалить этот товар?</string>
-    <string name="add_first_product">Добавить первый товар</string>
-    <string name="price_low_to_high">Цена: по возрастанию</string>
-    <string name="price_high_to_low">Цена: по убыванию</string>
-    <string name="name_az">Название: А-Я</string>
-    <string name="name_za">Название: Я-А</string>
-    <string name="newest_first">Сначала новые</string>
-    <string name="oldest_first">Сначала старые</string>
+    <string name="add_first_product" translatable="false">Добавить первый товар</string>
+    <string name="price_low_to_high" translatable="false">Цена: по возрастанию</string>
+    <string name="price_high_to_low" translatable="false">Цена: по убыванию</string>
+    <string name="name_az" translatable="false">Название: А-Я</string>
+    <string name="name_za" translatable="false">Название: Я-А</string>
+    <string name="newest_first" translatable="false">Сначала новые</string>
+    <string name="oldest_first" translatable="false">Сначала старые</string>
     <string name="error_upload_image">Ошибка при загрузке изображения</string>
     <string name="invalid_price">Некорректная цена</string>
     <string name="invalid_quantity">Некорректное количество</string>
-    <string name="csv_file">CSV файл</string>
-    <string name="excel_file">Excel файл</string>
-    <string name="select_file">Выбрать файл</string>
-    <string name="no_file_selected">Файл не выбран</string>
-    <string name="preview_data">Предпросмотр данных</string>
-    <string name="start_import">Начать импорт</string>
-    <string name="download_template">Скачать шаблон</string>
-    <string name="file_has_headers">Файл содержит заголовки</string>
+    <string name="csv_file" translatable="false">CSV файл</string>
+    <string name="excel_file" translatable="false">Excel файл</string>
+    <string name="select_file" translatable="false">Выбрать файл</string>
+    <string name="no_file_selected" translatable="false">Файл не выбран</string>
+    <string name="preview_data" translatable="false">Предпросмотр данных</string>
+    <string name="start_import" translatable="false">Начать импорт</string>
+    <string name="download_template" translatable="false">Скачать шаблон</string>
+    <string name="file_has_headers" translatable="false">Файл содержит заголовки</string>
     <string name="error_import_file">Ошибка при импорте файла</string>
-    <string name="import_instructions_title">Инструкции по импорту</string>
-    <string name="import_file_title">Выбор файла</string>
-    <string name="import_settings_title">Настройки импорта</string>
-    <string name="csv_delimiter">Разделитель CSV</string>
-    <string name="excel_sheet">Лист Excel</string>
-    <string name="update_existing_products">Обновлять существующие товары</string>
-    <string name="preview_and_import_title">Предпросмотр и импорт</string>
-    <string name="preview_results_title">Результаты предпросмотра</string>
-    <string name="import_results_title">Результаты импорта</string>
-    <string name="importing_data">Импорт данных...</string>
-    <string name="download_error_report">Скачать отчет об ошибках</string>
-    <string name="search_categories">Поиск категорий</string>
-    <string name="category_type">Тип категории</string>
-    <string name="total_categories">Всего категорий</string>
-    <string name="root_categories">Основные категории</string>
-    <string name="subcategories">Подкатегории</string>
-    <string name="clear_filters">Очистить фильтры</string>
-    <string name="category_basic_info">Основная информация</string>
+    <string name="import_instructions_title" translatable="false">Инструкции по импорту</string>
+    <string name="import_file_title" translatable="false">Выбор файла</string>
+    <string name="import_settings_title" translatable="false">Настройки импорта</string>
+    <string name="csv_delimiter" translatable="false">Разделитель CSV</string>
+    <string name="excel_sheet" translatable="false">Лист Excel</string>
+    <string name="update_existing_products" translatable="false">Обновлять существующие товары</string>
+    <string name="preview_and_import_title" translatable="false">Предпросмотр и импорт</string>
+    <string name="preview_results_title" translatable="false">Результаты предпросмотра</string>
+    <string name="import_results_title" translatable="false">Результаты импорта</string>
+    <string name="importing_data" translatable="false">Импорт данных...</string>
+    <string name="download_error_report" translatable="false">Скачать отчет об ошибках</string>
+    <string name="search_categories" translatable="false">Поиск категорий</string>
+    <string name="category_type" translatable="false">Тип категории</string>
+    <string name="total_categories" translatable="false">Всего категорий</string>
+    <string name="root_categories" translatable="false">Основные категории</string>
+    <string name="subcategories" translatable="false">Подкатегории</string>
+    <string name="clear_filters" translatable="false">Очистить фильтры</string>
+    <string name="category_basic_info" translatable="false">Основная информация</string>
     <string name="category_name">Название категории</string>
     <string name="category_description">Описание категории</string>
     <string name="parent_category">Родительская категория</string>
-    <string name="sort_order">Порядок сортировки</string>
+    <string name="sort_order" translatable="false">Порядок сортировки</string>
     <string name="category_active">Категория активна</string>
     <string name="no_parent_category">Нет родительской категории</string>
-    <string name="add_category">Добавить категорию</string>
-    <string name="add_first_category">Добавить первую категорию</string>
-    <string name="no_categories_found">Категории не найдены</string>
+    <string name="add_category" translatable="false">Добавить категорию</string>
+    <string name="add_first_category" translatable="false">Добавить первую категорию</string>
+    <string name="no_categories_found" translatable="false">Категории не найдены</string>
     <string name="select_category">Выбрать категорию</string>
     <string name="cannot_delete_category_with_products">Невозможно удалить категорию с товарами</string>
 
     <!-- Управление заказами (администратор) -->
     <string name="processing_orders">В обработке</string>
-    <string name="shipping_orders">Доставляются</string>
-    <string name="delivered_orders">Доставлены</string>
-    <string name="cancelled_orders">Отменены</string>
-    <string name="search_orders">Поиск заказов</string>
-    <string name="date_from">Дата от</string>
-    <string name="date_to">Дата до</string>
-    <string name="manage_order_status">Управление статусом</string>
-    <string name="current_status">Текущий статус</string>
-    <string name="order_created">Создан</string>
-    <string name="last_update">Последнее обновление</string>
-    <string name="set_processing">В обработку</string>
-    <string name="set_shipping">Доставка</string>
-    <string name="set_delivered">Доставлен</string>
-    <string name="set_completed">Завершен</string>
-    <string name="additional_actions">Дополнительные действия</string>
-    <string name="print_order">Печать заказа</string>
-    <string name="export_order">Экспорт заказа</string>
-    <string name="notify_customer">Уведомить клиента</string>
+    <string name="shipping_orders" translatable="false">Доставляются</string>
+    <string name="delivered_orders" translatable="false">Доставлены</string>
+    <string name="cancelled_orders" translatable="false">Отменены</string>
+    <string name="search_orders" translatable="false">Поиск заказов</string>
+    <string name="date_from" translatable="false">Дата от</string>
+    <string name="date_to" translatable="false">Дата до</string>
+    <string name="manage_order_status" translatable="false">Управление статусом</string>
+    <string name="current_status" translatable="false">Текущий статус</string>
+    <string name="order_created" translatable="false">Создан</string>
+    <string name="last_update" translatable="false">Последнее обновление</string>
+    <string name="set_processing" translatable="false">В обработку</string>
+    <string name="set_shipping" translatable="false">Доставка</string>
+    <string name="set_delivered" translatable="false">Доставлен</string>
+    <string name="set_completed" translatable="false">Завершен</string>
+    <string name="additional_actions" translatable="false">Дополнительные действия</string>
+    <string name="print_order" translatable="false">Печать заказа</string>
+    <string name="export_order" translatable="false">Экспорт заказа</string>
+    <string name="notify_customer" translatable="false">Уведомить клиента</string>
     <string name="customer_info">Информация о клиенте</string>
-    <string name="customer_name">Имя клиента</string>
-    <string name="customer_phone">Телефон клиента</string>
-    <string name="customer_email">Email клиента</string>
-    <string name="call_customer">Позвонить клиенту</string>
+    <string name="customer_name" translatable="false">Имя клиента</string>
+    <string name="customer_phone" translatable="false">Телефон клиента</string>
+    <string name="customer_email" translatable="false">Email клиента</string>
+    <string name="call_customer" translatable="false">Позвонить клиенту</string>
     <string name="delivery_info">Информация о доставке</string>
-    <string name="delivery_method_label">Способ получения:</string>
-    <string name="address_label">Адрес:</string>
-    <string name="pickup_point_label">Пункт самовывоза:</string>
-    <string name="delivery_date_label">Дата доставки:</string>
+    <string name="delivery_method_label" translatable="false">Способ получения:</string>
+    <string name="address_label" translatable="false">Адрес:</string>
+    <string name="pickup_point_label" translatable="false">Пункт самовывоза:</string>
+    <string name="delivery_date_label" translatable="false">Дата доставки:</string>
     <string name="payment_info">Информация об оплате</string>
-    <string name="payment_method_label">Способ оплаты:</string>
-    <string name="payment_status_label">Статус оплаты:</string>
-    <string name="delivery_information">Информация о доставке</string>
-    <string name="payment_information">Информация об оплате</string>
-    <string name="open_map">Открыть на карте</string>
+    <string name="payment_method_label" translatable="false">Способ оплаты:</string>
+    <string name="payment_status_label" translatable="false">Статус оплаты:</string>
+    <string name="delivery_information" translatable="false">Информация о доставке</string>
+    <string name="payment_information" translatable="false">Информация об оплате</string>
+    <string name="open_map" translatable="false">Открыть на карте</string>
 
     <!-- Аналитика -->
     <string name="analytics_period">Период анализа</string>
-    <string name="analytics_key_metrics">Ключевые показатели</string>
-    <string name="analytics_revenue">Выручка</string>
-    <string name="analytics_orders">Заказы</string>
-    <string name="analytics_avg_order">Средний чек</string>
-    <string name="analytics_products_sold">Продано товаров</string>
-    <string name="analytics_sales_chart">График продаж</string>
-    <string name="analytics_popular_products">Популярные товары</string>
-    <string name="analytics_category_stats">Статистика по категориям</string>
-    <string name="chart_revenue">Выручка</string>
-    <string name="chart_orders">Заказы</string>
-    <string name="period_today">Сегодня</string>
-    <string name="period_yesterday">Вчера</string>
-    <string name="period_week">Неделя</string>
-    <string name="period_month">Месяц</string>
-    <string name="period_year">Год</string>
-    <string name="period_custom">Произвольный</string>
-    <string name="apply_period">Применить период</string>
+    <string name="analytics_key_metrics" translatable="false">Ключевые показатели</string>
+    <string name="analytics_revenue" translatable="false">Выручка</string>
+    <string name="analytics_orders" translatable="false">Заказы</string>
+    <string name="analytics_avg_order" translatable="false">Средний чек</string>
+    <string name="analytics_products_sold" translatable="false">Продано товаров</string>
+    <string name="analytics_sales_chart" translatable="false">График продаж</string>
+    <string name="analytics_popular_products" translatable="false">Популярные товары</string>
+    <string name="analytics_category_stats" translatable="false">Статистика по категориям</string>
+    <string name="chart_revenue" translatable="false">Выручка</string>
+    <string name="chart_orders" translatable="false">Заказы</string>
+    <string name="period_today" translatable="false">Сегодня</string>
+    <string name="period_yesterday" translatable="false">Вчера</string>
+    <string name="period_week" translatable="false">Неделя</string>
+    <string name="period_month" translatable="false">Месяц</string>
+    <string name="period_year" translatable="false">Год</string>
+    <string name="period_custom" translatable="false">Произвольный</string>
+    <string name="apply_period" translatable="false">Применить период</string>
     <string name="export_report">Экспорт отчета</string>
     <string name="today">Сегодня</string>
     <string name="yesterday">Вчера</string>
@@ -505,7 +503,7 @@
     <string name="returning_customers">Вернувшиеся клиенты</string>
     <string name="low_stock_products">Товары на исходе</string>
     <string name="out_of_stock_products">Товары не в наличии</string>
-    <string name="trend">Тренд</string>
+    <string name="trend" translatable="false">Тренд</string>
 
     <!-- Уведомления -->
     <string name="notification_channel_orders">Заказы</string>
@@ -537,21 +535,25 @@
     <string name="items_count">%d товаров</string>
 
     <string name="price">Цена</string>
-    <string name="import_products">Импорт товаров</string>
-    <string name="default_value">По умолчанию</string>
+    <string name="import_products" translatable="false">Импорт товаров</string>
+    <string name="default_value" translatable="false">По умолчанию</string>
     <string name="title_import_products">Импорт товаров</string>
+    <string name="notification_channel_id" translatable="false">channel_orders</string>
+    <string name="notification_channel_orders_id" translatable="false">channel_orders</string>
+    <string name="notification_channel_promo_id" translatable="false">channel_promo</string>
+    <string name="notification_channel_system_id" translatable="false">channel_system</string>
 
-    <string name="no_image">Нет изображения</string>
-    <string name="no_image_selected">Изображение не выбрано</string>
-    <string name="price_and_inventory">Цены и наличие</string>
-    <string name="no_specifications_added">Характеристики не добавлены</string>
-    <string name="spec_name">Название характеристики</string>
-    <string name="spec_value">Значение характеристики</string>
+    <string name="no_image" translatable="false">Нет изображения</string>
+    <string name="no_image_selected" translatable="false">Изображение не выбрано</string>
+    <string name="price_and_inventory" translatable="false">Цены и наличие</string>
+    <string name="no_specifications_added" translatable="false">Характеристики не добавлены</string>
+    <string name="spec_name" translatable="false">Название характеристики</string>
+    <string name="spec_value" translatable="false">Значение характеристики</string>
 
-    <string name="address_type">Тип адреса</string>
-    <string name="view_subcategories">Просмотр подкатегорий</string>
-    <string name="process">Обработать</string>
-    <string name="select_from_gallery">Выбрать из галереи</string>
+    <string name="address_type" translatable="false">Тип адреса</string>
+    <string name="view_subcategories" translatable="false">Просмотр подкатегорий</string>
+    <string name="process" translatable="false">Обработать</string>
+    <string name="select_from_gallery" translatable="false">Выбрать из галереи</string>
 
     <string name="category_added">Категория добавлена</string>
     <string name="category_updated">Категория обновлена</string>
@@ -574,9 +576,12 @@
     <string name="search_hint">Поиск…</string>
 
     <!-- Строки для заказов -->
-    <string name="process_order">Обработать заказ</string>
+    <string name="process_order" translatable="false">Обработать заказ</string>
+
+    <string name="app_version" translatable="false">Версия 1.0</string>
 
     <!-- Строки для импорта CSV -->
-    <string name="import_instructions_text">Загрузите файл CSV или Excel со списком товаров. Файл должен содержать следующие столбцы: SKU, Название, Категория, Цена, Количество.</string>
+    <string name="import_instructions_text" translatable="false">Загрузите файл CSV или Excel со списком товаров. Файл должен содержать следующие столбцы: SKU, Название, Категория, Цена, Количество.</string>
+    <string name="product_active">Активен</string>
 
 </resources>

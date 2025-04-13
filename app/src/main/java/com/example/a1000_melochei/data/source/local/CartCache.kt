@@ -6,8 +6,11 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.asLiveData
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.yourstore.app.data.model.Cart
 import com.yourstore.app.data.model.CartItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -19,9 +22,45 @@ import kotlinx.coroutines.flow.map
 class CartCache(private val context: Context) {
 
     companion object {
+        // Правильное определение delegate для DataStore
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "cart_cache")
         private val CART_ITEMS_KEY = stringPreferencesKey("cart_items")
         private val gson = Gson()
+    }
+
+    /**
+     * Получение корзины из кэша
+     * @return Объект корзины
+     */
+    fun getCart(): Cart {
+        // Синхронное получение данных для внутреннего использования
+        val cartItemsJson = context.getSharedPreferences("cart_cache", Context.MODE_PRIVATE)
+            .getString(CART_ITEMS_KEY.name, "[]") ?: "[]"
+        val type = object : TypeToken<List<CartItem>>() {}.type
+        val items: List<CartItem> = gson.fromJson(cartItemsJson, type)
+
+        return Cart(
+            id = "",
+            items = items,
+            updatedAt = System.currentTimeMillis()
+        )
+    }
+
+    /**
+     * Сохранение корзины в кэш
+     * @param cart Объект корзины для сохранения
+     */
+    suspend fun saveCart(cart: Cart) {
+        val cartItemsJson = gson.toJson(cart.items)
+        context.dataStore.edit { preferences ->
+            preferences[CART_ITEMS_KEY] = cartItemsJson
+        }
+
+        // Дублируем в SharedPreferences для синхронного доступа
+        context.getSharedPreferences("cart_cache", Context.MODE_PRIVATE)
+            .edit()
+            .putString(CART_ITEMS_KEY.name, cartItemsJson)
+            .apply()
     }
 
     /**
@@ -33,17 +72,6 @@ class CartCache(private val context: Context) {
             val cartItemsJson = preferences[CART_ITEMS_KEY] ?: "[]"
             val type = object : TypeToken<List<CartItem>>() {}.type
             gson.fromJson(cartItemsJson, type)
-        }
-    }
-
-    /**
-     * Сохранение элементов корзины в кэш
-     * @param cartItems Список элементов корзины
-     */
-    suspend fun saveCartItems(cartItems: List<CartItem>) {
-        val cartItemsJson = gson.toJson(cartItems)
-        context.dataStore.edit { preferences ->
-            preferences[CART_ITEMS_KEY] = cartItemsJson
         }
     }
 
@@ -71,6 +99,12 @@ class CartCache(private val context: Context) {
             }
 
             preferences[CART_ITEMS_KEY] = gson.toJson(cartItems)
+
+            // Дублируем в SharedPreferences для синхронного доступа
+            context.getSharedPreferences("cart_cache", Context.MODE_PRIVATE)
+                .edit()
+                .putString(CART_ITEMS_KEY.name, gson.toJson(cartItems))
+                .apply()
         }
     }
 
@@ -92,6 +126,12 @@ class CartCache(private val context: Context) {
             }
 
             preferences[CART_ITEMS_KEY] = gson.toJson(cartItems)
+
+            // Дублируем в SharedPreferences для синхронного доступа
+            context.getSharedPreferences("cart_cache", Context.MODE_PRIVATE)
+                .edit()
+                .putString(CART_ITEMS_KEY.name, gson.toJson(cartItems))
+                .apply()
         }
     }
 
@@ -108,6 +148,12 @@ class CartCache(private val context: Context) {
             cartItems.removeIf { it.id == cartItemId }
 
             preferences[CART_ITEMS_KEY] = gson.toJson(cartItems)
+
+            // Дублируем в SharedPreferences для синхронного доступа
+            context.getSharedPreferences("cart_cache", Context.MODE_PRIVATE)
+                .edit()
+                .putString(CART_ITEMS_KEY.name, gson.toJson(cartItems))
+                .apply()
         }
     }
 
@@ -117,6 +163,12 @@ class CartCache(private val context: Context) {
     suspend fun clearCart() {
         context.dataStore.edit { preferences ->
             preferences[CART_ITEMS_KEY] = "[]"
+
+            // Дублируем в SharedPreferences для синхронного доступа
+            context.getSharedPreferences("cart_cache", Context.MODE_PRIVATE)
+                .edit()
+                .putString(CART_ITEMS_KEY.name, "[]")
+                .apply()
         }
     }
 
@@ -128,6 +180,14 @@ class CartCache(private val context: Context) {
         return getCartItems().map { items ->
             items.sumOf { it.quantity }
         }
+    }
+
+    /**
+     * Получение количества товаров как LiveData
+     * @return LiveData с количеством товаров
+     */
+    fun getCartItemCountLiveData(): LiveData<Int> {
+        return getCartItemCount().asLiveData()
     }
 
     /**

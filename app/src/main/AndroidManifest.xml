@@ -2,16 +2,26 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Permissions -->
+    <!-- Интернет-разрешения -->
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" />
+
+    <!-- Разрешения для работы с хранилищем (для выбора изображений) -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- Разрешения для отправки сообщений и звонков -->
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+
+    <!-- Разрешения для уведомлений -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
-        android:name=".yourstore"
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -20,10 +30,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MelocheiApp"
-        android:usesCleartextTraffic="false"
         tools:targetApi="33">
 
-        <!-- Splash Screen -->
+        <!-- Splash Activity - стартовая точка приложения -->
         <activity
             android:name=".ui.SplashActivity"
             android:exported="true"
@@ -34,73 +43,42 @@
             </intent-filter>
         </activity>
 
-        <!-- Authentication Activities -->
-        <activity
-            android:name=".ui.auth.LoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.auth.AdminLoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.auth.RegisterActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.auth.ForgotPasswordActivity"
-            android:exported="false" />
+        <!-- Основные активности -->
+        <activity android:name=".ui.MainActivity" android:exported="false" />
 
-        <!-- Customer Activities -->
-        <activity
-            android:name=".ui.customer.CustomerActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.customer.catalog.ProductDetailActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.customer.catalog.SearchActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.customer.cart.CheckoutActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.customer.orders.OrderDetailActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.customer.profile.EditProfileActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.customer.profile.AddressActivity"
-            android:exported="false" />
+        <!-- Авторизация -->
+        <activity android:name=".ui.auth.LoginActivity" android:exported="false" />
+        <activity android:name=".ui.auth.AdminLoginActivity" android:exported="false" />
+        <activity android:name=".ui.auth.RegisterActivity" android:exported="false" />
+        <activity android:name=".ui.auth.ForgotPasswordActivity" android:exported="false" />
 
-        <!-- Admin Activities -->
-        <activity
-            android:name=".ui.admin.AdminActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.admin.products.AddProductActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.admin.products.EditProductActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.admin.products.ImportProductsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.admin.categories.AddCategoryActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.admin.orders.OrderDetailAdminActivity"
-            android:exported="false" />
+        <!-- Клиентская часть -->
+        <activity android:name=".ui.customer.CustomerActivity" android:exported="false" />
+        <activity android:name=".ui.customer.catalog.ProductDetailActivity" android:exported="false" />
+        <activity android:name=".ui.customer.catalog.SearchActivity" android:exported="false" />
+        <activity android:name=".ui.customer.cart.CheckoutActivity" android:exported="false" />
+        <activity android:name=".ui.customer.orders.OrderDetailActivity" android:exported="false" />
+        <activity android:name=".ui.customer.profile.EditProfileActivity" android:exported="false" />
+        <activity android:name=".ui.customer.profile.AddressActivity" android:exported="false" />
 
-        <!-- Firebase Message Service -->
+        <!-- Административная часть -->
+        <activity android:name=".ui.admin.AdminActivity" android:exported="false" />
+        <activity android:name=".ui.admin.products.AddProductActivity" android:exported="false" />
+        <activity android:name=".ui.admin.products.EditProductActivity" android:exported="false" />
+        <activity android:name=".ui.admin.products.ImportProductsActivity" android:exported="false" />
+        <activity android:name=".ui.admin.categories.AddCategoryActivity" android:exported="false" />
+        <activity android:name=".ui.admin.orders.OrderDetailAdminActivity" android:exported="false" />
+
+        <!-- FCM сервис для уведомлений -->
         <service
-            android:name=".service.FirebaseMessagingService"
+            android:name=".service.MelocheiFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <!-- FileProvider for image sharing -->
+        <!-- Провайдер для доступа к файлам (для экспорта данных) -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -110,6 +88,16 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-    </application>
 
+        <!-- Метаданные для Firebase Messaging -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_notification" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorPrimary" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/notification_channel_id" />
+    </application>
 </manifest>

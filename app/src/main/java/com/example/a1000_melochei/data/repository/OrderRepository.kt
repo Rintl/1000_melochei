@@ -4,16 +4,14 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.yourstore.app.data.common.Resource
-import com.yourstore.app.data.model.Cart
 import com.yourstore.app.data.model.CartTotal
 import com.yourstore.app.data.model.Order
 import com.yourstore.app.data.model.OrderItem
 import com.yourstore.app.data.model.OrderStatus
+import com.yourstore.app.data.model.User
 import com.yourstore.app.data.source.local.CartCache
-import com.yourstore.app.data.source.remote.FirebaseAuthSource
 import com.yourstore.app.data.source.remote.FirestoreSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -71,8 +69,13 @@ class OrderRepository(
             }
 
             // Получаем информацию о пользователе
-            val userDoc = firestoreSource.getDocument(USERS_COLLECTION, userId)
-            val user = userDoc.toObject(com.yourstore.app.data.model.User::class.java)
+            val userResult = firestoreSource.getDocument(USERS_COLLECTION, userId)
+            if (userResult is Resource.Error) {
+                return@withContext Resource.Error(userResult.message ?: "Ошибка при получении данных пользователя")
+            }
+
+            val userDoc = (userResult as Resource.Success).data
+            val user = userDoc.toObject(User::class.java)
                 ?: return@withContext Resource.Error("Профиль пользователя не найден")
 
             // Получаем адрес доставки, если он используется
@@ -127,7 +130,10 @@ class OrderRepository(
             )
 
             // Сохраняем заказ в Firestore
-            firestoreSource.setDocument(ORDERS_COLLECTION, order.id, order)
+            val result = firestoreSource.setDocument(ORDERS_COLLECTION, order.id, order)
+            if (result is Resource.Error) {
+                return@withContext Resource.Error(result.message ?: "Ошибка при сохранении заказа")
+            }
 
             // Обновляем статистику продаж для товаров
             updateProductSalesStats(orderItems)
@@ -148,7 +154,12 @@ class OrderRepository(
      */
     suspend fun getOrderById(orderId: String): Resource<Order> = withContext(Dispatchers.IO) {
         return@withContext try {
-            val orderDoc = firestoreSource.getDocument(ORDERS_COLLECTION, orderId)
+            val orderResult = firestoreSource.getDocument(ORDERS_COLLECTION, orderId)
+            if (orderResult is Resource.Error) {
+                return@withContext Resource.Error(orderResult.message ?: "Ошибка при получении заказа")
+            }
+
+            val orderDoc = (orderResult as Resource.Success).data
             val order = orderDoc.toObject(Order::class.java)?.copy(id = orderId)
                 ?: return@withContext Resource.Error("Заказ не найден")
 
@@ -167,17 +178,20 @@ class OrderRepository(
             ?: return@withContext Resource.Error("Пользователь не авторизован")
 
         return@withContext try {
-            val ordersSnapshot = firestoreSource.getCollectionWithFilterOrderBy(
-                ORDERS_COLLECTION,
-                "userId",
-                userId,
-                "createdAt",
-                true
-            )
-
-            val orders = ordersSnapshot.documents.mapNotNull { doc ->
-                doc.toObject(Order::class.java)?.copy(id = doc.id)
+            // Так как метода getCollectionWithFilterOrderBy нет в FirestoreSource,
+            // используем более простой подход с getCollection и фильтрацией результатов
+            val ordersResult = firestoreSource.getCollection(ORDERS_COLLECTION)
+            if (ordersResult is Resource.Error) {
+                return@withContext Resource.Error(ordersResult.message ?: "Ошибка при получении заказов")
             }
+
+            val ordersSnapshot = (ordersResult as Resource.Success).data
+            val orders = ordersSnapshot.documents
+                .mapNotNull { doc ->
+                    doc.toObject(Order::class.java)?.copy(id = doc.id)
+                }
+                .filter { it.userId == userId }
+                .sortedByDescending { it.createdAt }
 
             Resource.Success(orders)
         } catch (e: Exception) {
@@ -191,15 +205,18 @@ class OrderRepository(
      */
     suspend fun getAllOrders(): Resource<List<Order>> = withContext(Dispatchers.IO) {
         return@withContext try {
-            val ordersSnapshot = firestoreSource.getCollectionOrderBy(
-                ORDERS_COLLECTION,
-                "createdAt",
-                true
-            )
-
-            val orders = ordersSnapshot.documents.mapNotNull { doc ->
-                doc.toObject(Order::class.java)?.copy(id = doc.id)
+            // Используем getCollection вместо getCollectionOrderBy
+            val ordersResult = firestoreSource.getCollection(ORDERS_COLLECTION)
+            if (ordersResult is Resource.Error) {
+                return@withContext Resource.Error(ordersResult.message ?: "Ошибка при получении заказов")
             }
+
+            val ordersSnapshot = (ordersResult as Resource.Success).data
+            val orders = ordersSnapshot.documents
+                .mapNotNull { doc ->
+                    doc.toObject(Order::class.java)?.copy(id = doc.id)
+                }
+                .sortedByDescending { it.createdAt }
 
             Resource.Success(orders)
         } catch (e: Exception) {
@@ -213,16 +230,19 @@ class OrderRepository(
      */
     suspend fun getLatestOrders(limit: Int): Resource<List<Order>> = withContext(Dispatchers.IO) {
         return@withContext try {
-            val ordersSnapshot = firestoreSource.getCollectionOrderBy(
-                ORDERS_COLLECTION,
-                "createdAt",
-                true,
-                limit
-            )
-
-            val orders = ordersSnapshot.documents.mapNotNull { doc ->
-                doc.toObject(Order::class.java)?.copy(id = doc.id)
+            // Используем getCollection вместо getCollectionOrderBy с лимитом
+            val ordersResult = firestoreSource.getCollection(ORDERS_COLLECTION)
+            if (ordersResult is Resource.Error) {
+                return@withContext Resource.Error(ordersResult.message ?: "Ошибка при получении заказов")
             }
+
+            val ordersSnapshot = (ordersResult as Resource.Success).data
+            val orders = ordersSnapshot.documents
+                .mapNotNull { doc ->
+                    doc.toObject(Order::class.java)?.copy(id = doc.id)
+                }
+                .sortedByDescending { it.createdAt }
+                .take(limit)
 
             Resource.Success(orders)
         } catch (e: Exception) {
@@ -239,19 +259,16 @@ class OrderRepository(
         status: OrderStatus
     ): Resource<Unit> = withContext(Dispatchers.IO) {
         return@withContext try {
-            firestoreSource.updateField(
-                ORDERS_COLLECTION,
-                orderId,
-                "status",
-                status
+            // Так как метода updateField нет в FirestoreSource, используем updateDocument
+            val updates = mapOf(
+                "status" to status,
+                "updatedAt" to System.currentTimeMillis()
             )
 
-            firestoreSource.updateField(
-                ORDERS_COLLECTION,
-                orderId,
-                "updatedAt",
-                System.currentTimeMillis()
-            )
+            val result = firestoreSource.updateDocument(ORDERS_COLLECTION, orderId, updates)
+            if (result is Resource.Error) {
+                return@withContext Resource.Error(result.message ?: "Ошибка при обновлении статуса заказа")
+            }
 
             // Если статус завершен, обновляем статистику продаж
             if (status == OrderStatus.COMPLETED) {
@@ -289,19 +306,15 @@ class OrderRepository(
             }
 
             // Обновляем статус заказа
-            firestoreSource.updateField(
-                ORDERS_COLLECTION,
-                orderId,
-                "status",
-                OrderStatus.CANCELLED
+            val updates = mapOf(
+                "status" to OrderStatus.CANCELLED,
+                "updatedAt" to System.currentTimeMillis()
             )
 
-            firestoreSource.updateField(
-                ORDERS_COLLECTION,
-                orderId,
-                "updatedAt",
-                System.currentTimeMillis()
-            )
+            val result = firestoreSource.updateDocument(ORDERS_COLLECTION, orderId, updates)
+            if (result is Resource.Error) {
+                return@withContext Resource.Error(result.message ?: "Ошибка при отмене заказа")
+            }
 
             Resource.Success(Unit)
         } catch (e: Exception) {
@@ -422,7 +435,7 @@ class OrderRepository(
     fun updateNewOrdersCount() {
         FirebaseFirestore.getInstance()
             .collection(ORDERS_COLLECTION)
-            .whereEqualTo("status", OrderStatus.PENDING)
+            .whereEqualTo("status", OrderStatus.PENDING.name)
             .get()
             .addOnSuccessListener { snapshot ->
                 _newOrdersCount.value = snapshot.documents.size
@@ -450,21 +463,25 @@ class OrderRepository(
     private suspend fun updateProductSalesStats(orderItems: List<OrderItem>) {
         for (item in orderItems) {
             try {
-                // Обновляем количество проданных товаров (без обновления рейтинга)
-                firestoreSource.incrementField(
-                    PRODUCTS_COLLECTION,
-                    item.productId,
-                    "soldCount",
-                    item.quantity
+                // Получаем текущие данные о товаре
+                val productResult = firestoreSource.getDocument(PRODUCTS_COLLECTION, item.productId)
+                if (productResult is Resource.Error) {
+                    Log.e(TAG, "Ошибка при получении данных товара: ${productResult.message}")
+                    continue
+                }
+
+                val productDoc = (productResult as Resource.Success).data
+                val product = productDoc.toObject(com.yourstore.app.data.model.Product::class.java)
+                    ?: continue
+
+                // Обновляем количество проданных товаров и доступное количество
+                val updates = mapOf(
+                    "soldCount" to (product.soldCount + item.quantity),
+                    "availableQuantity" to (product.availableQuantity - item.quantity),
+                    "updatedAt" to System.currentTimeMillis()
                 )
 
-                // Уменьшаем доступное количество товара
-                firestoreSource.incrementField(
-                    PRODUCTS_COLLECTION,
-                    item.productId,
-                    "availableQuantity",
-                    -item.quantity
-                )
+                firestoreSource.updateDocument(PRODUCTS_COLLECTION, item.productId, updates)
             } catch (e: Exception) {
                 Log.e(TAG, "Ошибка при обновлении статистики товара: ${e.message}")
                 // Продолжаем с другими товарами
@@ -478,14 +495,25 @@ class OrderRepository(
     private suspend fun updateProductSalesOnComplete(orderItems: List<OrderItem>) {
         for (item in orderItems) {
             try {
-                // В данной реализации просто увеличиваем счетчик завершенных продаж
-                // В реальном приложении здесь может быть более сложная логика
-                firestoreSource.incrementField(
-                    PRODUCTS_COLLECTION,
-                    item.productId,
-                    "completedSalesCount",
-                    item.quantity
+                // Получаем текущие данные о товаре
+                val productResult = firestoreSource.getDocument(PRODUCTS_COLLECTION, item.productId)
+                if (productResult is Resource.Error) {
+                    Log.e(TAG, "Ошибка при получении данных товара: ${productResult.message}")
+                    continue
+                }
+
+                val productDoc = (productResult as Resource.Success).data
+                val product = productDoc.toObject(com.yourstore.app.data.model.Product::class.java)
+                    ?: continue
+
+                // Обновляем счетчик завершенных продаж
+                val completedSalesCount = product.completedSalesCount ?: 0
+                val updates = mapOf(
+                    "completedSalesCount" to (completedSalesCount + item.quantity),
+                    "updatedAt" to System.currentTimeMillis()
                 )
+
+                firestoreSource.updateDocument(PRODUCTS_COLLECTION, item.productId, updates)
             } catch (e: Exception) {
                 Log.e(TAG, "Ошибка при обновлении статистики завершения продаж: ${e.message}")
                 // Продолжаем с другими товарами

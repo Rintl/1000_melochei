@@ -17,6 +17,7 @@ import com.yourstore.app.ui.MainActivity
 import com.yourstore.app.ui.customer.CustomerActivity
 import com.yourstore.app.ui.customer.orders.OrderDetailActivity
 import com.yourstore.app.util.Constants
+import com.yourstore.app.util.NotificationHelper
 
 /**
  * Сервис для работы с уведомлениями в приложении.
@@ -30,53 +31,8 @@ class NotificationService(private val context: Context) {
     }
 
     init {
-        createNotificationChannels()
-    }
-
-    /**
-     * Создает каналы уведомлений для Android 8.0 (API level 26) и выше
-     */
-    private fun createNotificationChannels() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Канал для уведомлений о заказах
-            val orderChannel = NotificationChannel(
-                Constants.NOTIFICATION_CHANNEL_ORDER_ID,
-                context.getString(R.string.notification_channel_orders),
-                NotificationManager.IMPORTANCE_HIGH
-            ).apply {
-                description = context.getString(R.string.notification_channel_orders_description)
-                enableLights(true)
-                lightColor = Color.BLUE
-                enableVibration(true)
-            }
-
-            // Канал для уведомлений о промо-акциях
-            val promoChannel = NotificationChannel(
-                Constants.NOTIFICATION_CHANNEL_PROMO_ID,
-                context.getString(R.string.notification_channel_promo),
-                NotificationManager.IMPORTANCE_DEFAULT
-            ).apply {
-                description = context.getString(R.string.notification_channel_promo_description)
-                enableLights(true)
-                lightColor = Color.GREEN
-                enableVibration(true)
-            }
-
-            // Канал для технических уведомлений
-            val systemChannel = NotificationChannel(
-                Constants.NOTIFICATION_CHANNEL_SYSTEM_ID,
-                context.getString(R.string.notification_channel_system),
-                NotificationManager.IMPORTANCE_LOW
-            ).apply {
-                description = context.getString(R.string.notification_channel_system_description)
-                enableLights(false)
-                enableVibration(false)
-            }
-
-            // Получаем системный NotificationManager и регистрируем каналы
-            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannels(listOf(orderChannel, promoChannel, systemChannel))
-        }
+        // Создаем каналы уведомлений при инициализации сервиса
+        NotificationHelper.createNotificationChannels(context)
     }
 
     /**
@@ -89,7 +45,7 @@ class NotificationService(private val context: Context) {
     fun showNewOrderNotification(orderId: String, orderNumber: String, customerName: String) {
         // Создаем интент для перехода к деталям заказа
         val intent = Intent(context, com.yourstore.app.ui.admin.orders.OrderDetailAdminActivity::class.java).apply {
-            putExtra("ORDER_ID", orderId)
+            putExtra(Constants.EXTRA_ORDER_ID, orderId)
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
 
@@ -101,7 +57,8 @@ class NotificationService(private val context: Context) {
         )
 
         // Настраиваем уведомление
-        val notification = NotificationCompat.Builder(context, Constants.NOTIFICATION_CHANNEL_ORDER_ID)
+        val channelId = context.getString(R.string.notification_channel_orders_id)
+        val notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_notification_order)
             .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.ic_logo))
             .setContentTitle(context.getString(R.string.notification_new_order_title))
@@ -126,7 +83,7 @@ class NotificationService(private val context: Context) {
     fun showOrderStatusUpdateNotification(orderId: String, orderNumber: String, newStatus: String) {
         // Создаем интент для перехода к деталям заказа
         val intent = Intent(context, OrderDetailActivity::class.java).apply {
-            putExtra("ORDER_ID", orderId)
+            putExtra(Constants.EXTRA_ORDER_ID, orderId)
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
 
@@ -138,7 +95,8 @@ class NotificationService(private val context: Context) {
         )
 
         // Настраиваем уведомление
-        val notification = NotificationCompat.Builder(context, Constants.NOTIFICATION_CHANNEL_ORDER_ID)
+        val channelId = context.getString(R.string.notification_channel_orders_id)
+        val notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_notification_order)
             .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.ic_logo))
             .setContentTitle(context.getString(R.string.notification_order_status_title))
@@ -162,7 +120,7 @@ class NotificationService(private val context: Context) {
     fun showPromoNotification(title: String, message: String) {
         // Создаем интент для перехода на главный экран приложения
         val intent = Intent(context, CustomerActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
 
         val pendingIntent = PendingIntent.getActivity(
@@ -173,7 +131,8 @@ class NotificationService(private val context: Context) {
         )
 
         // Настраиваем уведомление
-        val notification = NotificationCompat.Builder(context, Constants.NOTIFICATION_CHANNEL_PROMO_ID)
+        val channelId = context.getString(R.string.notification_channel_promo_id)
+        val notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_notification_promo)
             .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.ic_logo))
             .setContentTitle(title)
@@ -208,7 +167,8 @@ class NotificationService(private val context: Context) {
         )
 
         // Настраиваем уведомление
-        val notification = NotificationCompat.Builder(context, Constants.NOTIFICATION_CHANNEL_SYSTEM_ID)
+        val channelId = context.getString(R.string.notification_channel_system_id)
+        val notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_notification_system)
             .setContentTitle(title)
             .setContentText(message)

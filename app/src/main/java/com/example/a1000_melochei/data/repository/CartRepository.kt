@@ -2,15 +2,12 @@ package com.yourstore.app.data.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.map
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Transaction
 import com.yourstore.app.data.common.Resource
 import com.yourstore.app.data.model.Cart
 import com.yourstore.app.data.model.CartItem
 import com.yourstore.app.data.model.CartTotal
-import com.yourstore.app.data.model.DeliveryZone
 import com.yourstore.app.data.model.OrderItem
 import com.yourstore.app.data.model.Product
 import com.yourstore.app.data.source.local.CartCache
@@ -18,7 +15,7 @@ import com.yourstore.app.data.source.remote.FirestoreSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.UUID
 
 /**
  * Репозиторий для управления корзиной покупок.
@@ -51,7 +48,12 @@ class CartRepository(
 
             if (userId != null) {
                 // Если пользователь авторизован, загружаем корзину из Firestore
-                getCartFromFirestore(userId)
+                val result = getCartFromFirestore(userId)
+                if (result is Resource.Success) {
+                    return@withContext Resource.Success(result.data ?: emptyList())
+                } else {
+                    return@withContext Resource.Error((result as Resource.Error).message ?: "Ошибка при получении корзины")
+                }
             } else {
                 // Если пользователь не авторизован, используем локальный кэш
                 val cachedCart = cartCache.getCart()
@@ -157,7 +159,6 @@ class CartRepository(
                                 val newCart = Cart(
                                     id = userId,
                                     items = listOf(cartItem),
-                                    createdAt = System.currentTimeMillis(),
                                     updatedAt = System.currentTimeMillis()
                                 )
 
@@ -433,8 +434,12 @@ class CartRepository(
                 ?: return@withContext Resource.Error("Пользователь не авторизован")
 
             // Получаем данные пользователя для получения адреса
-            val userDoc = firestoreSource.getDocument("users", userId)
-            val user = userDoc.toObject(com.yourstore.app.data.model.User::class.java)
+            val userDocResult = firestoreSource.getDocument("users", userId)
+            if (userDocResult !is Resource.Success) {
+                return@withContext Resource.Error("Не удалось получить профиль пользователя")
+            }
+
+            val user = userDocResult.data?.toObject(com.yourstore.app.data.model.User::class.java)
                 ?: return@withContext Resource.Error("Профиль пользователя не найден")
 
             // Ищем выбранный адрес
@@ -442,32 +447,35 @@ class CartRepository(
                 ?: return@withContext Resource.Error("Адрес не найден")
 
             // Получаем зоны доставки из Firestore
-            val deliveryZonesSnapshot = firestoreSource.getCollection(DELIVERY_ZONES_COLLECTION)
-            val deliveryZones = deliveryZonesSnapshot.documents.mapNotNull { doc ->
-                doc.toObject(DeliveryZone::class.java)
+            val deliveryZonesResult = firestoreSource.getCollection(DELIVERY_ZONES_COLLECTION)
+            if (deliveryZonesResult !is Resource.Success) {
+                return@withContext Resource.Error("Не удалось получить зоны доставки")
             }
 
-            // Пытаемся найти подходящую зону доставки для адреса
-            // В реальном приложении здесь может быть более сложная логика с геокодированием
-            // и расчетом расстояния
-            var deliveryFee = 2000.0 // Базовая стоимость доставки по умолчанию
+            val deliveryZones = deliveryZonesResult.data?.documents?.mapNotNull { doc ->
+                doc.toObject(com.yourstore.app.data.model.DeliveryZone::class.java)
+            } ?: emptyList()
 
-            // Простая проверка по ключевым словам в адресе
+            // Базовая стоимость доставки по умолчанию
+            var deliveryFee = 2000.0
+
+            // Определяем зону доставки по адресу
             for (zone in deliveryZones) {
-                if (zone.keywords.any { keyword ->
-                        address.address.contains(keyword, ignoreCase = true)
-                    }) {
-                    deliveryFee = zone.baseFee
+                // Проверка соответствия адреса зоне доставки
+                // Здесь можно реализовать более сложную логику проверки
+                if (address.city == zone.city ||
+                    (zone.boundaries.isNotEmpty() && isAddressInBoundaries(address, zone))) {
+                    deliveryFee = zone.deliveryFee
                     break
                 }
             }
 
-            // Получаем общий вес корзины для расчета дополнительной платы
+            // Получаем общий объем корзины для расчета дополнительной платы
             val cartItemsResult = getCartItems()
             if (cartItemsResult is Resource.Success) {
                 val cartItems = cartItemsResult.data ?: emptyList()
 
-                // Если в корзине много тяжелых товаров, увеличиваем стоимость доставки
+                // Если в корзине много товаров, увеличиваем стоимость доставки
                 val totalQuantity = cartItems.sumOf { it.quantity }
                 if (totalQuantity > 10) {
                     deliveryFee += 500.0 // Доплата за большое количество товаров
@@ -479,6 +487,16 @@ class CartRepository(
             Log.e(TAG, "Ошибка при расчете стоимости доставки: ${e.message}", e)
             Resource.Error(e.message ?: "Ошибка при расчете стоимости доставки")
         }
+    }
+
+    /**
+     * Вспомогательный метод для проверки нахождения адреса в зоне доставки
+     */
+    private fun isAddressInBoundaries(address: com.yourstore.app.data.model.Address,
+                                      zone: com.yourstore.app.data.model.DeliveryZone): Boolean {
+        // Здесь должна быть логика проверки нахождения адреса в границах зоны
+        // В простейшем случае можно просто проверять город или район
+        return false
     }
 
     /**
@@ -532,7 +550,6 @@ class CartRepository(
                             val newCart = Cart(
                                 id = userId,
                                 items = localCart.items,
-                                createdAt = System.currentTimeMillis(),
                                 updatedAt = System.currentTimeMillis()
                             )
 
@@ -632,7 +649,6 @@ class CartRepository(
                 val emptyCart = Cart(
                     id = userId,
                     items = emptyList(),
-                    createdAt = System.currentTimeMillis(),
                     updatedAt = System.currentTimeMillis()
                 )
 
@@ -660,8 +676,6 @@ class CartRepository(
             }
 
             // Проверяем актуальность данных о наличии товаров и собираем обновленные элементы
-            val db = FirebaseFirestore.getInstance()
-            val batch = db.batch()
             val updatedItems = mutableListOf<CartItem>()
             var cartNeedsUpdate = false
 
@@ -718,16 +732,21 @@ class CartRepository(
             if (cartNeedsUpdate) {
                 // Находим индексы обновленных элементов в исходном списке
                 val allUpdatedItems = cart.items.toMutableList()
-                for (i in itemsToProcess.indices) {
-                    val originalIndex = cart.items.indexOfFirst { it.id == itemsToProcess[i].id }
-                    if (originalIndex != -1 && i < updatedItems.size) {
-                        allUpdatedItems[originalIndex] = updatedItems[i]
-                    }
-                }
 
-                // Удаляем элементы, которые были пропущены (товар удален)
-                allUpdatedItems.removeAll { item ->
-                    itemsToProcess.any { it.id == item.id } && updatedItems.none { it.id == item.id }
+                // Удаляем элементы, которые были удалены из обновленного списка
+                val processedIds = itemsToProcess.map { it.id }
+                val updatedIds = updatedItems.map { it.id }
+
+                // Удаляем элементы, которые были в обработке, но не попали в обновленные
+                val toRemove = processedIds.filter { id -> !updatedIds.contains(id) }
+                allUpdatedItems.removeAll { toRemove.contains(it.id) }
+
+                // Обновляем остальные элементы
+                for (updatedItem in updatedItems) {
+                    val index = allUpdatedItems.indexOfFirst { it.id == updatedItem.id }
+                    if (index != -1) {
+                        allUpdatedItems[index] = updatedItem
+                    }
                 }
 
                 // Обновляем корзину в Firestore
@@ -743,7 +762,6 @@ class CartRepository(
                     cartCache.saveCart(Cart(
                         id = userId,
                         items = allUpdatedItems,
-                        createdAt = cart.createdAt,
                         updatedAt = System.currentTimeMillis()
                     ))
                 } catch (e: Exception) {
@@ -768,43 +786,50 @@ class CartRepository(
      * @param isAdd True - добавить товар, False - удалить товар
      */
     private suspend fun updateLocalCart(cartItem: CartItem, isAdd: Boolean) {
-        val cart = cartCache.getCart()
+        try {
+            val cart = cartCache.getCart()
 
-        if (isAdd) {
-            // Проверяем, есть ли такой товар уже в корзине
-            val existingItemIndex = cart.items.indexOfFirst { it.productId == cartItem.productId }
+            if (isAdd) {
+                // Проверяем, есть ли такой товар уже в корзине
+                val existingItemIndex = cart.items.indexOfFirst { it.productId == cartItem.productId }
 
-            if (existingItemIndex != -1) {
-                // Товар уже в корзине, обновляем количество
-                val existingItem = cart.items[existingItemIndex]
-                val newQuantity = existingItem.quantity + cartItem.quantity
+                if (existingItemIndex != -1) {
+                    // Товар уже в корзине, обновляем количество
+                    val existingItem = cart.items[existingItemIndex]
+                    val newQuantity = existingItem.quantity + cartItem.quantity
 
-                val updatedItem = existingItem.copy(quantity = newQuantity)
-                val updatedItems = cart.items.toMutableList().apply {
-                    this[existingItemIndex] = updatedItem
+                    val updatedItem = existingItem.copy(quantity = newQuantity)
+                    val updatedItems = cart.items.toMutableList().apply {
+                        this[existingItemIndex] = updatedItem
+                    }
+
+                    cartCache.saveCart(Cart(
+                        id = cart.id,
+                        items = updatedItems,
+                        updatedAt = System.currentTimeMillis()
+                    ))
+                } else {
+                    // Добавляем новый товар в корзину
+                    val updatedItems = cart.items + cartItem
+
+                    cartCache.saveCart(Cart(
+                        id = cart.id,
+                        items = updatedItems,
+                        updatedAt = System.currentTimeMillis()
+                    ))
                 }
-
-                cartCache.saveCart(cart.copy(
-                    items = updatedItems,
-                    updatedAt = System.currentTimeMillis()
-                ))
             } else {
-                // Добавляем новый товар в корзину
-                val updatedItems = cart.items + cartItem
+                // Удаляем товар из корзины
+                val updatedItems = cart.items.filter { it.id != cartItem.id }
 
-                cartCache.saveCart(cart.copy(
+                cartCache.saveCart(Cart(
+                    id = cart.id,
                     items = updatedItems,
                     updatedAt = System.currentTimeMillis()
                 ))
             }
-        } else {
-            // Удаляем товар из корзины
-            val updatedItems = cart.items.filter { it.id != cartItem.id }
-
-            cartCache.saveCart(cart.copy(
-                items = updatedItems,
-                updatedAt = System.currentTimeMillis()
-            ))
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при обновлении локальной корзины: ${e.message}", e)
         }
     }
 
@@ -814,24 +839,29 @@ class CartRepository(
      * @param quantity Новое количество
      */
     private suspend fun updateLocalCartItemQuantity(cartItemId: String, quantity: Int) {
-        val cart = cartCache.getCart()
+        try {
+            val cart = cartCache.getCart()
 
-        // Находим товар в корзине
-        val itemIndex = cart.items.indexOfFirst { it.id == cartItemId }
+            // Находим товар в корзине
+            val itemIndex = cart.items.indexOfFirst { it.id == cartItemId }
 
-        if (itemIndex != -1) {
-            val item = cart.items[itemIndex]
+            if (itemIndex != -1) {
+                val item = cart.items[itemIndex]
 
-            // Обновляем количество
-            val updatedItem = item.copy(quantity = quantity)
-            val updatedItems = cart.items.toMutableList().apply {
-                this[itemIndex] = updatedItem
+                // Обновляем количество
+                val updatedItem = item.copy(quantity = quantity)
+                val updatedItems = cart.items.toMutableList().apply {
+                    this[itemIndex] = updatedItem
+                }
+
+                cartCache.saveCart(Cart(
+                    id = cart.id,
+                    items = updatedItems,
+                    updatedAt = System.currentTimeMillis()
+                ))
             }
-
-            cartCache.saveCart(cart.copy(
-                items = updatedItems,
-                updatedAt = System.currentTimeMillis()
-            ))
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при обновлении количества товара в локальной корзине: ${e.message}", e)
         }
     }
 
@@ -840,15 +870,20 @@ class CartRepository(
      * @param cartItemId ID элемента корзины для удаления
      */
     private suspend fun removeLocalCartItem(cartItemId: String) {
-        val cart = cartCache.getCart()
+        try {
+            val cart = cartCache.getCart()
 
-        // Удаляем товар из корзины
-        val updatedItems = cart.items.filter { it.id != cartItemId }
+            // Удаляем товар из корзины
+            val updatedItems = cart.items.filter { it.id != cartItemId }
 
-        cartCache.saveCart(cart.copy(
-            items = updatedItems,
-            updatedAt = System.currentTimeMillis()
-        ))
+            cartCache.saveCart(Cart(
+                id = cart.id,
+                items = updatedItems,
+                updatedAt = System.currentTimeMillis()
+            ))
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при удалении товара из локальной корзины: ${e.message}", e)
+        }
     }
 
     /**
@@ -871,9 +906,10 @@ class CartRepository(
                 // Товар уже есть в удаленной корзине, объединяем количество
                 val existingItem = resultItems[existingItemIndex]
                 val newQuantity = existingItem.quantity + localItem.quantity
+                val maxQuantity = existingItem.availableQuantity
 
                 resultItems[existingItemIndex] = existingItem.copy(
-                    quantity = minOf(newQuantity, existingItem.availableQuantity)
+                    quantity = minOf(newQuantity, maxQuantity)
                 )
             } else {
                 // Добавляем новый товар

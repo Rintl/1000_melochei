@@ -1,7 +1,5 @@
 package com.yourstore.app.data.repository
 
-import android.content.Context
-import android.net.Uri
 import android.util.Log
 import com.yourstore.app.data.common.Resource
 import com.yourstore.app.data.model.Product
@@ -33,14 +31,25 @@ class ProductRepository(
      */
     suspend fun getProductById(productId: String): Resource<Product> = withContext(Dispatchers.IO) {
         return@withContext try {
-            val productDoc = firestoreSource.getDocument(PRODUCTS_COLLECTION, productId)
-            val product = productDoc.toObject(Product::class.java)?.copy(id = productId)
-                ?: return@withContext Resource.Error("Товар не найден")
+            val documentResult = firestoreSource.getDocument(PRODUCTS_COLLECTION, productId)
 
-            // Проверяем, находится ли товар в избранном у текущего пользователя
-            val isFavorite = isProductInFavorites(productId)
-
-            Resource.Success(product.copy(isFavorite = isFavorite))
+            if (documentResult is Resource.Success) {
+                val document = documentResult.data
+                if (document != null && document.exists()) {
+                    val product = document.toObject(Product::class.java)?.copy(id = productId)
+                    if (product != null) {
+                        // Проверяем, находится ли товар в избранном у текущего пользователя
+                        val isFavorite = isProductInFavorites(productId)
+                        Resource.Success(product.copy(isFavorite = isFavorite))
+                    } else {
+                        Resource.Error("Ошибка при преобразовании данных товара")
+                    }
+                } else {
+                    Resource.Error("Товар не найден")
+                }
+            } else {
+                Resource.Error((documentResult as Resource.Error).message ?: "Ошибка при получении товара")
+            }
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при получении товара: ${e.message}")
             Resource.Error(e.message ?: "Ошибка при получении товара")
@@ -52,20 +61,30 @@ class ProductRepository(
      */
     suspend fun getAllProducts(): Resource<List<Product>> = withContext(Dispatchers.IO) {
         return@withContext try {
-            val productsSnapshot = firestoreSource.getCollection(PRODUCTS_COLLECTION)
-            val products = productsSnapshot.documents.mapNotNull { doc ->
-                doc.toObject(Product::class.java)?.copy(id = doc.id)
+            val collectionResult = firestoreSource.getCollection(PRODUCTS_COLLECTION)
+
+            if (collectionResult is Resource.Success) {
+                val snapshot = collectionResult.data
+                if (snapshot != null) {
+                    val products = snapshot.documents.mapNotNull { doc ->
+                        doc.toObject(Product::class.java)?.copy(id = doc.id)
+                    }
+
+                    // Получаем избранные товары для текущего пользователя
+                    val favoriteIds = getFavoriteProductIds()
+
+                    // Обновляем флаг isFavorite для каждого товара
+                    val productsWithFavorites = products.map { product ->
+                        product.copy(isFavorite = favoriteIds.contains(product.id))
+                    }
+
+                    Resource.Success(productsWithFavorites)
+                } else {
+                    Resource.Success(emptyList())
+                }
+            } else {
+                Resource.Error((collectionResult as Resource.Error).message ?: "Ошибка при получении списка товаров")
             }
-
-            // Получаем избранные товары для текущего пользователя
-            val favoriteIds = getFavoriteProductIds()
-
-            // Обновляем флаг isFavorite для каждого товара
-            val productsWithFavorites = products.map { product ->
-                product.copy(isFavorite = favoriteIds.contains(product.id))
-            }
-
-            Resource.Success(productsWithFavorites)
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при получении списка товаров: ${e.message}")
             Resource.Error(e.message ?: "Ошибка при получении списка товаров")
@@ -77,25 +96,34 @@ class ProductRepository(
      */
     suspend fun getProductsByCategory(categoryId: String): Resource<List<Product>> = withContext(Dispatchers.IO) {
         return@withContext try {
-            val productsSnapshot = firestoreSource.getCollectionWithFilter(
+            val queryResult = firestoreSource.getCollectionWithFilter(
                 PRODUCTS_COLLECTION,
                 "categoryId",
                 categoryId
             )
 
-            val products = productsSnapshot.documents.mapNotNull { doc ->
-                doc.toObject(Product::class.java)?.copy(id = doc.id)
+            if (queryResult is Resource.Success) {
+                val snapshot = queryResult.data
+                if (snapshot != null) {
+                    val products = snapshot.documents.mapNotNull { doc ->
+                        doc.toObject(Product::class.java)?.copy(id = doc.id)
+                    }
+
+                    // Получаем избранные товары для текущего пользователя
+                    val favoriteIds = getFavoriteProductIds()
+
+                    // Обновляем флаг isFavorite для каждого товара
+                    val productsWithFavorites = products.map { product ->
+                        product.copy(isFavorite = favoriteIds.contains(product.id))
+                    }
+
+                    Resource.Success(productsWithFavorites)
+                } else {
+                    Resource.Success(emptyList())
+                }
+            } else {
+                Resource.Error((queryResult as Resource.Error).message ?: "Ошибка при получении товаров по категории")
             }
-
-            // Получаем избранные товары для текущего пользователя
-            val favoriteIds = getFavoriteProductIds()
-
-            // Обновляем флаг isFavorite для каждого товара
-            val productsWithFavorites = products.map { product ->
-                product.copy(isFavorite = favoriteIds.contains(product.id))
-            }
-
-            Resource.Success(productsWithFavorites)
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при получении товаров по категории: ${e.message}")
             Resource.Error(e.message ?: "Ошибка при получении товаров по категории")
@@ -107,32 +135,41 @@ class ProductRepository(
      */
     suspend fun getSimilarProducts(categoryId: String, currentProductId: String, limit: Int): Resource<List<Product>> = withContext(Dispatchers.IO) {
         return@withContext try {
-            val productsSnapshot = firestoreSource.getCollectionWithFilter(
+            val queryResult = firestoreSource.getCollectionWithFilter(
                 PRODUCTS_COLLECTION,
                 "categoryId",
                 categoryId
             )
 
-            // Исключаем текущий товар из результатов
-            val products = productsSnapshot.documents
-                .mapNotNull { doc ->
-                    if (doc.id != currentProductId) {
-                        doc.toObject(Product::class.java)?.copy(id = doc.id)
-                    } else {
-                        null
+            if (queryResult is Resource.Success) {
+                val snapshot = queryResult.data
+                if (snapshot != null) {
+                    // Исключаем текущий товар из результатов
+                    val products = snapshot.documents
+                        .mapNotNull { doc ->
+                            if (doc.id != currentProductId) {
+                                doc.toObject(Product::class.java)?.copy(id = doc.id)
+                            } else {
+                                null
+                            }
+                        }
+                        .take(limit)
+
+                    // Получаем избранные товары для текущего пользователя
+                    val favoriteIds = getFavoriteProductIds()
+
+                    // Обновляем флаг isFavorite для каждого товара
+                    val productsWithFavorites = products.map { product ->
+                        product.copy(isFavorite = favoriteIds.contains(product.id))
                     }
+
+                    Resource.Success(productsWithFavorites)
+                } else {
+                    Resource.Success(emptyList())
                 }
-                .take(limit)
-
-            // Получаем избранные товары для текущего пользователя
-            val favoriteIds = getFavoriteProductIds()
-
-            // Обновляем флаг isFavorite для каждого товара
-            val productsWithFavorites = products.map { product ->
-                product.copy(isFavorite = favoriteIds.contains(product.id))
+            } else {
+                Resource.Error((queryResult as Resource.Error).message ?: "Ошибка при получении похожих товаров")
             }
-
-            Resource.Success(productsWithFavorites)
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при получении похожих товаров: ${e.message}")
             Resource.Error(e.message ?: "Ошибка при получении похожих товаров")
@@ -144,26 +181,35 @@ class ProductRepository(
      */
     suspend fun getPopularProducts(limit: Int = 10): Resource<List<Product>> = withContext(Dispatchers.IO) {
         return@withContext try {
-            val productsSnapshot = firestoreSource.getCollectionOrderBy(
+            val queryResult = firestoreSource.getCollectionOrderBy(
                 PRODUCTS_COLLECTION,
                 "soldCount",
                 true,
                 limit
             )
 
-            val products = productsSnapshot.documents.mapNotNull { doc ->
-                doc.toObject(Product::class.java)?.copy(id = doc.id)
+            if (queryResult is Resource.Success) {
+                val snapshot = queryResult.data
+                if (snapshot != null) {
+                    val products = snapshot.documents.mapNotNull { doc ->
+                        doc.toObject(Product::class.java)?.copy(id = doc.id)
+                    }
+
+                    // Получаем избранные товары для текущего пользователя
+                    val favoriteIds = getFavoriteProductIds()
+
+                    // Обновляем флаг isFavorite для каждого товара
+                    val productsWithFavorites = products.map { product ->
+                        product.copy(isFavorite = favoriteIds.contains(product.id))
+                    }
+
+                    Resource.Success(productsWithFavorites)
+                } else {
+                    Resource.Success(emptyList())
+                }
+            } else {
+                Resource.Error((queryResult as Resource.Error).message ?: "Ошибка при получении популярных товаров")
             }
-
-            // Получаем избранные товары для текущего пользователя
-            val favoriteIds = getFavoriteProductIds()
-
-            // Обновляем флаг isFavorite для каждого товара
-            val productsWithFavorites = products.map { product ->
-                product.copy(isFavorite = favoriteIds.contains(product.id))
-            }
-
-            Resource.Success(productsWithFavorites)
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при получении популярных товаров: ${e.message}")
             Resource.Error(e.message ?: "Ошибка при получении популярных товаров")
@@ -254,21 +300,27 @@ class ProductRepository(
                 val fileName = "products/${UUID.randomUUID()}_${imageFile.name}"
                 val uploadResult = storageSource.uploadFile(fileName, imageFile)
 
-                if (uploadResult is Resource.Success) {
-                    uploadResult.data?.let { imageUrls.add(it) }
+                if (uploadResult is Resource.Success && uploadResult.data != null) {
+                    imageUrls.add(uploadResult.data)
                 }
             }
 
             // Создаем документ товара в Firestore
+            val productId = UUID.randomUUID().toString()
             val newProduct = product.copy(
-                id = UUID.randomUUID().toString(),
+                id = productId,
                 images = imageUrls,
                 createdAt = System.currentTimeMillis(),
                 updatedAt = System.currentTimeMillis()
             )
 
-            val documentId = firestoreSource.addDocument(PRODUCTS_COLLECTION, newProduct.id, newProduct)
-            Resource.Success(documentId)
+            val result = firestoreSource.setDocument(PRODUCTS_COLLECTION, productId, newProduct)
+
+            if (result is Resource.Success) {
+                Resource.Success(productId)
+            } else {
+                Resource.Error((result as Resource.Error).message ?: "Ошибка при добавлении товара")
+            }
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при добавлении товара: ${e.message}")
             Resource.Error(e.message ?: "Ошибка при добавлении товара")
@@ -294,7 +346,7 @@ class ProductRepository(
             val currentProduct = (currentProductResult as Resource.Success).data!!
 
             // Удаляем указанные изображения
-            imagesToDelete.forEach { imageUrl ->
+            for (imageUrl in imagesToDelete) {
                 storageSource.deleteFile(imageUrl)
             }
 
@@ -305,8 +357,8 @@ class ProductRepository(
                 val fileName = "products/${UUID.randomUUID()}_${imageFile.name}"
                 val uploadResult = storageSource.uploadFile(fileName, imageFile)
 
-                if (uploadResult is Resource.Success) {
-                    uploadResult.data?.let { newImageUrls.add(it) }
+                if (uploadResult is Resource.Success && uploadResult.data != null) {
+                    newImageUrls.add(uploadResult.data)
                 }
             }
 
@@ -322,8 +374,13 @@ class ProductRepository(
                 updatedAt = System.currentTimeMillis()
             )
 
-            firestoreSource.updateDocument(PRODUCTS_COLLECTION, product.id, updatedProduct)
-            Resource.Success(Unit)
+            val result = firestoreSource.updateDocument(PRODUCTS_COLLECTION, product.id, updatedProduct)
+
+            if (result is Resource.Success) {
+                Resource.Success(Unit)
+            } else {
+                Resource.Error((result as Resource.Error).message ?: "Ошибка при обновлении товара")
+            }
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при обновлении товара: ${e.message}")
             Resource.Error(e.message ?: "Ошибка при обновлении товара")
@@ -345,13 +402,18 @@ class ProductRepository(
             val currentProduct = (currentProductResult as Resource.Success).data!!
 
             // Удаляем все изображения товара
-            currentProduct.images.forEach { imageUrl ->
+            for (imageUrl in currentProduct.images) {
                 storageSource.deleteFile(imageUrl)
             }
 
             // Удаляем товар из Firestore
-            firestoreSource.deleteDocument(PRODUCTS_COLLECTION, productId)
-            Resource.Success(Unit)
+            val result = firestoreSource.deleteDocument(PRODUCTS_COLLECTION, productId)
+
+            if (result is Resource.Success) {
+                Resource.Success(Unit)
+            } else {
+                Resource.Error((result as Resource.Error).message ?: "Ошибка при удалении товара")
+            }
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при удалении товара: ${e.message}")
             Resource.Error(e.message ?: "Ошибка при удалении товара")
@@ -366,21 +428,18 @@ class ProductRepository(
         availableQuantity: Int
     ): Resource<Unit> = withContext(Dispatchers.IO) {
         return@withContext try {
-            firestoreSource.updateField(
-                PRODUCTS_COLLECTION,
-                productId,
-                "availableQuantity",
-                availableQuantity
+            val updates = mapOf(
+                "availableQuantity" to availableQuantity,
+                "updatedAt" to System.currentTimeMillis()
             )
 
-            firestoreSource.updateField(
-                PRODUCTS_COLLECTION,
-                productId,
-                "updatedAt",
-                System.currentTimeMillis()
-            )
+            val result = firestoreSource.updateDocument(PRODUCTS_COLLECTION, productId, updates)
 
-            Resource.Success(Unit)
+            if (result is Resource.Success) {
+                Resource.Success(Unit)
+            } else {
+                Resource.Error((result as Resource.Error).message ?: "Ошибка при обновлении наличия товара")
+            }
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при обновлении наличия товара: ${e.message}")
             Resource.Error(e.message ?: "Ошибка при обновлении наличия товара")
@@ -396,37 +455,21 @@ class ProductRepository(
         discountPrice: Double? = null
     ): Resource<Unit> = withContext(Dispatchers.IO) {
         return@withContext try {
-            firestoreSource.updateField(
-                PRODUCTS_COLLECTION,
-                productId,
-                "price",
-                price
+            val updates = mutableMapOf<String, Any?>(
+                "price" to price,
+                "updatedAt" to System.currentTimeMillis()
             )
 
-            if (discountPrice != null) {
-                firestoreSource.updateField(
-                    PRODUCTS_COLLECTION,
-                    productId,
-                    "discountPrice",
-                    discountPrice
-                )
+            // Добавляем или удаляем скидочную цену
+            updates["discountPrice"] = discountPrice
+
+            val result = firestoreSource.updateDocument(PRODUCTS_COLLECTION, productId, updates)
+
+            if (result is Resource.Success) {
+                Resource.Success(Unit)
             } else {
-                firestoreSource.updateField(
-                    PRODUCTS_COLLECTION,
-                    productId,
-                    "discountPrice",
-                    null
-                )
+                Resource.Error((result as Resource.Error).message ?: "Ошибка при обновлении цены товара")
             }
-
-            firestoreSource.updateField(
-                PRODUCTS_COLLECTION,
-                productId,
-                "updatedAt",
-                System.currentTimeMillis()
-            )
-
-            Resource.Success(Unit)
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при обновлении цены товара: ${e.message}")
             Resource.Error(e.message ?: "Ошибка при обновлении цены товара")
@@ -441,21 +484,18 @@ class ProductRepository(
         isActive: Boolean
     ): Resource<Unit> = withContext(Dispatchers.IO) {
         return@withContext try {
-            firestoreSource.updateField(
-                PRODUCTS_COLLECTION,
-                productId,
-                "isActive",
-                isActive
+            val updates = mapOf(
+                "isActive" to isActive,
+                "updatedAt" to System.currentTimeMillis()
             )
 
-            firestoreSource.updateField(
-                PRODUCTS_COLLECTION,
-                productId,
-                "updatedAt",
-                System.currentTimeMillis()
-            )
+            val result = firestoreSource.updateDocument(PRODUCTS_COLLECTION, productId, updates)
 
-            Resource.Success(Unit)
+            if (result is Resource.Success) {
+                Resource.Success(Unit)
+            } else {
+                Resource.Error((result as Resource.Error).message ?: "Ошибка при обновлении статуса товара")
+            }
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при обновлении статуса товара: ${e.message}")
             Resource.Error(e.message ?: "Ошибка при обновлении статуса товара")
@@ -475,7 +515,7 @@ class ProductRepository(
         val favoritePath = "$FAVORITES_COLLECTION/$userId/products"
 
         return@withContext try {
-            if (isFavorite) {
+            val result = if (isFavorite) {
                 // Добавляем товар в избранное
                 firestoreSource.setDocument(
                     favoritePath,
@@ -490,7 +530,11 @@ class ProductRepository(
                 firestoreSource.deleteDocument(favoritePath, productId)
             }
 
-            Resource.Success(Unit)
+            if (result is Resource.Success) {
+                Resource.Success(Unit)
+            } else {
+                Resource.Error((result as Resource.Error).message ?: "Ошибка при обновлении избранного")
+            }
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при обновлении избранного: ${e.message}")
             Resource.Error(e.message ?: "Ошибка при обновлении избранного")
@@ -508,24 +552,33 @@ class ProductRepository(
 
         return@withContext try {
             // Получаем список ID избранных товаров
-            val favoritesSnapshot = firestoreSource.getCollection(favoritePath)
-            val favoriteIds = favoritesSnapshot.documents.map { it.id }
+            val favoritesResult = firestoreSource.getCollection(favoritePath)
 
-            if (favoriteIds.isEmpty()) {
-                return@withContext Resource.Success(emptyList<Product>())
-            }
+            if (favoritesResult is Resource.Success) {
+                val snapshot = favoritesResult.data
+                if (snapshot != null) {
+                    val favoriteIds = snapshot.documents.map { it.id }
 
-            // Получаем товары по их ID
-            val products = favoriteIds.mapNotNull { productId ->
-                val productResult = getProductById(productId)
-                if (productResult is Resource.Success) {
-                    productResult.data
+                    if (favoriteIds.isEmpty()) {
+                        return@withContext Resource.Success(emptyList<Product>())
+                    }
+
+                    // Получаем товары по их ID
+                    val products = mutableListOf<Product>()
+                    for (productId in favoriteIds) {
+                        val productResult = getProductById(productId)
+                        if (productResult is Resource.Success && productResult.data != null) {
+                            products.add(productResult.data)
+                        }
+                    }
+
+                    Resource.Success(products.map { it.copy(isFavorite = true) })
                 } else {
-                    null
+                    Resource.Success(emptyList())
                 }
+            } else {
+                Resource.Error((favoritesResult as Resource.Error).message ?: "Ошибка при получении избранных товаров")
             }
-
-            Resource.Success(products.map { it.copy(isFavorite = true) })
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при получении избранных товаров: ${e.message}")
             Resource.Error(e.message ?: "Ошибка при получении избранных товаров")
@@ -540,8 +593,12 @@ class ProductRepository(
         val favoritePath = "$FAVORITES_COLLECTION/$userId/products"
 
         return try {
-            val doc = firestoreSource.getDocument(favoritePath, productId)
-            doc.exists()
+            val docResult = firestoreSource.getDocument(favoritePath, productId)
+            if (docResult is Resource.Success && docResult.data != null) {
+                docResult.data.exists()
+            } else {
+                false
+            }
         } catch (e: Exception) {
             false
         }
@@ -555,8 +612,12 @@ class ProductRepository(
         val favoritePath = "$FAVORITES_COLLECTION/$userId/products"
 
         return try {
-            val favoritesSnapshot = firestoreSource.getCollection(favoritePath)
-            favoritesSnapshot.documents.map { it.id }.toSet()
+            val favoritesResult = firestoreSource.getCollection(favoritePath)
+            if (favoritesResult is Resource.Success && favoritesResult.data != null) {
+                favoritesResult.data.documents.map { it.id }.toSet()
+            } else {
+                emptySet()
+            }
         } catch (e: Exception) {
             emptySet()
         }
@@ -567,13 +628,25 @@ class ProductRepository(
      */
     suspend fun incrementProductViewCount(productId: String): Resource<Unit> = withContext(Dispatchers.IO) {
         return@withContext try {
-            firestoreSource.incrementField(
-                PRODUCTS_COLLECTION,
-                productId,
-                "viewCount",
-                1
-            )
-            Resource.Success(Unit)
+            // Получаем текущее значение счетчика
+            val productResult = getProductById(productId)
+
+            if (productResult is Resource.Success && productResult.data != null) {
+                val product = productResult.data
+                val viewCount = product.viewCount + 1
+
+                // Обновляем счетчик
+                val updates = mapOf("viewCount" to viewCount)
+                val result = firestoreSource.updateDocument(PRODUCTS_COLLECTION, productId, updates)
+
+                if (result is Resource.Success) {
+                    Resource.Success(Unit)
+                } else {
+                    Resource.Error((result as Resource.Error).message ?: "Ошибка при увеличении счетчика просмотров")
+                }
+            } else {
+                Resource.Error("Товар не найден")
+            }
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при увеличении счетчика просмотров: ${e.message}")
             Resource.Error(e.message ?: "Ошибка при увеличении счетчика просмотров")

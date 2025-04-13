@@ -5,16 +5,15 @@ import com.google.firebase.auth.FirebaseAuth
 import com.yourstore.app.data.common.Resource
 import com.yourstore.app.data.model.Address
 import com.yourstore.app.data.model.User
-import com.yourstore.app.data.source.local.PreferencesManager
 import com.yourstore.app.data.source.remote.FirebaseAuthSource
 import com.yourstore.app.data.source.remote.FirestoreSource
+import com.yourstore.app.data.source.remote.StorageSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.util.*
+import java.util.UUID
 
 /**
  * Репозиторий для управления данными пользователей.
@@ -22,7 +21,8 @@ import java.util.*
  */
 class UserRepository(
     private val firebaseAuthSource: FirebaseAuthSource,
-    private val firestoreSource: FirestoreSource
+    private val firestoreSource: FirestoreSource,
+    private val storageSource: StorageSource
 ) {
     private val TAG = "UserRepository"
 
@@ -34,11 +34,43 @@ class UserRepository(
      */
     suspend fun login(email: String, password: String): Resource<String> = withContext(Dispatchers.IO) {
         return@withContext try {
-            val authResult = firebaseAuthSource.signInWithEmailAndPassword(email, password)
-            Resource.Success(authResult.user?.uid ?: "")
+            val result = firebaseAuthSource.login(email, password)
+            result
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при входе в аккаунт: ${e.message}")
             Resource.Error(e.message ?: "Ошибка при входе в аккаунт")
+        }
+    }
+
+    // Добавляем в класс UserRepository новый метод для обновления FCM токена
+
+    /**
+     * Обновляет FCM токен пользователя в Firestore
+     * @param token Новый FCM токен
+     * @return Resource с результатом операции
+     */
+    suspend fun updateFcmToken(token: String): Resource<Unit> = withContext(Dispatchers.IO) {
+        val currentUserId = firebaseAuth.currentUser?.uid
+            ?: return@withContext Resource.Error("Пользователь не авторизован")
+
+        return@withContext try {
+            // Получаем текущие данные пользователя
+            val userDoc = firestoreSource.getDocument(USERS_COLLECTION, currentUserId)
+            val user = userDoc.toObject(User::class.java)
+                ?: return@withContext Resource.Error("Профиль пользователя не найден")
+
+            // Обновляем FCM токен
+            firestoreSource.updateField(
+                USERS_COLLECTION,
+                currentUserId,
+                "fcmToken",
+                token
+            )
+
+            Resource.Success(Unit)
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при обновлении FCM токена: ${e.message}")
+            Resource.Error(e.message ?: "Ошибка при обновлении FCM токена")
         }
     }
 
@@ -47,8 +79,8 @@ class UserRepository(
      */
     suspend fun register(email: String, password: String): Resource<String> = withContext(Dispatchers.IO) {
         return@withContext try {
-            val authResult = firebaseAuthSource.createUserWithEmailAndPassword(email, password)
-            Resource.Success(authResult.user?.uid ?: "")
+            val result = firebaseAuthSource.register(email, password)
+            result
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при регистрации: ${e.message}")
             Resource.Error(e.message ?: "Ошибка при регистрации")
@@ -60,8 +92,8 @@ class UserRepository(
      */
     suspend fun createUserProfile(user: User): Resource<Unit> = withContext(Dispatchers.IO) {
         return@withContext try {
-            firestoreSource.addDocument(USERS_COLLECTION, user.id, user)
-            Resource.Success(Unit)
+            val result = firestoreSource.setDocument(USERS_COLLECTION, user.id, user)
+            result
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при создании профиля: ${e.message}")
             Resource.Error(e.message ?: "Ошибка при создании профиля")
@@ -76,11 +108,17 @@ class UserRepository(
             ?: return@withContext Resource.Error("Пользователь не авторизован")
 
         return@withContext try {
-            val userDoc = firestoreSource.getDocument(USERS_COLLECTION, currentUserId)
-            val user = userDoc.toObject(User::class.java)?.copy(id = currentUserId)
-                ?: return@withContext Resource.Error("Профиль пользователя не найден")
+            val userDocResult = firestoreSource.getDocument(USERS_COLLECTION, currentUserId)
 
-            Resource.Success(user)
+            if (userDocResult is Resource.Success) {
+                val userDoc = userDocResult.data
+                val user = userDoc?.toObject(User::class.java)?.copy(id = currentUserId)
+                    ?: return@withContext Resource.Error("Профиль пользователя не найден")
+
+                Resource.Success(user)
+            } else {
+                Resource.Error((userDocResult as Resource.Error).message ?: "Ошибка при получении данных пользователя")
+            }
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при получении профиля: ${e.message}")
             Resource.Error(e.message ?: "Ошибка при получении профиля")
@@ -108,15 +146,22 @@ class UserRepository(
 
         return@withContext try {
             // Получаем текущие данные пользователя
-            val userDoc = firestoreSource.getDocument(USERS_COLLECTION, currentUserId)
-            val currentUser = userDoc.toObject(User::class.java)
+            val userDocResult = firestoreSource.getDocument(USERS_COLLECTION, currentUserId)
+
+            if (userDocResult !is Resource.Success) {
+                return@withContext Resource.Error((userDocResult as Resource.Error).message ?: "Ошибка при получении данных пользователя")
+            }
+
+            val userDoc = userDocResult.data
+            val currentUser = userDoc?.toObject(User::class.java)
                 ?: return@withContext Resource.Error("Профиль пользователя не найден")
 
             // Обновляем аватар, если он предоставлен
             var avatarUrl = currentUser.avatarUrl
             if (avatarFile != null) {
-                val storageRef = "users/$currentUserId/avatar_${System.currentTimeMillis()}.jpg"
-                val uploadResult = firestoreSource.uploadFile(storageRef, avatarFile)
+                val fileName = "users/$currentUserId/avatar_${System.currentTimeMillis()}.jpg"
+                val uploadResult = storageSource.uploadFile(fileName, avatarFile)
+
                 if (uploadResult is Resource.Success) {
                     avatarUrl = uploadResult.data ?: avatarUrl
                 }
@@ -130,7 +175,6 @@ class UserRepository(
             )
 
             firestoreSource.updateDocument(USERS_COLLECTION, currentUserId, updatedUser)
-            Resource.Success(Unit)
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при обновлении профиля: ${e.message}")
             Resource.Error(e.message ?: "Ошибка при обновлении профиля")
@@ -147,11 +191,15 @@ class UserRepository(
         return@withContext try {
             // Для изменения пароля сначала нужно повторно аутентифицировать пользователя
             val email = currentUser.email ?: return@withContext Resource.Error("Email пользователя не найден")
-            firebaseAuthSource.reauthenticate(email, currentPassword)
+            val reauthResult = firebaseAuthSource.reauthenticate(email, currentPassword)
+
+            if (reauthResult is Resource.Error) {
+                return@withContext reauthResult
+            }
 
             // Затем изменяем пароль
-            currentUser.updatePassword(newPassword).await()
-            Resource.Success(Unit)
+            val updateResult = firebaseAuthSource.updatePassword(newPassword)
+            updateResult
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при смене пароля: ${e.message}")
             Resource.Error(e.message ?: "Ошибка при смене пароля")
@@ -163,8 +211,7 @@ class UserRepository(
      */
     suspend fun resetPassword(email: String): Resource<Unit> = withContext(Dispatchers.IO) {
         return@withContext try {
-            firebaseAuthSource.sendPasswordResetEmail(email)
-            Resource.Success(Unit)
+            firebaseAuthSource.resetPassword(email)
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при сбросе пароля: ${e.message}")
             Resource.Error(e.message ?: "Ошибка при сбросе пароля")
@@ -174,9 +221,9 @@ class UserRepository(
     /**
      * Выход из аккаунта
      */
-    suspend fun logout(): Resource<Unit> = withContext(Dispatchers.IO) {
-        return@withContext try {
-            FirebaseAuth.getInstance().signOut()
+    fun logout(): Resource<Unit> {
+        return try {
+            firebaseAuthSource.logout()
             Resource.Success(Unit)
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при выходе из аккаунта: ${e.message}")
@@ -193,8 +240,14 @@ class UserRepository(
 
         return@withContext try {
             // Получаем текущие данные пользователя
-            val userDoc = firestoreSource.getDocument(USERS_COLLECTION, currentUserId)
-            val user = userDoc.toObject(User::class.java)
+            val userDocResult = firestoreSource.getDocument(USERS_COLLECTION, currentUserId)
+
+            if (userDocResult !is Resource.Success) {
+                return@withContext Resource.Error((userDocResult as Resource.Error).message ?: "Ошибка при получении данных пользователя")
+            }
+
+            val userDoc = userDocResult.data
+            val user = userDoc?.toObject(User::class.java)
                 ?: return@withContext Resource.Error("Профиль пользователя не найден")
 
             // Создаем новый адрес
@@ -211,7 +264,7 @@ class UserRepository(
             } else {
                 // Если у пользователя нет адресов, делаем этот адрес основным
                 if (user.addresses.isEmpty()) {
-                    user.addresses + newAddress.copy(isDefault = true)
+                    listOf(newAddress.copy(isDefault = true))
                 } else {
                     user.addresses + newAddress
                 }
@@ -220,8 +273,6 @@ class UserRepository(
             // Обновляем пользователя с новым списком адресов
             val updatedUser = user.copy(addresses = updatedAddresses)
             firestoreSource.updateDocument(USERS_COLLECTION, currentUserId, updatedUser)
-
-            Resource.Success(Unit)
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при добавлении адреса: ${e.message}")
             Resource.Error(e.message ?: "Ошибка при добавлении адреса")
@@ -242,8 +293,14 @@ class UserRepository(
 
         return@withContext try {
             // Получаем текущие данные пользователя
-            val userDoc = firestoreSource.getDocument(USERS_COLLECTION, currentUserId)
-            val user = userDoc.toObject(User::class.java)
+            val userDocResult = firestoreSource.getDocument(USERS_COLLECTION, currentUserId)
+
+            if (userDocResult !is Resource.Success) {
+                return@withContext Resource.Error((userDocResult as Resource.Error).message ?: "Ошибка при получении данных пользователя")
+            }
+
+            val userDoc = userDocResult.data
+            val user = userDoc?.toObject(User::class.java)
                 ?: return@withContext Resource.Error("Профиль пользователя не найден")
 
             // Находим адрес, который нужно обновить
@@ -265,16 +322,14 @@ class UserRepository(
                     if (index == addressIndex) updatedAddress else addr.copy(isDefault = false)
                 }
             } else {
-                user.addresses.toMutableList().apply {
-                    this[addressIndex] = updatedAddress
-                }
+                val mutableList = user.addresses.toMutableList()
+                mutableList[addressIndex] = updatedAddress
+                mutableList
             }
 
             // Обновляем пользователя с новым списком адресов
             val updatedUser = user.copy(addresses = updatedAddresses)
             firestoreSource.updateDocument(USERS_COLLECTION, currentUserId, updatedUser)
-
-            Resource.Success(Unit)
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при обновлении адреса: ${e.message}")
             Resource.Error(e.message ?: "Ошибка при обновлении адреса")
@@ -290,8 +345,14 @@ class UserRepository(
 
         return@withContext try {
             // Получаем текущие данные пользователя
-            val userDoc = firestoreSource.getDocument(USERS_COLLECTION, currentUserId)
-            val user = userDoc.toObject(User::class.java)
+            val userDocResult = firestoreSource.getDocument(USERS_COLLECTION, currentUserId)
+
+            if (userDocResult !is Resource.Success) {
+                return@withContext Resource.Error((userDocResult as Resource.Error).message ?: "Ошибка при получении данных пользователя")
+            }
+
+            val userDoc = userDocResult.data
+            val user = userDoc?.toObject(User::class.java)
                 ?: return@withContext Resource.Error("Профиль пользователя не найден")
 
             // Удаляем адрес
@@ -301,15 +362,17 @@ class UserRepository(
             val updatedAddresses = user.addresses.filter { it.id != addressId }
 
             // Если удаляем основной адрес и есть другие адреса, делаем первый из оставшихся основным
-            if (deletedAddress.isDefault && updatedAddresses.isNotEmpty()) {
-                updatedAddresses[0] = updatedAddresses[0].copy(isDefault = true)
+            val finalAddresses = if (deletedAddress.isDefault && updatedAddresses.isNotEmpty()) {
+                val mutableList = updatedAddresses.toMutableList()
+                mutableList[0] = mutableList[0].copy(isDefault = true)
+                mutableList
+            } else {
+                updatedAddresses
             }
 
             // Обновляем пользователя с новым списком адресов
-            val updatedUser = user.copy(addresses = updatedAddresses)
+            val updatedUser = user.copy(addresses = finalAddresses)
             firestoreSource.updateDocument(USERS_COLLECTION, currentUserId, updatedUser)
-
-            Resource.Success(Unit)
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при удалении адреса: ${e.message}")
             Resource.Error(e.message ?: "Ошибка при удалении адреса")
@@ -325,8 +388,14 @@ class UserRepository(
 
         return@withContext try {
             // Получаем текущие данные пользователя
-            val userDoc = firestoreSource.getDocument(USERS_COLLECTION, currentUserId)
-            val user = userDoc.toObject(User::class.java)
+            val userDocResult = firestoreSource.getDocument(USERS_COLLECTION, currentUserId)
+
+            if (userDocResult !is Resource.Success) {
+                return@withContext Resource.Error((userDocResult as Resource.Error).message ?: "Ошибка при получении данных пользователя")
+            }
+
+            val userDoc = userDocResult.data
+            val user = userDoc?.toObject(User::class.java)
                 ?: return@withContext Resource.Error("Профиль пользователя не найден")
 
             // Проверяем, существует ли адрес
@@ -342,8 +411,6 @@ class UserRepository(
             // Обновляем пользователя с новым списком адресов
             val updatedUser = user.copy(addresses = updatedAddresses)
             firestoreSource.updateDocument(USERS_COLLECTION, currentUserId, updatedUser)
-
-            Resource.Success(Unit)
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при установке адреса по умолчанию: ${e.message}")
             Resource.Error(e.message ?: "Ошибка при установке адреса по умолчанию")
@@ -359,15 +426,19 @@ class UserRepository(
 
         return@withContext try {
             // Получаем текущие данные пользователя
-            val userDoc = firestoreSource.getDocument(USERS_COLLECTION, currentUserId)
-            val user = userDoc.toObject(User::class.java)
+            val userDocResult = firestoreSource.getDocument(USERS_COLLECTION, currentUserId)
+
+            if (userDocResult !is Resource.Success) {
+                return@withContext Resource.Error((userDocResult as Resource.Error).message ?: "Ошибка при получении данных пользователя")
+            }
+
+            val userDoc = userDocResult.data
+            val user = userDoc?.toObject(User::class.java)
                 ?: return@withContext Resource.Error("Профиль пользователя не найден")
 
             // Обновляем статус администратора
             val updatedUser = user.copy(isAdmin = isAdmin)
             firestoreSource.updateDocument(USERS_COLLECTION, currentUserId, updatedUser)
-
-            Resource.Success(Unit)
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при установке статуса администратора: ${e.message}")
             Resource.Error(e.message ?: "Ошибка при установке статуса администратора")

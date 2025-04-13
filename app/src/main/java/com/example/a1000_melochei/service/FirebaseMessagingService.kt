@@ -5,14 +5,16 @@ import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.yourstore.app.R
 import com.yourstore.app.data.repository.UserRepository
 import com.yourstore.app.data.source.local.PreferencesManager
 import com.yourstore.app.ui.customer.CustomerActivity
+import com.yourstore.app.ui.customer.catalog.ProductDetailActivity
+import com.yourstore.app.ui.customer.orders.OrderDetailActivity
 import com.yourstore.app.util.Constants
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import org.koin.android.ext.android.inject
 
 /**
@@ -230,7 +232,7 @@ class MelocheiFirebaseMessagingService : FirebaseMessagingService() {
      * @param productId ID товара
      */
     private fun openProductDetail(productId: String) {
-        val intent = Intent(this, com.yourstore.app.ui.customer.catalog.ProductDetailActivity::class.java).apply {
+        val intent = Intent(this, ProductDetailActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             putExtra("PRODUCT_ID", productId)
         }
@@ -257,7 +259,7 @@ class MelocheiFirebaseMessagingService : FirebaseMessagingService() {
      * @param orderId ID заказа
      */
     private fun openOrderDetail(orderId: String) {
-        val intent = Intent(this, com.yourstore.app.ui.customer.orders.OrderDetailActivity::class.java).apply {
+        val intent = Intent(this, OrderDetailActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             putExtra("ORDER_ID", orderId)
         }

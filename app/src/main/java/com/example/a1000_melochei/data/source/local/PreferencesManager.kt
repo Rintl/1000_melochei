@@ -19,6 +19,7 @@ class PreferencesManager(context: Context) {
         private const val KEY_USER_ID = "user_id"
         private const val KEY_CART_ID = "cart_id"
         private const val KEY_FIRST_LAUNCH = "first_launch"
+        private const val KEY_FCM_TOKEN = "fcm_token" // Новый ключ для FCM токена
     }
 
     private val sharedPreferences: SharedPreferences =
@@ -125,6 +126,22 @@ class PreferencesManager(context: Context) {
      */
     fun getCartId(): String? {
         return sharedPreferences.getString(KEY_CART_ID, null)
+    }
+
+    /**
+     * Сохранение FCM токена
+     */
+    fun setFcmToken(token: String) {
+        sharedPreferences.edit {
+            putString(KEY_FCM_TOKEN, token)
+        }
+    }
+
+    /**
+     * Получение FCM токена
+     */
+    fun getFcmToken(): String? {
+        return sharedPreferences.getString(KEY_FCM_TOKEN, null)
     }
 
     /**
