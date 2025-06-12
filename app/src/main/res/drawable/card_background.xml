@@ -8,7 +8,7 @@
             <padding android:bottom="2dp" />
         </shape>
     </item>
-    
+
     <item>
         <shape android:shape="rectangle">
             <solid android:color="#16000000" />
@@ -16,7 +16,7 @@
             <padding android:bottom="1dp" />
         </shape>
     </item>
-    
+
     <!-- Основной фон карточки -->
     <item>
         <shape android:shape="rectangle">

@@ -20,7 +20,7 @@ class CategoryRepository(
     private val firestoreSource: FirestoreSource,
     private val storageSource: StorageSource
 ) {
-    private val TAG = "CategoryRepository"
+    private val tag = "CategoryRepository"
 
     // Константы для работы с Firestore
     private val CATEGORIES_COLLECTION = "categories"
@@ -38,13 +38,14 @@ class CategoryRepository(
                     doc.toObject(Category::class.java)?.copy(id = doc.id)
                 } ?: emptyList()
 
-                Resource.Success(categories)
+                Resource.Success<List<Category>>(categories)
             } else {
-                Resource.Error((result as Resource.Error).message ?: "Ошибка при получении категорий")
+                result as Resource.Error
+                Resource.Error<List<Category>>(result.message ?: "Ошибка при получении категорий")
             }
         } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при получении категорий: ${e.message}")
-            Resource.Error(e.message ?: "Ошибка при получении категорий")
+            Log.e(tag, "Ошибка при получении категорий: ${e.message}")
+            Resource.Error<List<Category>>(e.message ?: "Ошибка при получении категорий")
         }
     }
 
@@ -57,15 +58,16 @@ class CategoryRepository(
 
             if (result is Resource.Success) {
                 val category = result.data?.toObject(Category::class.java)?.copy(id = categoryId)
-                    ?: return@withContext Resource.Error("Категория не найдена")
+                    ?: return@withContext Resource.Error<Category>("Категория не найдена")
 
-                Resource.Success(category)
+                Resource.Success<Category>(category)
             } else {
-                Resource.Error((result as Resource.Error).message ?: "Ошибка при получении категории")
+                result as Resource.Error
+                Resource.Error<Category>(result.message ?: "Ошибка при получении категории")
             }
         } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при получении категории: ${e.message}")
-            Resource.Error(e.message ?: "Ошибка при получении категории")
+            Log.e(tag, "Ошибка при получении категории: ${e.message}")
+            Resource.Error<Category>(e.message ?: "Ошибка при получении категории")
         }
     }
 
@@ -77,7 +79,7 @@ class CategoryRepository(
         description: String,
         imageFile: File? = null,
         isActive: Boolean = true
-    ): Resource<String> = withContext(Dispatchers.IO) {
+    ): Resource<Unit> = withContext(Dispatchers.IO) {
         return@withContext try {
             // Загружаем изображение категории, если оно предоставлено
             var imageUrl = ""
@@ -103,16 +105,12 @@ class CategoryRepository(
             )
 
             // Добавляем категорию в Firestore
-            val result = firestoreSource.setDocument(CATEGORIES_COLLECTION, categoryId, newCategory)
+            firestoreSource.setDocument(CATEGORIES_COLLECTION, categoryId, newCategory)
 
-            if (result is Resource.Success) {
-                Resource.Success(categoryId)
-            } else {
-                Resource.Error((result as Resource.Error).message ?: "Ошибка при добавлении категории")
-            }
+            Resource.Success<Unit>(Unit)
         } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при добавлении категории: ${e.message}")
-            Resource.Error(e.message ?: "Ошибка при добавлении категории")
+            Log.e(tag, "Ошибка при добавлении категории: ${e.message}")
+            Resource.Error<Unit>(e.message ?: "Ошибка при добавлении категории")
         }
     }
 
@@ -131,7 +129,7 @@ class CategoryRepository(
             val categoryResult = getCategoryById(categoryId)
 
             if (categoryResult is Resource.Error) {
-                return@withContext categoryResult
+                return@withContext Resource.Error<Unit>(categoryResult.message ?: "Ошибка при получении категории")
             }
 
             val currentCategory = (categoryResult as Resource.Success).data
@@ -142,10 +140,7 @@ class CategoryRepository(
             if (imageFile != null) {
                 // Если текущее изображение существует, удаляем его
                 if (imageUrl.isNotEmpty()) {
-                    val deleteResult = storageSource.deleteFile(imageUrl)
-                    if (deleteResult is Resource.Error) {
-                        Log.w(TAG, "Ошибка при удалении старого изображения: ${deleteResult.message}")
-                    }
+                    storageSource.deleteFile(imageUrl)
                 }
 
                 // Загружаем новое изображение
@@ -166,20 +161,12 @@ class CategoryRepository(
             )
 
             // Обновляем категорию в Firestore
-            val updateResult = firestoreSource.updateDocument(
-                CATEGORIES_COLLECTION,
-                categoryId,
-                updatedCategory
-            )
+            firestoreSource.updateDocument(CATEGORIES_COLLECTION, categoryId, updatedCategory)
 
-            if (updateResult is Resource.Success) {
-                Resource.Success(Unit)
-            } else {
-                Resource.Error((updateResult as Resource.Error).message ?: "Ошибка при обновлении категории")
-            }
+            Resource.Success<Unit>(Unit)
         } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при обновлении категории: ${e.message}")
-            Resource.Error(e.message ?: "Ошибка при обновлении категории")
+            Log.e(tag, "Ошибка при обновлении категории: ${e.message}")
+            Resource.Error<Unit>(e.message ?: "Ошибка при обновлении категории")
         }
     }
 
@@ -192,7 +179,7 @@ class CategoryRepository(
             val categoryResult = getCategoryById(categoryId)
 
             if (categoryResult is Resource.Error) {
-                return@withContext categoryResult
+                return@withContext Resource.Error<Unit>(categoryResult.message ?: "Ошибка при получении категории")
             }
 
             val category = (categoryResult as Resource.Success).data
@@ -208,29 +195,22 @@ class CategoryRepository(
                 val productsCount = productsResult.data?.documents?.size ?: 0
 
                 if (productsCount > 0) {
-                    return@withContext Resource.Error("Невозможно удалить категорию, содержащую товары")
+                    return@withContext Resource.Error<Unit>("Невозможно удалить категорию, содержащую товары")
                 }
             }
 
             // Удаляем изображение категории, если оно есть
             if (category.imageUrl.isNotEmpty()) {
-                val deleteImageResult = storageSource.deleteFile(category.imageUrl)
-                if (deleteImageResult is Resource.Error) {
-                    Log.w(TAG, "Ошибка при удалении изображения: ${deleteImageResult.message}")
-                }
+                storageSource.deleteFile(category.imageUrl)
             }
 
             // Удаляем категорию из Firestore
-            val deleteResult = firestoreSource.deleteDocument(CATEGORIES_COLLECTION, categoryId)
+            firestoreSource.deleteDocument(CATEGORIES_COLLECTION, categoryId)
 
-            if (deleteResult is Resource.Success) {
-                Resource.Success(Unit)
-            } else {
-                Resource.Error((deleteResult as Resource.Error).message ?: "Ошибка при удалении категории")
-            }
+            Resource.Success<Unit>(Unit)
         } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при удалении категории: ${e.message}")
-            Resource.Error(e.message ?: "Ошибка при удалении категории")
+            Log.e(tag, "Ошибка при удалении категории: ${e.message}")
+            Resource.Error<Unit>(e.message ?: "Ошибка при удалении категории")
         }
     }
 
@@ -242,52 +222,13 @@ class CategoryRepository(
             val categoriesResult = getCategories()
 
             if (categoriesResult is Resource.Success) {
-                Resource.Success(categoriesResult.data.size)
+                Resource.Success<Int>(categoriesResult.data.size)
             } else {
-                Resource.Error("Не удалось получить количество категорий")
+                Resource.Error<Int>("Не удалось получить количество категорий")
             }
         } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при получении количества категорий: ${e.message}")
-            Resource.Error(e.message ?: "Ошибка при получении количества категорий")
-        }
-    }
-
-    /**
-     * Обновляет счетчик товаров в категории
-     */
-    suspend fun updateCategoryProductCount(categoryId: String): Resource<Unit> = withContext(Dispatchers.IO) {
-        return@withContext try {
-            // Получаем количество товаров в категории
-            val productsResult = firestoreSource.getCollectionWithFilter(
-                PRODUCTS_COLLECTION,
-                "categoryId",
-                categoryId
-            )
-
-            if (productsResult is Resource.Success) {
-                val productsCount = productsResult.data?.documents?.size ?: 0
-
-                // Обновляем счетчик товаров в категории
-                val updateResult = firestoreSource.updateField(
-                    CATEGORIES_COLLECTION,
-                    categoryId,
-                    "productCount",
-                    productsCount
-                )
-
-                if (updateResult is Resource.Success) {
-                    Resource.Success(Unit)
-                } else {
-                    Resource.Error((updateResult as Resource.Error).message ?:
-                    "Ошибка при обновлении счетчика товаров в категории")
-                }
-            } else {
-                Resource.Error((productsResult as Resource.Error).message ?:
-                "Ошибка при получении товаров категории")
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при обновлении счетчика товаров в категории: ${e.message}")
-            Resource.Error(e.message ?: "Ошибка при обновлении счетчика товаров в категории")
+            Log.e(tag, "Ошибка при получении количества категорий: ${e.message}")
+            Resource.Error<Int>(e.message ?: "Ошибка при получении количества категорий")
         }
     }
 
@@ -296,21 +237,16 @@ class CategoryRepository(
      */
     suspend fun toggleCategoryStatus(categoryId: String, isActive: Boolean): Resource<Unit> = withContext(Dispatchers.IO) {
         return@withContext try {
-            val result = firestoreSource.updateField(
+            firestoreSource.updateField(
                 CATEGORIES_COLLECTION,
                 categoryId,
                 "isActive",
                 isActive
             )
-
-            if (result is Resource.Success) {
-                Resource.Success(Unit)
-            } else {
-                Resource.Error((result as Resource.Error).message ?: "Ошибка при изменении статуса категории")
-            }
+            Resource.Success<Unit>(Unit)
         } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при изменении статуса категории: ${e.message}")
-            Resource.Error(e.message ?: "Ошибка при изменении статуса категории")
+            Log.e(tag, "Ошибка при изменении статуса категории: ${e.message}")
+            Resource.Error<Unit>(e.message ?: "Ошибка при изменении статуса категории")
         }
     }
 
@@ -319,44 +255,18 @@ class CategoryRepository(
      */
     suspend fun reorderCategories(categoryIds: List<String>): Resource<Unit> = withContext(Dispatchers.IO) {
         return@withContext try {
-            // Используем транзакцию Firestore для обновления порядка нескольких категорий
-            val batch = firestoreSource.getBatch()
-
             categoryIds.forEachIndexed { index, categoryId ->
-                val result = firestoreSource.updateField(
+                firestoreSource.updateField(
                     CATEGORIES_COLLECTION,
                     categoryId,
                     "sortOrder",
                     index
                 )
-
-                if (result is Resource.Error) {
-                    return@withContext result
-                }
             }
-
-            Resource.Success(Unit)
+            Resource.Success<Unit>(Unit)
         } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при изменении порядка категорий: ${e.message}")
-            Resource.Error(e.message ?: "Ошибка при изменении порядка категорий")
-        }
-    }
-
-    /**
-     * Получает поток категорий как Flow
-     */
-    fun getCategoriesAsFlow(): Flow<Resource<List<Category>>> = flow {
-        emit(Resource.Loading())
-        try {
-            // Первоначальная загрузка данных
-            val initialData = getCategories()
-            emit(initialData)
-
-            // В реальном приложении здесь можно было бы использовать
-            // Firestore's snapshotListener для обновления в реальном времени
-        } catch (e: Exception) {
-            Log.e(TAG, "Ошибка в потоке категорий: ${e.message}")
-            emit(Resource.Error(e.message ?: "Ошибка при получении категорий"))
+            Log.e(tag, "Ошибка при изменении порядка категорий: ${e.message}")
+            Resource.Error<Unit>(e.message ?: "Ошибка при изменении порядка категорий")
         }
     }
 }

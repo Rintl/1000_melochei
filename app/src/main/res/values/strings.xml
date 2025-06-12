@@ -27,6 +27,19 @@
     <string name="view_all">Показать все</string>
     <string name="currency_format">%s ₸</string>
 
+    <string name="custom_period">Произвольный период</string>
+    <string name="today">Сегодня</string>
+    <string name="last_7_days" translatable="false">Последние 7 дней</string>
+    <string name="last_30_days" translatable="false">Последние 30 дней</string>
+    <string name="last_year" translatable="false">Последний год</string>
+    <string name="other_categories" translatable="false">Другие</string>
+    <string name="sales_amount" translatable="false">Сумма продаж</string>
+    <string name="error_loading_sales_data" translatable="false">Ошибка при загрузке данных о продажах</string>
+    <string name="error_loading_sales_chart" translatable="false">Ошибка при загрузке графика продаж</string>
+    <string name="error_loading_categories_chart" translatable="false">Ошибка при загрузке графика категорий</string>
+    <string name="error_loading_top_products" translatable="false">Ошибка при загрузке популярных товаров</string>
+    <string name="sales_count">Продано: %s шт.</string>
+
     <!-- Авторизация и регистрация -->
     <string name="login">Войти</string>
     <string name="login_title">Вход в аккаунт</string>
@@ -480,19 +493,16 @@
     <string name="period_custom" translatable="false">Произвольный</string>
     <string name="apply_period" translatable="false">Применить период</string>
     <string name="export_report">Экспорт отчета</string>
-    <string name="today">Сегодня</string>
     <string name="yesterday">Вчера</string>
     <string name="week">Неделя</string>
     <string name="month">Месяц</string>
     <string name="year">Год</string>
-    <string name="custom_period">Произвольный период</string>
     <string name="sales_today">Продажи сегодня</string>
     <string name="sales_week">Продажи за неделю</string>
     <string name="sales_month">Продажи за месяц</string>
     <string name="total_sales">Общие продажи</string>
     <string name="total_orders">Всего заказов</string>
     <string name="total_products">Всего товаров</string>
-    <string name="sales_count">Количество продаж</string>
     <string name="sales_analytics">Аналитика продаж</string>
     <string name="orders_analytics">Аналитика заказов</string>
     <string name="revenue">Выручка</string>
