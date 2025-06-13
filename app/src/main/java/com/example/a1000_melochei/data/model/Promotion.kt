@@ -2,7 +2,6 @@ package com.example.a1000_melochei.data.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-import java.util.Date
 
 /**
  * Модель данных для акций и специальных предложений.

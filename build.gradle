@@ -22,15 +22,6 @@ plugins {
     id 'com.google.devtools.ksp' version '1.9.0-1.0.13' apply false
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven { url 'https://jitpack.io' }
-        maven { url 'https://maven.google.com' }
-    }
-}
-
 // Clean task
 tasks.register('clean', Delete) {
     delete rootProject.buildDir

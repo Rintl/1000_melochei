@@ -6,7 +6,6 @@ import com.example.a1000_melochei.data.model.Cart
 import com.example.a1000_melochei.data.model.CartItem
 import com.example.a1000_melochei.util.Constants
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter

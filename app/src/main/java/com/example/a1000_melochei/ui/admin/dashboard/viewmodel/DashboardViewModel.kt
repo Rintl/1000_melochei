@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.a1000_melochei.data.common.Resource
-import com.example.a1000_melochei.data.model.Order
 import com.example.a1000_melochei.data.model.OrderStatus
 import com.example.a1000_melochei.data.model.Product
 import com.example.a1000_melochei.data.repository.OrderRepository
@@ -15,7 +14,6 @@ import com.example.a1000_melochei.data.repository.CategoryRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.util.Calendar
-import java.util.Date
 
 /**
  * ViewModel для панели управления администратора
