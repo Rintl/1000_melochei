@@ -1,26 +1,21 @@
-package com.yourstore.app.data.repository
+package com.example.a1000_melochei.data.repository
 
 import android.util.Log
-import androidx.lifecycle.LiveData
+import com.example.a1000_melochei.data.common.Resource
+import com.example.a1000_melochei.data.model.Cart
+import com.example.a1000_melochei.data.model.CartItem
+import com.example.a1000_melochei.data.source.local.CartCache
+import com.example.a1000_melochei.data.source.remote.FirestoreSource
+import com.example.a1000_melochei.util.Constants
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.yourstore.app.data.common.Resource
-import com.yourstore.app.data.model.Cart
-import com.yourstore.app.data.model.CartItem
-import com.yourstore.app.data.model.CartTotal
-import com.yourstore.app.data.model.OrderItem
-import com.yourstore.app.data.model.Product
-import com.yourstore.app.data.source.local.CartCache
-import com.yourstore.app.data.source.remote.FirestoreSource
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
-import java.util.UUID
 
 /**
  * Репозиторий для управления корзиной покупок.
- * Обеспечивает синхронизацию между локальным кэшем и Firestore, а также
- * предоставляет методы для добавления, обновления и удаления товаров из корзины.
+ * Обеспечивает синхронизацию между локальным кэшем и удаленным хранилищем.
  */
 class CartRepository(
     private val firestoreSource: FirestoreSource,
@@ -28,112 +23,98 @@ class CartRepository(
     private val firebaseAuth: FirebaseAuth
 ) {
     private val TAG = "CartRepository"
+    private val firestore = FirebaseFirestore.getInstance()
 
-    // Константы для работы с Firestore
     companion object {
-        private const val CARTS_COLLECTION = "carts"
-        private const val PRODUCTS_COLLECTION = "products"
-        private const val DELIVERY_ZONES_COLLECTION = "delivery_zones"
         private const val MAX_RETRY_ATTEMPTS = 3
         private const val RETRY_DELAY_MS = 1000L
     }
 
     /**
-     * Получает содержимое корзины пользователя
-     * @return Resource с списком товаров в корзине или сообщение об ошибке
+     * Получает корзину пользователя
      */
-    suspend fun getCartItems(): Resource<List<CartItem>> = withContext(Dispatchers.IO) {
-        return@withContext try {
+    suspend fun getCart(): Resource<Cart> {
+        return try {
             val userId = firebaseAuth.currentUser?.uid
 
             if (userId != null) {
-                // Если пользователь авторизован, загружаем корзину из Firestore
-                val result = getCartFromFirestore(userId)
-                if (result is Resource.Success) {
-                    return@withContext Resource.Success(result.data ?: emptyList())
-                } else {
-                    return@withContext Resource.Error((result as Resource.Error).message ?: "Ошибка при получении корзины")
+                // Пытаемся загрузить корзину из Firestore
+                val result = firestoreSource.getCart(userId)
+
+                when (result) {
+                    is Resource.Success -> {
+                        // Сохраняем в локальный кэш
+                        cartCache.saveCart(result.data)
+                        result
+                    }
+                    is Resource.Error -> {
+                        // Если ошибка загрузки, возвращаем из локального кэша
+                        val cachedCart = cartCache.getCart()
+                        if (cachedCart != null) {
+                            Resource.Success(cachedCart)
+                        } else {
+                            // Создаем пустую корзину
+                            Resource.Success(Cart(id = userId))
+                        }
+                    }
+                    is Resource.Loading -> result
                 }
             } else {
-                // Если пользователь не авторизован, используем локальный кэш
+                // Для неавторизованных пользователей используем только локальный кэш
                 val cachedCart = cartCache.getCart()
-                Resource.Success(cachedCart.items)
+                Resource.Success(cachedCart ?: Cart())
             }
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при получении корзины: ${e.message}", e)
-            Resource.Error(e.message ?: "Ошибка при получении корзины")
+
+            // Пытаемся вернуть данные из локального кэша
+            val cachedCart = cartCache.getCart()
+            if (cachedCart != null) {
+                Resource.Success(cachedCart)
+            } else {
+                Resource.Error(e.message ?: "Неизвестная ошибка")
+            }
         }
     }
 
     /**
      * Добавляет товар в корзину
-     * @param product Товар для добавления в корзину
-     * @param quantity Количество товара (должно быть положительным)
-     * @return Resource с результатом операции или сообщение об ошибке
      */
-    suspend fun addToCart(product: Product, quantity: Int = 1): Resource<Unit> = withContext(Dispatchers.IO) {
-        // Валидация входных параметров
-        if (quantity <= 0) {
-            return@withContext Resource.Error("Количество должно быть положительным числом")
-        }
-
-        // Проверяем наличие достаточного количества товара
-        if (product.availableQuantity < quantity) {
-            return@withContext Resource.Error("Недостаточное количество товара на складе. Доступно: ${product.availableQuantity}")
-        }
-
-        return@withContext try {
+    suspend fun addToCart(cartItem: CartItem): Resource<Unit> {
+        return try {
             val userId = firebaseAuth.currentUser?.uid
 
-            // Создаем объект элемента корзины
-            val cartItem = CartItem(
-                id = UUID.randomUUID().toString(),
-                productId = product.id,
-                name = product.name,
-                imageUrl = if (product.images.isNotEmpty()) product.images[0] else "",
-                price = product.price,
-                discountPrice = product.discountPrice,
-                quantity = quantity,
-                availableQuantity = product.availableQuantity,
-                addedAt = System.currentTimeMillis()
-            )
-
             if (userId != null) {
-                // Если пользователь авторизован, сохраняем в Firestore с использованием транзакции
-                val db = FirebaseFirestore.getInstance()
-
-                var retryCount = 0
+                // Добавляем в Firestore с повторными попытками
                 var success = false
                 var lastError: Exception? = null
+                var retryCount = 0
 
-                while (retryCount < MAX_RETRY_ATTEMPTS && !success) {
+                while (!success && retryCount < MAX_RETRY_ATTEMPTS) {
                     try {
-                        db.runTransaction { transaction ->
-                            val cartDocRef = db.collection(CARTS_COLLECTION).document(userId)
-                            val cartDoc = transaction.get(cartDocRef)
+                        firestore.runTransaction { transaction ->
+                            val cartDocRef = firestore.collection(Constants.COLLECTION_CARTS).document(userId)
+                            val cartSnapshot = transaction.get(cartDocRef)
 
-                            if (cartDoc.exists()) {
-                                // Корзина уже существует
-                                val cart = cartDoc.toObject(Cart::class.java)
-                                    ?: throw Exception("Ошибка при получении корзины")
+                            if (cartSnapshot.exists()) {
+                                val cart = cartSnapshot.toObject(Cart::class.java) ?: Cart(id = userId)
 
-                                // Проверяем, есть ли такой товар уже в корзине
-                                val existingItemIndex = cart.items.indexOfFirst { it.productId == product.id }
+                                // Ищем существующий товар в корзине
+                                val existingItemIndex = cart.items.indexOfFirst {
+                                    it.productId == cartItem.productId
+                                }
 
                                 if (existingItemIndex != -1) {
-                                    // Товар уже в корзине, обновляем количество
-                                    val existingItem = cart.items[existingItemIndex]
-                                    val newQuantity = existingItem.quantity + quantity
+                                    // Обновляем количество существующего товара
+                                    val updatedItems = cart.items.toMutableList()
+                                    val existingItem = updatedItems[existingItemIndex]
+                                    val newQuantity = (existingItem.quantity + cartItem.quantity)
+                                        .coerceAtMost(Constants.MAX_CART_ITEMS)
 
-                                    // Проверяем, не превышает ли новое количество наличие
-                                    if (newQuantity > product.availableQuantity) {
-                                        throw Exception("Недостаточное количество товара на складе")
-                                    }
-
-                                    val updatedItem = existingItem.copy(quantity = newQuantity)
-                                    val updatedItems = cart.items.toMutableList().apply {
-                                        this[existingItemIndex] = updatedItem
-                                    }
+                                    updatedItems[existingItemIndex] = existingItem.copy(
+                                        quantity = newQuantity,
+                                        subtotal = newQuantity * existingItem.price
+                                    )
 
                                     transaction.update(
                                         cartDocRef,
@@ -144,7 +125,9 @@ class CartRepository(
                                     )
                                 } else {
                                     // Добавляем новый товар в корзину
-                                    val updatedItems = cart.items + cartItem
+                                    val updatedItems = cart.items + cartItem.copy(
+                                        subtotal = cartItem.quantity * cartItem.price
+                                    )
 
                                     transaction.update(
                                         cartDocRef,
@@ -158,109 +141,14 @@ class CartRepository(
                                 // Создаем новую корзину
                                 val newCart = Cart(
                                     id = userId,
-                                    items = listOf(cartItem),
+                                    items = listOf(cartItem.copy(
+                                        subtotal = cartItem.quantity * cartItem.price
+                                    )),
                                     updatedAt = System.currentTimeMillis()
                                 )
 
                                 transaction.set(cartDocRef, newCart)
                             }
-                        }.await()
-
-                        success = true
-                    } catch (e: Exception) {
-                        lastError = e
-                        retryCount++
-                        if (retryCount < MAX_RETRY_ATTEMPTS) {
-                            // Добавляем задержку перед повторной попыткой
-                            kotlinx.coroutines.delay(RETRY_DELAY_MS * retryCount)
-                        }
-                    }
-                }
-
-                if (!success && lastError != null) {
-                    throw lastError
-                }
-
-                // Также обновляем локальный кэш для оффлайн-доступа
-                updateLocalCart(cartItem, true)
-            } else {
-                // Если пользователь не авторизован, сохраняем только в локальный кэш
-                updateLocalCart(cartItem, true)
-            }
-
-            Resource.Success(Unit)
-        } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при добавлении товара в корзину: ${e.message}", e)
-            Resource.Error(e.message ?: "Ошибка при добавлении товара в корзину")
-        }
-    }
-
-    /**
-     * Обновляет количество товара в корзине
-     * @param cartItemId ID элемента корзины
-     * @param quantity Новое количество (должно быть положительным)
-     * @return Resource с результатом операции или сообщение об ошибке
-     */
-    suspend fun updateCartItemQuantity(
-        cartItemId: String,
-        quantity: Int
-    ): Resource<Unit> = withContext(Dispatchers.IO) {
-        // Валидация входных параметров
-        if (quantity <= 0) {
-            return@withContext Resource.Error("Количество должно быть положительным числом")
-        }
-
-        return@withContext try {
-            val userId = firebaseAuth.currentUser?.uid
-
-            if (userId != null) {
-                // Если пользователь авторизован, обновляем в Firestore с использованием транзакции
-                val db = FirebaseFirestore.getInstance()
-
-                var retryCount = 0
-                var success = false
-                var lastError: Exception? = null
-
-                while (retryCount < MAX_RETRY_ATTEMPTS && !success) {
-                    try {
-                        db.runTransaction { transaction ->
-                            val cartDocRef = db.collection(CARTS_COLLECTION).document(userId)
-                            val cartDoc = transaction.get(cartDocRef)
-
-                            if (!cartDoc.exists()) {
-                                throw Exception("Корзина не найдена")
-                            }
-
-                            val cart = cartDoc.toObject(Cart::class.java)
-                                ?: throw Exception("Ошибка при получении корзины")
-
-                            // Находим товар в корзине
-                            val itemIndex = cart.items.indexOfFirst { it.id == cartItemId }
-
-                            if (itemIndex == -1) {
-                                throw Exception("Товар не найден в корзине")
-                            }
-
-                            val item = cart.items[itemIndex]
-
-                            // Проверяем, не превышает ли новое количество наличие
-                            if (quantity > item.availableQuantity) {
-                                throw Exception("Недостаточное количество товара на складе. Доступно: ${item.availableQuantity}")
-                            }
-
-                            // Обновляем количество
-                            val updatedItem = item.copy(quantity = quantity)
-                            val updatedItems = cart.items.toMutableList().apply {
-                                this[itemIndex] = updatedItem
-                            }
-
-                            transaction.update(
-                                cartDocRef,
-                                mapOf(
-                                    "items" to updatedItems,
-                                    "updatedAt" to System.currentTimeMillis()
-                                )
-                            )
                         }.await()
 
                         success = true
@@ -278,139 +166,135 @@ class CartRepository(
                 }
 
                 // Также обновляем локальный кэш
-                updateLocalCartItemQuantity(cartItemId, quantity)
+                updateLocalCart(cartItem, true)
             } else {
-                // Если пользователь не авторизован, обновляем только в локальном кэше
-                updateLocalCartItemQuantity(cartItemId, quantity)
+                // Если пользователь не авторизован, сохраняем только в локальный кэш
+                updateLocalCart(cartItem, true)
             }
 
             Resource.Success(Unit)
         } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при обновлении количества товара: ${e.message}", e)
-            Resource.Error(e.message ?: "Ошибка при обновлении количества товара")
+            Log.e(TAG, "Ошибка при добавлении товара в корзину: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
         }
     }
 
     /**
      * Удаляет товар из корзины
-     * @param cartItemId ID элемента корзины для удаления
-     * @return Resource с результатом операции или сообщение об ошибке
      */
-    suspend fun removeCartItem(cartItemId: String): Resource<Unit> = withContext(Dispatchers.IO) {
-        return@withContext try {
+    suspend fun removeFromCart(productId: String): Resource<Unit> {
+        return try {
             val userId = firebaseAuth.currentUser?.uid
 
             if (userId != null) {
-                // Если пользователь авторизован, удаляем из Firestore с использованием транзакции
-                val db = FirebaseFirestore.getInstance()
+                firestore.runTransaction { transaction ->
+                    val cartDocRef = firestore.collection(Constants.COLLECTION_CARTS).document(userId)
+                    val cartSnapshot = transaction.get(cartDocRef)
 
-                var retryCount = 0
-                var success = false
-                var lastError: Exception? = null
+                    if (cartSnapshot.exists()) {
+                        val cart = cartSnapshot.toObject(Cart::class.java) ?: Cart(id = userId)
+                        val updatedItems = cart.items.filter { it.productId != productId }
 
-                while (retryCount < MAX_RETRY_ATTEMPTS && !success) {
-                    try {
-                        db.runTransaction { transaction ->
-                            val cartDocRef = db.collection(CARTS_COLLECTION).document(userId)
-                            val cartDoc = transaction.get(cartDocRef)
-
-                            if (!cartDoc.exists()) {
-                                throw Exception("Корзина не найдена")
-                            }
-
-                            val cart = cartDoc.toObject(Cart::class.java)
-                                ?: throw Exception("Ошибка при получении корзины")
-
-                            // Находим товар в корзине
-                            val updatedItems = cart.items.filter { it.id != cartItemId }
-
-                            if (updatedItems.size == cart.items.size) {
-                                throw Exception("Товар не найден в корзине")
-                            }
-
-                            transaction.update(
-                                cartDocRef,
-                                mapOf(
-                                    "items" to updatedItems,
-                                    "updatedAt" to System.currentTimeMillis()
-                                )
+                        transaction.update(
+                            cartDocRef,
+                            mapOf(
+                                "items" to updatedItems,
+                                "updatedAt" to System.currentTimeMillis()
                             )
-                        }.await()
-
-                        success = true
-                    } catch (e: Exception) {
-                        lastError = e
-                        retryCount++
-                        if (retryCount < MAX_RETRY_ATTEMPTS) {
-                            kotlinx.coroutines.delay(RETRY_DELAY_MS * retryCount)
-                        }
+                        )
                     }
-                }
-
-                if (!success && lastError != null) {
-                    throw lastError
-                }
-
-                // Также удаляем из локального кэша
-                removeLocalCartItem(cartItemId)
-            } else {
-                // Если пользователь не авторизован, удаляем только из локального кэша
-                removeLocalCartItem(cartItemId)
+                }.await()
             }
+
+            // Обновляем локальный кэш
+            updateLocalCart(null, false, productId)
 
             Resource.Success(Unit)
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при удалении товара из корзины: ${e.message}", e)
-            Resource.Error(e.message ?: "Ошибка при удалении товара из корзины")
+            Resource.Error(e.message ?: "Неизвестная ошибка")
+        }
+    }
+
+    /**
+     * Обновляет количество товара в корзине
+     */
+    suspend fun updateCartItemQuantity(productId: String, quantity: Int): Resource<Unit> {
+        return try {
+            val userId = firebaseAuth.currentUser?.uid
+
+            if (userId != null) {
+                firestore.runTransaction { transaction ->
+                    val cartDocRef = firestore.collection(Constants.COLLECTION_CARTS).document(userId)
+                    val cartSnapshot = transaction.get(cartDocRef)
+
+                    if (cartSnapshot.exists()) {
+                        val cart = cartSnapshot.toObject(Cart::class.java) ?: Cart(id = userId)
+
+                        val updatedItems = cart.items.map { item ->
+                            if (item.productId == productId) {
+                                item.copy(
+                                    quantity = quantity.coerceIn(1, Constants.MAX_CART_ITEMS),
+                                    subtotal = quantity * item.price
+                                )
+                            } else {
+                                item
+                            }
+                        }
+
+                        transaction.update(
+                            cartDocRef,
+                            mapOf(
+                                "items" to updatedItems,
+                                "updatedAt" to System.currentTimeMillis()
+                            )
+                        )
+                    }
+                }.await()
+            }
+
+            // Обновляем локальный кэш
+            val cachedCart = cartCache.getCart()
+            if (cachedCart != null) {
+                val updatedItems = cachedCart.items.map { item ->
+                    if (item.productId == productId) {
+                        item.copy(
+                            quantity = quantity.coerceIn(1, Constants.MAX_CART_ITEMS),
+                            subtotal = quantity * item.price
+                        )
+                    } else {
+                        item
+                    }
+                }
+                val updatedCart = cachedCart.copy(
+                    items = updatedItems,
+                    updatedAt = System.currentTimeMillis()
+                )
+                cartCache.saveCart(updatedCart)
+            }
+
+            Resource.Success(Unit)
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при обновлении количества товара: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
         }
     }
 
     /**
      * Очищает корзину
-     * @return Resource с результатом операции или сообщение об ошибке
      */
-    suspend fun clearCart(): Resource<Unit> = withContext(Dispatchers.IO) {
-        return@withContext try {
+    suspend fun clearCart(): Resource<Unit> {
+        return try {
             val userId = firebaseAuth.currentUser?.uid
 
             if (userId != null) {
-                // Если пользователь авторизован, очищаем в Firestore
-                val db = FirebaseFirestore.getInstance()
-
-                var retryCount = 0
-                var success = false
-                var lastError: Exception? = null
-
-                while (retryCount < MAX_RETRY_ATTEMPTS && !success) {
-                    try {
-                        db.runTransaction { transaction ->
-                            val cartDocRef = db.collection(CARTS_COLLECTION).document(userId)
-                            val cartDoc = transaction.get(cartDocRef)
-
-                            if (cartDoc.exists()) {
-                                transaction.update(
-                                    cartDocRef,
-                                    mapOf(
-                                        "items" to emptyList<CartItem>(),
-                                        "updatedAt" to System.currentTimeMillis()
-                                    )
-                                )
-                            }
-                        }.await()
-
-                        success = true
-                    } catch (e: Exception) {
-                        lastError = e
-                        retryCount++
-                        if (retryCount < MAX_RETRY_ATTEMPTS) {
-                            kotlinx.coroutines.delay(RETRY_DELAY_MS * retryCount)
-                        }
-                    }
-                }
-
-                if (!success && lastError != null) {
-                    throw lastError
-                }
+                val cartDocRef = firestore.collection(Constants.COLLECTION_CARTS).document(userId)
+                cartDocRef.update(
+                    mapOf(
+                        "items" to emptyList<CartItem>(),
+                        "updatedAt" to System.currentTimeMillis()
+                    )
+                ).await()
             }
 
             // Очищаем локальный кэш
@@ -419,538 +303,112 @@ class CartRepository(
             Resource.Success(Unit)
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при очистке корзины: ${e.message}", e)
-            Resource.Error(e.message ?: "Ошибка при очистке корзины")
+            Resource.Error(e.message ?: "Неизвестная ошибка")
         }
     }
 
     /**
-     * Рассчитывает стоимость доставки на основе адреса
-     * @param addressId ID адреса доставки
-     * @return Resource с стоимостью доставки или сообщение об ошибке
+     * Получает поток изменений корзины
      */
-    suspend fun calculateDeliveryFee(addressId: String): Resource<Double> = withContext(Dispatchers.IO) {
-        return@withContext try {
+    fun getCartFlow(): Flow<Resource<Cart>> = flow {
+        try {
             val userId = firebaseAuth.currentUser?.uid
-                ?: return@withContext Resource.Error("Пользователь не авторизован")
 
-            // Получаем данные пользователя для получения адреса
-            val userDocResult = firestoreSource.getDocument("users", userId)
-            if (userDocResult !is Resource.Success) {
-                return@withContext Resource.Error("Не удалось получить профиль пользователя")
-            }
-
-            val user = userDocResult.data?.toObject(com.yourstore.app.data.model.User::class.java)
-                ?: return@withContext Resource.Error("Профиль пользователя не найден")
-
-            // Ищем выбранный адрес
-            val address = user.addresses.find { it.id == addressId }
-                ?: return@withContext Resource.Error("Адрес не найден")
-
-            // Получаем зоны доставки из Firestore
-            val deliveryZonesResult = firestoreSource.getCollection(DELIVERY_ZONES_COLLECTION)
-            if (deliveryZonesResult !is Resource.Success) {
-                return@withContext Resource.Error("Не удалось получить зоны доставки")
-            }
-
-            val deliveryZones = deliveryZonesResult.data?.documents?.mapNotNull { doc ->
-                doc.toObject(com.yourstore.app.data.model.DeliveryZone::class.java)
-            } ?: emptyList()
-
-            // Базовая стоимость доставки по умолчанию
-            var deliveryFee = 2000.0
-
-            // Определяем зону доставки по адресу
-            for (zone in deliveryZones) {
-                // Проверка соответствия адреса зоне доставки
-                // Здесь можно реализовать более сложную логику проверки
-                if (address.city == zone.city ||
-                    (zone.boundaries.isNotEmpty() && isAddressInBoundaries(address, zone))) {
-                    deliveryFee = zone.deliveryFee
-                    break
-                }
-            }
-
-            // Получаем общий объем корзины для расчета дополнительной платы
-            val cartItemsResult = getCartItems()
-            if (cartItemsResult is Resource.Success) {
-                val cartItems = cartItemsResult.data ?: emptyList()
-
-                // Если в корзине много товаров, увеличиваем стоимость доставки
-                val totalQuantity = cartItems.sumOf { it.quantity }
-                if (totalQuantity > 10) {
-                    deliveryFee += 500.0 // Доплата за большое количество товаров
-                }
-            }
-
-            Resource.Success(deliveryFee)
-        } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при расчете стоимости доставки: ${e.message}", e)
-            Resource.Error(e.message ?: "Ошибка при расчете стоимости доставки")
-        }
-    }
-
-    /**
-     * Вспомогательный метод для проверки нахождения адреса в зоне доставки
-     */
-    private fun isAddressInBoundaries(address: com.yourstore.app.data.model.Address,
-                                      zone: com.yourstore.app.data.model.DeliveryZone): Boolean {
-        // Здесь должна быть логика проверки нахождения адреса в границах зоны
-        // В простейшем случае можно просто проверять город или район
-        return false
-    }
-
-    /**
-     * Синхронизирует локальную корзину с Firestore после авторизации
-     * @param userId ID пользователя, который авторизовался
-     * @return Resource с результатом операции или сообщение об ошибке
-     */
-    suspend fun syncCartAfterLogin(userId: String): Resource<Unit> = withContext(Dispatchers.IO) {
-        return@withContext try {
-            val localCart = cartCache.getCart()
-
-            if (localCart.items.isEmpty()) {
-                return@withContext Resource.Success(Unit)
-            }
-
-            val db = FirebaseFirestore.getInstance()
-            var retryCount = 0
-            var success = false
-            var lastError: Exception? = null
-
-            while (retryCount < MAX_RETRY_ATTEMPTS && !success) {
-                try {
-                    db.runTransaction { transaction ->
-                        val cartDocRef = db.collection(CARTS_COLLECTION).document(userId)
-                        val cartDoc = transaction.get(cartDocRef)
-
-                        if (cartDoc.exists()) {
-                            // Корзина уже существует в Firestore
-                            val remoteCart = cartDoc.toObject(Cart::class.java)
-                                ?: throw Exception("Ошибка при получении корзины из Firestore")
-
-                            // Объединяем корзины
-                            val mergedItems = mergeCartItems(remoteCart.items, localCart.items)
-
-                            transaction.update(
-                                cartDocRef,
-                                mapOf(
-                                    "items" to mergedItems,
-                                    "updatedAt" to System.currentTimeMillis()
-                                )
-                            )
-
-                            // Обновляем локальный кэш объединенной корзиной
-                            cartCache.saveCart(Cart(
-                                id = userId,
-                                items = mergedItems,
-                                updatedAt = System.currentTimeMillis()
-                            ))
-                        } else {
-                            // Создаем новую корзину в Firestore
-                            val newCart = Cart(
-                                id = userId,
-                                items = localCart.items,
-                                updatedAt = System.currentTimeMillis()
-                            )
-
-                            transaction.set(cartDocRef, newCart)
+            if (userId != null) {
+                // Слушаем изменения в Firestore
+                firestoreSource.getCartFlow(userId).collect { resource ->
+                    when (resource) {
+                        is Resource.Success -> {
+                            cartCache.saveCart(resource.data)
+                            emit(resource)
                         }
-                    }.await()
-
-                    success = true
-                } catch (e: Exception) {
-                    lastError = e
-                    retryCount++
-                    if (retryCount < MAX_RETRY_ATTEMPTS) {
-                        kotlinx.coroutines.delay(RETRY_DELAY_MS * retryCount)
+                        is Resource.Error -> {
+                            // При ошибке возвращаем кэшированные данные
+                            val cachedCart = cartCache.getCart()
+                            if (cachedCart != null) {
+                                emit(Resource.Success(cachedCart))
+                            } else {
+                                emit(resource)
+                            }
+                        }
+                        is Resource.Loading -> emit(resource)
                     }
                 }
+            } else {
+                // Для неавторизованных пользователей возвращаем кэшированную корзину
+                val cachedCart = cartCache.getCart() ?: Cart()
+                emit(Resource.Success(cachedCart))
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка в потоке корзины: ${e.message}", e)
+            emit(Resource.Error(e.message ?: "Неизвестная ошибка"))
+        }
+    }
+
+    /**
+     * Обновляет локальный кэш корзины
+     */
+    private fun updateLocalCart(cartItem: CartItem?, isAdd: Boolean, productIdToRemove: String? = null) {
+        try {
+            val cachedCart = cartCache.getCart() ?: Cart()
+
+            val updatedItems = when {
+                isAdd && cartItem != null -> {
+                    val existingItemIndex = cachedCart.items.indexOfFirst {
+                        it.productId == cartItem.productId
+                    }
+
+                    if (existingItemIndex != -1) {
+                        // Обновляем существующий товар
+                        cachedCart.items.toMutableList().apply {
+                            val existingItem = this[existingItemIndex]
+                            val newQuantity = (existingItem.quantity + cartItem.quantity)
+                                .coerceAtMost(Constants.MAX_CART_ITEMS)
+
+                            this[existingItemIndex] = existingItem.copy(
+                                quantity = newQuantity,
+                                subtotal = newQuantity * existingItem.price
+                            )
+                        }
+                    } else {
+                        // Добавляем новый товар
+                        cachedCart.items + cartItem.copy(
+                            subtotal = cartItem.quantity * cartItem.price
+                        )
+                    }
+                }
+                !isAdd && productIdToRemove != null -> {
+                    cachedCart.items.filter { it.productId != productIdToRemove }
+                }
+                else -> cachedCart.items
             }
 
-            if (!success && lastError != null) {
-                throw lastError
-            }
+            val updatedCart = cachedCart.copy(
+                items = updatedItems,
+                updatedAt = System.currentTimeMillis()
+            )
+
+            cartCache.saveCart(updatedCart)
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при обновлении локального кэша: ${e.message}", e)
+        }
+    }
+
+    /**
+     * Синхронизирует локальную корзину с сервером
+     */
+    suspend fun syncCart(): Resource<Unit> {
+        return try {
+            val userId = firebaseAuth.currentUser?.uid ?: return Resource.Success(Unit)
+            val cachedCart = cartCache.getCart() ?: return Resource.Success(Unit)
+
+            val cartDocRef = firestore.collection(Constants.COLLECTION_CARTS).document(userId)
+            cartDocRef.set(cachedCart).await()
 
             Resource.Success(Unit)
         } catch (e: Exception) {
             Log.e(TAG, "Ошибка при синхронизации корзины: ${e.message}", e)
-            Resource.Error(e.message ?: "Ошибка при синхронизации корзины")
-        }
-    }
-
-    /**
-     * Получает количество товаров в корзине как LiveData
-     * @return LiveData с количеством товаров
-     */
-    fun getCartItemCount(): LiveData<Int> {
-        return cartCache.getCartItemCountLiveData()
-    }
-
-    /**
-     * Получает общую стоимость корзины
-     * @return Resource с общей стоимостью или сообщение об ошибке
-     */
-    suspend fun getCartTotal(): Resource<CartTotal> = withContext(Dispatchers.IO) {
-        return@withContext try {
-            val cartItemsResult = getCartItems()
-
-            if (cartItemsResult is Resource.Error) {
-                return@withContext cartItemsResult
-            }
-
-            val cartItems = (cartItemsResult as Resource.Success).data ?: emptyList()
-
-            // Расчет стоимости товаров
-            var subtotal = 0.0
-            for (item in cartItems) {
-                val itemPrice = item.discountPrice ?: item.price
-                subtotal += itemPrice * item.quantity
-            }
-
-            // Базовая стоимость доставки по умолчанию
-            val deliveryFee = 0.0
-
-            val total = subtotal + deliveryFee
-
-            Resource.Success(
-                CartTotal(
-                    subtotal = subtotal,
-                    deliveryFee = deliveryFee,
-                    total = total
-                )
-            )
-        } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при расчете стоимости корзины: ${e.message}", e)
-            Resource.Error(e.message ?: "Ошибка при расчете стоимости корзины")
-        }
-    }
-
-    /**
-     * Получает корзину из Firestore с обновлением информации о товарах
-     * @param userId ID пользователя
-     * @param pageSize Размер страницы для пагинации (по умолчанию 0 - без пагинации)
-     * @param lastItemId ID последнего загруженного элемента (для пагинации)
-     * @return Resource с списком товаров в корзине или сообщение об ошибке
-     */
-    private suspend fun getCartFromFirestore(
-        userId: String,
-        pageSize: Int = 0,
-        lastItemId: String? = null
-    ): Resource<List<CartItem>> {
-        return try {
-            val db = FirebaseFirestore.getInstance()
-
-            // Получаем документ корзины
-            val cartDocRef = db.collection(CARTS_COLLECTION).document(userId)
-            val cartDoc = cartDocRef.get().await()
-
-            if (!cartDoc.exists()) {
-                // Если корзины нет, создаем пустую
-                val emptyCart = Cart(
-                    id = userId,
-                    items = emptyList(),
-                    updatedAt = System.currentTimeMillis()
-                )
-
-                // Сохраняем пустую корзину в Firestore
-                cartDocRef.set(emptyCart).await()
-
-                // Обновляем локальный кэш
-                cartCache.saveCart(emptyCart)
-
-                return Resource.Success(emptyList())
-            }
-
-            val cart = cartDoc.toObject(Cart::class.java)
-                ?: return Resource.Error("Ошибка при получении корзины")
-
-            // Применяем пагинацию если требуется
-            val itemsToProcess = if (pageSize > 0 && lastItemId != null) {
-                val lastItemIndex = cart.items.indexOfFirst { it.id == lastItemId }
-                if (lastItemIndex == -1) {
-                    return Resource.Error("Некорректный ID последнего элемента для пагинации")
-                }
-                cart.items.subList(lastItemIndex + 1, minOf(lastItemIndex + 1 + pageSize, cart.items.size))
-            } else {
-                cart.items
-            }
-
-            // Проверяем актуальность данных о наличии товаров и собираем обновленные элементы
-            val updatedItems = mutableListOf<CartItem>()
-            var cartNeedsUpdate = false
-
-            for (item in itemsToProcess) {
-                try {
-                    // Получаем актуальные данные о товаре
-                    val productDoc = db.collection(PRODUCTS_COLLECTION).document(item.productId).get().await()
-
-                    if (productDoc.exists()) {
-                        val product = productDoc.toObject(Product::class.java)
-
-                        if (product != null) {
-                            // Проверяем, нужно ли обновить элемент корзины
-                            val needsUpdate = product.name != item.name ||
-                                    (product.images.isNotEmpty() && product.images[0] != item.imageUrl) ||
-                                    product.price != item.price ||
-                                    product.discountPrice != item.discountPrice ||
-                                    product.availableQuantity != item.availableQuantity ||
-                                    (item.quantity > product.availableQuantity)
-
-                            if (needsUpdate) {
-                                cartNeedsUpdate = true
-                            }
-
-                            // Создаем обновленный элемент
-                            val updatedItem = item.copy(
-                                name = product.name,
-                                imageUrl = if (product.images.isNotEmpty()) product.images[0] else "",
-                                price = product.price,
-                                discountPrice = product.discountPrice,
-                                availableQuantity = product.availableQuantity,
-                                // Корректируем количество, если оно превышает наличие
-                                quantity = minOf(item.quantity, product.availableQuantity)
-                            )
-
-                            updatedItems.add(updatedItem)
-                        } else {
-                            // Если товар не преобразовался, добавляем исходный элемент
-                            updatedItems.add(item)
-                        }
-                    } else {
-                        // Если товар удален, пропускаем его
-                        cartNeedsUpdate = true
-                        continue
-                    }
-                } catch (e: Exception) {
-                    // При ошибке получения товара добавляем исходный элемент
-                    Log.w(TAG, "Ошибка при получении информации о товаре ${item.productId}: ${e.message}")
-                    updatedItems.add(item)
-                }
-            }
-
-            // Если были изменения, обновляем корзину в Firestore
-            if (cartNeedsUpdate) {
-                // Находим индексы обновленных элементов в исходном списке
-                val allUpdatedItems = cart.items.toMutableList()
-
-                // Удаляем элементы, которые были удалены из обновленного списка
-                val processedIds = itemsToProcess.map { it.id }
-                val updatedIds = updatedItems.map { it.id }
-
-                // Удаляем элементы, которые были в обработке, но не попали в обновленные
-                val toRemove = processedIds.filter { id -> !updatedIds.contains(id) }
-                allUpdatedItems.removeAll { toRemove.contains(it.id) }
-
-                // Обновляем остальные элементы
-                for (updatedItem in updatedItems) {
-                    val index = allUpdatedItems.indexOfFirst { it.id == updatedItem.id }
-                    if (index != -1) {
-                        allUpdatedItems[index] = updatedItem
-                    }
-                }
-
-                // Обновляем корзину в Firestore
-                try {
-                    cartDocRef.update(
-                        mapOf(
-                            "items" to allUpdatedItems,
-                            "updatedAt" to System.currentTimeMillis()
-                        )
-                    ).await()
-
-                    // Обновляем локальный кэш
-                    cartCache.saveCart(Cart(
-                        id = userId,
-                        items = allUpdatedItems,
-                        updatedAt = System.currentTimeMillis()
-                    ))
-                } catch (e: Exception) {
-                    Log.e(TAG, "Ошибка при обновлении корзины в Firestore: ${e.message}", e)
-                    // Продолжаем выполнение, так как основная задача - получить актуальные данные
-                }
-            } else {
-                // Если изменений не было, просто обновляем кэш
-                cartCache.saveCart(cart)
-            }
-
-            Resource.Success(updatedItems)
-        } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при получении корзины из Firestore: ${e.message}", e)
-            Resource.Error(e.message ?: "Ошибка при получении корзины")
-        }
-    }
-
-    /**
-     * Обновляет локальную корзину
-     * @param cartItem Элемент корзины для обновления
-     * @param isAdd True - добавить товар, False - удалить товар
-     */
-    private suspend fun updateLocalCart(cartItem: CartItem, isAdd: Boolean) {
-        try {
-            val cart = cartCache.getCart()
-
-            if (isAdd) {
-                // Проверяем, есть ли такой товар уже в корзине
-                val existingItemIndex = cart.items.indexOfFirst { it.productId == cartItem.productId }
-
-                if (existingItemIndex != -1) {
-                    // Товар уже в корзине, обновляем количество
-                    val existingItem = cart.items[existingItemIndex]
-                    val newQuantity = existingItem.quantity + cartItem.quantity
-
-                    val updatedItem = existingItem.copy(quantity = newQuantity)
-                    val updatedItems = cart.items.toMutableList().apply {
-                        this[existingItemIndex] = updatedItem
-                    }
-
-                    cartCache.saveCart(Cart(
-                        id = cart.id,
-                        items = updatedItems,
-                        updatedAt = System.currentTimeMillis()
-                    ))
-                } else {
-                    // Добавляем новый товар в корзину
-                    val updatedItems = cart.items + cartItem
-
-                    cartCache.saveCart(Cart(
-                        id = cart.id,
-                        items = updatedItems,
-                        updatedAt = System.currentTimeMillis()
-                    ))
-                }
-            } else {
-                // Удаляем товар из корзины
-                val updatedItems = cart.items.filter { it.id != cartItem.id }
-
-                cartCache.saveCart(Cart(
-                    id = cart.id,
-                    items = updatedItems,
-                    updatedAt = System.currentTimeMillis()
-                ))
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при обновлении локальной корзины: ${e.message}", e)
-        }
-    }
-
-    /**
-     * Обновляет количество товара в локальной корзине
-     * @param cartItemId ID элемента корзины
-     * @param quantity Новое количество
-     */
-    private suspend fun updateLocalCartItemQuantity(cartItemId: String, quantity: Int) {
-        try {
-            val cart = cartCache.getCart()
-
-            // Находим товар в корзине
-            val itemIndex = cart.items.indexOfFirst { it.id == cartItemId }
-
-            if (itemIndex != -1) {
-                val item = cart.items[itemIndex]
-
-                // Обновляем количество
-                val updatedItem = item.copy(quantity = quantity)
-                val updatedItems = cart.items.toMutableList().apply {
-                    this[itemIndex] = updatedItem
-                }
-
-                cartCache.saveCart(Cart(
-                    id = cart.id,
-                    items = updatedItems,
-                    updatedAt = System.currentTimeMillis()
-                ))
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при обновлении количества товара в локальной корзине: ${e.message}", e)
-        }
-    }
-
-    /**
-     * Удаляет товар из локальной корзины
-     * @param cartItemId ID элемента корзины для удаления
-     */
-    private suspend fun removeLocalCartItem(cartItemId: String) {
-        try {
-            val cart = cartCache.getCart()
-
-            // Удаляем товар из корзины
-            val updatedItems = cart.items.filter { it.id != cartItemId }
-
-            cartCache.saveCart(Cart(
-                id = cart.id,
-                items = updatedItems,
-                updatedAt = System.currentTimeMillis()
-            ))
-        } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при удалении товара из локальной корзины: ${e.message}", e)
-        }
-    }
-
-    /**
-     * Объединяет элементы двух корзин
-     * @param remoteItems Элементы удаленной корзины
-     * @param localItems Элементы локальной корзины
-     * @return Объединенный список элементов корзины
-     */
-    private fun mergeCartItems(
-        remoteItems: List<CartItem>,
-        localItems: List<CartItem>
-    ): List<CartItem> {
-        val resultItems = remoteItems.toMutableList()
-
-        // Добавляем локальные элементы, объединяя с существующими
-        for (localItem in localItems) {
-            val existingItemIndex = resultItems.indexOfFirst { it.productId == localItem.productId }
-
-            if (existingItemIndex != -1) {
-                // Товар уже есть в удаленной корзине, объединяем количество
-                val existingItem = resultItems[existingItemIndex]
-                val newQuantity = existingItem.quantity + localItem.quantity
-                val maxQuantity = existingItem.availableQuantity
-
-                resultItems[existingItemIndex] = existingItem.copy(
-                    quantity = minOf(newQuantity, maxQuantity)
-                )
-            } else {
-                // Добавляем новый товар
-                resultItems.add(localItem)
-            }
-        }
-
-        return resultItems
-    }
-
-    /**
-     * Добавляет товар из заказа в корзину (для повторного заказа)
-     * @param orderItem Элемент заказа для добавления в корзину
-     * @return Resource с результатом операции или сообщение об ошибке
-     */
-    suspend fun reorderItem(orderItem: OrderItem): Resource<Unit> = withContext(Dispatchers.IO) {
-        return@withContext try {
-            // Получаем актуальную информацию о товаре
-            val productDocRef = FirebaseFirestore.getInstance()
-                .collection(PRODUCTS_COLLECTION)
-                .document(orderItem.productId)
-
-            val productDoc = productDocRef.get().await()
-
-            if (!productDoc.exists()) {
-                return@withContext Resource.Error("Товар не найден или был удален")
-            }
-
-            val product = productDoc.toObject(Product::class.java)?.copy(id = orderItem.productId)
-                ?: return@withContext Resource.Error("Ошибка при получении информации о товаре")
-
-            // Проверяем наличие товара
-            if (product.availableQuantity <= 0) {
-                return@withContext Resource.Error("Товар временно отсутствует на складе")
-            }
-
-            // Добавляем товар в корзину
-            addToCart(product, minOf(orderItem.quantity, product.availableQuantity))
-        } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при повторном заказе товара: ${e.message}", e)
-            Resource.Error(e.message ?: "Ошибка при повторном заказе товара")
+            Resource.Error(e.message ?: "Неизвестная ошибка")
         }
     }
 }

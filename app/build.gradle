@@ -6,16 +6,14 @@ plugins {
     id 'com.google.firebase.crashlytics'
     id 'com.google.devtools.ksp'
     id 'androidx.navigation.safeargs.kotlin'
-    // Удаляем KAPT плагин, так как он вызывает проблемы
-    // id 'kotlin-kapt'
 }
 
 android {
-    namespace 'com.yourstore.app'
+    namespace 'com.example.a1000_melochei'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.yourstore.app"
+        applicationId "com.example.a1000_melochei"
         minSdk 26
         targetSdk 34
         versionCode 1
@@ -43,7 +41,6 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
-
         coreLibraryDesugaringEnabled true
     }
 
@@ -101,42 +98,40 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3'
 
-    // KTX extensions
-    implementation 'androidx.core:core-ktx:1.12.0'
+    // Koin for dependency injection
+    implementation 'io.insert-koin:koin-android:3.5.0'
+    implementation 'io.insert-koin:koin-androidx-viewmodel:3.5.0'
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:32.6.0')
-    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation platform('com.google.firebase:firebase-bom:32.4.0')
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-firestore-ktx'
     implementation 'com.google.firebase:firebase-storage-ktx'
-    implementation 'com.google.firebase:firebase-messaging-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-messaging-ktx'
 
-    // Dependency Injection - Koin
-    implementation 'io.insert-koin:koin-android:3.5.0'
+    // Network
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.11.0'
 
-    // Image loading - Glide с KSP
-    implementation 'com.github.bumptech.glide:glide:4.16.0'
-    ksp 'com.github.bumptech.glide:ksp:4.16.0'
+    // Image loading
+    implementation 'com.github.bumptech.glide:glide:4.15.1'
+    ksp 'com.github.bumptech.glide:compiler:4.15.1'
 
-    // Offline Caching
-    implementation 'androidx.datastore:datastore-preferences:1.0.0'
-
-    // CSV/Excel parsing
-    implementation 'com.opencsv:opencsv:5.8'
-    implementation 'org.apache.poi:poi:5.2.4'
-    implementation 'org.apache.poi:poi-ooxml:5.2.4'
-
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
-
-    // Circle ImageView
-    implementation 'de.hdodenhof:circleimageview:3.1.0'
-
-    // Swipe refresh layout
+    // Swipe refresh
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
-    implementation 'com.google.code.gson:gson:2.10.1'
+    // Charts
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    // Date picker
+    implementation 'com.google.android.material:material:1.10.0'
+
+    // QR Code
+    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
+    implementation 'com.google.zxing:core:3.5.2'
 
     // Testing
     testImplementation 'junit:junit:4.13.2'

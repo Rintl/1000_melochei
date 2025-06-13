@@ -1,123 +1,224 @@
-package com.yourstore.app.ui.auth
+package com.example.a1000_melochei.ui.auth
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
-import androidx.lifecycle.Observer
-import com.yourstore.app.R
-import com.yourstore.app.data.common.Resource
-import com.yourstore.app.databinding.ActivityForgotPasswordBinding
-import com.yourstore.app.ui.auth.viewmodel.AuthViewModel
-import com.yourstore.app.util.ValidationUtils
+import com.example.a1000_melochei.R
+import com.example.a1000_melochei.data.common.Resource
+import com.example.a1000_melochei.databinding.ActivityForgotPasswordBinding
+import com.example.a1000_melochei.ui.auth.viewmodel.AuthViewModel
+import com.example.a1000_melochei.util.showToast
+import com.example.a1000_melochei.util.hideKeyboard
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
- * Экран восстановления пароля
+ * Активность для восстановления пароля.
+ * Позволяет пользователю запросить отправку письма для сброса пароля.
  */
 class ForgotPasswordActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityForgotPasswordBinding
-    private val viewModel: AuthViewModel by viewModel()
+    private val authViewModel: AuthViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityForgotPasswordBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupViews()
+        setupUI()
         setupObservers()
         setupListeners()
+        handleIntent()
     }
 
-    private fun setupViews() {
-        binding.tvTitle.text = getString(R.string.forgot_password_title)
-        binding.tvSubtitle.text = getString(R.string.forgot_password_subtitle)
-        binding.toolbar.title = getString(R.string.forgot_password)
+    /**
+     * Настраивает пользовательский интерфейс
+     */
+    private fun setupUI() {
+        // Настраиваем ActionBar
         setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowHomeEnabled(true)
+            title = getString(R.string.forgot_password_title)
+        }
+
+        // Устанавливаем начальное состояние
+        updateResetButtonState(false)
+
+        // Устанавливаем описание
+        binding.tvDescription.text = getString(R.string.forgot_password_description)
     }
 
-    private fun setupObservers() {
-        // Наблюдение за результатом сброса пароля
-        viewModel.resetPasswordResult.observe(this, Observer { result ->
-            when (result) {
-                is Resource.Loading -> {
-                    showLoading(true)
-                }
-                is Resource.Success -> {
-                    showLoading(false)
-                    showResetSuccess()
-                }
-                is Resource.Error -> {
-                    showLoading(false)
-                    showError(result.message ?: getString(R.string.password_reset_error))
-                }
-            }
-        })
-
-        // Наблюдение за состоянием валидации email
-        viewModel.emailValid.observe(this, Observer { isValid ->
-            binding.btnResetPassword.isEnabled = isValid
-        })
+    /**
+     * Обрабатывает переданные данные
+     */
+    private fun handleIntent() {
+        // Если email был передан из предыдущего экрана
+        val email = intent.getStringExtra("email")
+        if (!email.isNullOrEmpty()) {
+            binding.etEmail.setText(email)
+            updateFormValidation()
+        }
     }
 
+    /**
+     * Настраивает слушатели событий
+     */
     private fun setupListeners() {
-        // Ввод email
-        binding.etEmail.doOnTextChanged { text, _, _, _ ->
-            val email = text.toString()
-            binding.tilEmail.error = if (ValidationUtils.isValidEmail(email)) null
-            else getString(R.string.invalid_email)
-
-            viewModel.validateEmail(email)
+        // Слушатель изменения текста email
+        binding.etEmail.doOnTextChanged { _, _, _, _ ->
+            updateFormValidation()
+            clearEmailError()
         }
 
-        // Кнопка сброса пароля
+        // Кнопка отправки
         binding.btnResetPassword.setOnClickListener {
-            val email = binding.etEmail.text.toString()
-            viewModel.resetPassword(email)
+            hideKeyboard()
+            performPasswordReset()
         }
 
-        // Возврат на экран входа
+        // Ссылка на возврат к авторизации
         binding.tvBackToLogin.setOnClickListener {
             finish()
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-        }
-
-        binding.toolbar.setNavigationOnClickListener {
-            onBackPressed()
         }
     }
 
-    private fun showLoading(isLoading: Boolean) {
+    /**
+     * Настраивает наблюдателей ViewModel
+     */
+    private fun setupObservers() {
+        // Наблюдаем за результатом сброса пароля
+        authViewModel.resetPasswordResult.observe(this) { resource ->
+            when (resource) {
+                is Resource.Loading -> {
+                    showLoadingState(true)
+                }
+                is Resource.Success -> {
+                    showLoadingState(false)
+                    showSuccessState()
+                }
+                is Resource.Error -> {
+                    showLoadingState(false)
+                    handleResetError(resource.message)
+                }
+            }
+        }
+    }
+
+    /**
+     * Обновляет валидацию формы
+     */
+    private fun updateFormValidation() {
+        val email = binding.etEmail.text.toString().trim()
+        val isValid = authViewModel.getEmailValidationError(email) == null && email.isNotEmpty()
+        updateResetButtonState(isValid)
+    }
+
+    /**
+     * Выполняет сброс пароля
+     */
+    private fun performPasswordReset() {
+        val email = binding.etEmail.text.toString().trim()
+
+        // Валидация email
+        val emailError = authViewModel.getEmailValidationError(email)
+        if (emailError != null) {
+            binding.tilEmail.error = emailError
+            return
+        }
+
+        // Очищаем предыдущие результаты
+        authViewModel.clearResults()
+
+        // Выполняем сброс пароля
+        authViewModel.resetPassword(email)
+    }
+
+    /**
+     * Обрабатывает ошибки сброса пароля
+     */
+    private fun handleResetError(errorMessage: String?) {
+        val message = errorMessage ?: getString(R.string.reset_password_failed)
+
+        if (message.contains("email", ignoreCase = true)) {
+            binding.tilEmail.error = message
+        } else {
+            showToast(message)
+        }
+    }
+
+    /**
+     * Показывает состояние успешной отправки
+     */
+    private fun showSuccessState() {
+        // Скрываем форму
+        binding.cardForm.visibility = View.GONE
+
+        // Показываем сообщение об успехе
+        binding.cardSuccess.visibility = View.VISIBLE
+
+        val email = binding.etEmail.text.toString().trim()
+        binding.tvSuccessMessage.text = getString(R.string.reset_password_success, email)
+
+        // Кнопка возврата к авторизации
+        binding.btnBackToLogin.setOnClickListener {
+            finish()
+        }
+
+        showToast(getString(R.string.reset_password_email_sent))
+    }
+
+    /**
+     * Обновляет состояние кнопки сброса
+     */
+    private fun updateResetButtonState(isEnabled: Boolean) {
+        binding.btnResetPassword.isEnabled = isEnabled
+        binding.btnResetPassword.alpha = if (isEnabled) 1.0f else 0.5f
+    }
+
+    /**
+     * Показывает/скрывает состояние загрузки
+     */
+    private fun showLoadingState(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         binding.btnResetPassword.isEnabled = !isLoading
         binding.etEmail.isEnabled = !isLoading
-    }
 
-    private fun showError(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-    }
-
-    private fun showResetSuccess() {
-        binding.layoutEmail.visibility = View.GONE
-        binding.layoutSuccess.visibility = View.VISIBLE
-
-        // Устанавливаем таймер для автоматического закрытия
-        binding.btnBackToLogin.setOnClickListener {
-            finish()
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        if (isLoading) {
+            binding.btnResetPassword.text = getString(R.string.sending)
+        } else {
+            binding.btnResetPassword.text = getString(R.string.reset_password)
         }
     }
 
-    override fun onBackPressed() {
-        if (binding.layoutSuccess.visibility == View.VISIBLE) {
-            finish()
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-            return
+    /**
+     * Очищает ошибку поля email
+     */
+    private fun clearEmailError() {
+        binding.tilEmail.error = null
+    }
+
+    /**
+     * Обрабатывает нажатие кнопки "Назад" в ActionBar
+     */
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
-        super.onBackPressed()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    }
+
+    /**
+     * Очищает наблюдателей при уничтожении активности
+     */
+    override fun onDestroy() {
+        super.onDestroy()
+        authViewModel.resetPasswordResult.removeObservers(this)
     }
 }

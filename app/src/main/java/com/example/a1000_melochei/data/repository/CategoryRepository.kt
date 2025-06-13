@@ -1,272 +1,439 @@
-package com.yourstore.app.data.repository
+package com.example.a1000_melochei.data.repository
 
+import android.net.Uri
 import android.util.Log
-import com.yourstore.app.data.common.Resource
-import com.yourstore.app.data.model.Category
-import com.yourstore.app.data.source.remote.FirestoreSource
-import com.yourstore.app.data.source.remote.StorageSource
-import kotlinx.coroutines.Dispatchers
+import com.example.a1000_melochei.data.common.Resource
+import com.example.a1000_melochei.data.model.Category
+import com.example.a1000_melochei.data.source.remote.FirestoreSource
+import com.example.a1000_melochei.data.source.remote.StorageSource
+import com.example.a1000_melochei.util.Constants
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.withContext
 import java.io.File
-import java.util.*
 
 /**
  * Репозиторий для управления категориями товаров.
- * Предоставляет методы для работы с категориями в Firebase Firestore и Storage.
+ * Обеспечивает взаимодействие с Firestore и Firebase Storage для категорий.
  */
 class CategoryRepository(
     private val firestoreSource: FirestoreSource,
     private val storageSource: StorageSource
 ) {
-    private val tag = "CategoryRepository"
-
-    // Константы для работы с Firestore
-    private val CATEGORIES_COLLECTION = "categories"
-    private val PRODUCTS_COLLECTION = "products"
+    private val TAG = "CategoryRepository"
 
     /**
      * Получает список всех категорий
      */
-    suspend fun getCategories(): Resource<List<Category>> = withContext(Dispatchers.IO) {
-        return@withContext try {
-            val result = firestoreSource.getCollection(CATEGORIES_COLLECTION)
-
-            if (result is Resource.Success) {
-                val categories = result.data?.documents?.mapNotNull { doc ->
-                    doc.toObject(Category::class.java)?.copy(id = doc.id)
-                } ?: emptyList()
-
-                Resource.Success<List<Category>>(categories)
-            } else {
-                result as Resource.Error
-                Resource.Error<List<Category>>(result.message ?: "Ошибка при получении категорий")
-            }
+    suspend fun getCategories(): Resource<List<Category>> {
+        return try {
+            val result = firestoreSource.getCategories()
+            Log.d(TAG, "Загружено категорий: ${result.getDataOrNull()?.size ?: 0}")
+            result
         } catch (e: Exception) {
-            Log.e(tag, "Ошибка при получении категорий: ${e.message}")
-            Resource.Error<List<Category>>(e.message ?: "Ошибка при получении категорий")
+            Log.e(TAG, "Ошибка при загрузке категорий: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
         }
     }
 
     /**
-     * Получает категорию по её ID
+     * Получает список активных категорий
      */
-    suspend fun getCategoryById(categoryId: String): Resource<Category> = withContext(Dispatchers.IO) {
-        return@withContext try {
-            val result = firestoreSource.getDocument(CATEGORIES_COLLECTION, categoryId)
-
-            if (result is Resource.Success) {
-                val category = result.data?.toObject(Category::class.java)?.copy(id = categoryId)
-                    ?: return@withContext Resource.Error<Category>("Категория не найдена")
-
-                Resource.Success<Category>(category)
-            } else {
-                result as Resource.Error
-                Resource.Error<Category>(result.message ?: "Ошибка при получении категории")
-            }
+    suspend fun getActiveCategories(): Resource<List<Category>> {
+        return try {
+            val result = firestoreSource.getCategoriesByField("isActive", true)
+            Log.d(TAG, "Загружено активных категорий: ${result.getDataOrNull()?.size ?: 0}")
+            result
         } catch (e: Exception) {
-            Log.e(tag, "Ошибка при получении категории: ${e.message}")
-            Resource.Error<Category>(e.message ?: "Ошибка при получении категории")
+            Log.e(TAG, "Ошибка при загрузке активных категорий: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
+        }
+    }
+
+    /**
+     * Получает список родительских категорий (без родителя)
+     */
+    suspend fun getParentCategories(): Resource<List<Category>> {
+        return try {
+            val result = firestoreSource.getCategoriesByField("parentId", "")
+            Log.d(TAG, "Загружено родительских категорий: ${result.getDataOrNull()?.size ?: 0}")
+            result
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при загрузке родительских категорий: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
+        }
+    }
+
+    /**
+     * Получает подкатегории для указанной родительской категории
+     */
+    suspend fun getSubcategories(parentId: String): Resource<List<Category>> {
+        return try {
+            val result = firestoreSource.getCategoriesByField("parentId", parentId)
+            Log.d(TAG, "Загружено подкатегорий для $parentId: ${result.getDataOrNull()?.size ?: 0}")
+            result
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при загрузке подкатегорий: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
+        }
+    }
+
+    /**
+     * Получает категорию по ID
+     */
+    suspend fun getCategoryById(categoryId: String): Resource<Category> {
+        return try {
+            val result = firestoreSource.getCategoryById(categoryId)
+            Log.d(TAG, "Загружена категория: ${result.getDataOrNull()?.name}")
+            result
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при загрузке категории: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
         }
     }
 
     /**
      * Добавляет новую категорию
      */
-    suspend fun addCategory(
-        name: String,
-        description: String,
-        imageFile: File? = null,
-        isActive: Boolean = true
-    ): Resource<Unit> = withContext(Dispatchers.IO) {
-        return@withContext try {
-            // Загружаем изображение категории, если оно предоставлено
-            var imageUrl = ""
-            if (imageFile != null) {
-                val fileName = "categories/${UUID.randomUUID()}"
-                val uploadResult = storageSource.uploadFile(fileName, imageFile)
-
-                if (uploadResult is Resource.Success) {
-                    imageUrl = uploadResult.data ?: ""
-                }
+    suspend fun addCategory(category: Category): Resource<String> {
+        return try {
+            if (!category.isValid()) {
+                return Resource.Error("Данные категории некорректны")
             }
 
-            // Создаем новую категорию
-            val categoryId = UUID.randomUUID().toString()
-            val newCategory = Category(
-                id = categoryId,
-                name = name,
-                description = description,
-                imageUrl = imageUrl,
-                isActive = isActive,
-                sortOrder = 0,
-                productCount = 0
-            )
-
-            // Добавляем категорию в Firestore
-            firestoreSource.setDocument(CATEGORIES_COLLECTION, categoryId, newCategory)
-
-            Resource.Success<Unit>(Unit)
+            val result = firestoreSource.addCategory(category)
+            when (result) {
+                is Resource.Success -> {
+                    Log.d(TAG, "Категория добавлена: ${category.name}")
+                    result
+                }
+                is Resource.Error -> {
+                    Log.e(TAG, "Ошибка при добавлении категории: ${result.message}")
+                    result
+                }
+                is Resource.Loading -> result
+            }
         } catch (e: Exception) {
-            Log.e(tag, "Ошибка при добавлении категории: ${e.message}")
-            Resource.Error<Unit>(e.message ?: "Ошибка при добавлении категории")
+            Log.e(TAG, "Ошибка при добавлении категории: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
         }
     }
 
     /**
-     * Обновляет существующую категорию
+     * Обновляет категорию
      */
-    suspend fun updateCategory(
-        categoryId: String,
-        name: String,
-        description: String,
-        imageFile: File? = null,
-        isActive: Boolean
-    ): Resource<Unit> = withContext(Dispatchers.IO) {
-        return@withContext try {
-            // Получаем текущую категорию
-            val categoryResult = getCategoryById(categoryId)
-
-            if (categoryResult is Resource.Error) {
-                return@withContext Resource.Error<Unit>(categoryResult.message ?: "Ошибка при получении категории")
+    suspend fun updateCategory(category: Category): Resource<Unit> {
+        return try {
+            if (!category.isValid()) {
+                return Resource.Error("Данные категории некорректны")
             }
 
-            val currentCategory = (categoryResult as Resource.Success).data
-
-            // Обрабатываем изображение
-            var imageUrl = currentCategory.imageUrl
-
-            if (imageFile != null) {
-                // Если текущее изображение существует, удаляем его
-                if (imageUrl.isNotEmpty()) {
-                    storageSource.deleteFile(imageUrl)
+            val result = firestoreSource.updateCategory(category.withUpdatedTime())
+            when (result) {
+                is Resource.Success -> {
+                    Log.d(TAG, "Категория обновлена: ${category.name}")
+                    result
                 }
-
-                // Загружаем новое изображение
-                val fileName = "categories/${UUID.randomUUID()}"
-                val uploadResult = storageSource.uploadFile(fileName, imageFile)
-
-                if (uploadResult is Resource.Success) {
-                    imageUrl = uploadResult.data ?: ""
+                is Resource.Error -> {
+                    Log.e(TAG, "Ошибка при обновлении категории: ${result.message}")
+                    result
                 }
+                is Resource.Loading -> result
             }
-
-            // Создаем обновленную категорию
-            val updatedCategory = currentCategory.copy(
-                name = name,
-                description = description,
-                imageUrl = imageUrl,
-                isActive = isActive
-            )
-
-            // Обновляем категорию в Firestore
-            firestoreSource.updateDocument(CATEGORIES_COLLECTION, categoryId, updatedCategory)
-
-            Resource.Success<Unit>(Unit)
         } catch (e: Exception) {
-            Log.e(tag, "Ошибка при обновлении категории: ${e.message}")
-            Resource.Error<Unit>(e.message ?: "Ошибка при обновлении категории")
+            Log.e(TAG, "Ошибка при обновлении категории: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
         }
     }
 
     /**
      * Удаляет категорию
      */
-    suspend fun deleteCategory(categoryId: String): Resource<Unit> = withContext(Dispatchers.IO) {
-        return@withContext try {
-            // Получаем текущую категорию
+    suspend fun deleteCategory(categoryId: String): Resource<Unit> {
+        return try {
+            // Сначала проверяем, есть ли товары в категории
             val categoryResult = getCategoryById(categoryId)
-
             if (categoryResult is Resource.Error) {
-                return@withContext Resource.Error<Unit>(categoryResult.message ?: "Ошибка при получении категории")
+                return Resource.Error("Категория не найдена")
             }
 
-            val category = (categoryResult as Resource.Success).data
+            val category = categoryResult.getDataOrNull()!!
 
-            // Проверяем, есть ли товары, связанные с этой категорией
-            val productsResult = firestoreSource.getCollectionWithFilter(
-                PRODUCTS_COLLECTION,
-                "categoryId",
-                categoryId
-            )
+            if (category.productCount > 0) {
+                return Resource.Error("Нельзя удалить категорию с товарами")
+            }
 
-            if (productsResult is Resource.Success) {
-                val productsCount = productsResult.data?.documents?.size ?: 0
+            // Проверяем, есть ли подкатегории
+            val subcategoriesResult = getSubcategories(categoryId)
+            if (subcategoriesResult is Resource.Success && subcategoriesResult.data.isNotEmpty()) {
+                return Resource.Error("Нельзя удалить категорию с подкатегориями")
+            }
 
-                if (productsCount > 0) {
-                    return@withContext Resource.Error<Unit>("Невозможно удалить категорию, содержащую товары")
+            val result = firestoreSource.deleteCategory(categoryId)
+            when (result) {
+                is Resource.Success -> {
+                    Log.d(TAG, "Категория удалена: ${category.name}")
+
+                    // Удаляем изображение категории
+                    if (category.imageUrl.isNotEmpty()) {
+                        storageSource.deleteImage(category.imageUrl)
+                    }
+
+                    result
+                }
+                is Resource.Error -> {
+                    Log.e(TAG, "Ошибка при удалении категории: ${result.message}")
+                    result
+                }
+                is Resource.Loading -> result
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при удалении категории: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
+        }
+    }
+
+    /**
+     * Загружает изображение категории
+     */
+    suspend fun uploadCategoryImage(imageUri: Uri): Resource<String> {
+        return try {
+            val result = storageSource.uploadImage(imageUri, Constants.STORAGE_CATEGORIES_FOLDER)
+            when (result) {
+                is Resource.Success -> {
+                    Log.d(TAG, "Изображение категории загружено: ${result.data}")
+                    result
+                }
+                is Resource.Error -> {
+                    Log.e(TAG, "Ошибка при загрузке изображения категории: ${result.message}")
+                    result
+                }
+                is Resource.Loading -> result
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при загрузке изображения категории: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
+        }
+    }
+
+    /**
+     * Загружает изображение категории из файла
+     */
+    suspend fun uploadCategoryImageFromFile(imageFile: File): Resource<String> {
+        return try {
+            val result = storageSource.uploadImageFromFile(imageFile, Constants.STORAGE_CATEGORIES_FOLDER)
+            when (result) {
+                is Resource.Success -> {
+                    Log.d(TAG, "Изображение категории загружено из файла: ${result.data}")
+                    result
+                }
+                is Resource.Error -> {
+                    Log.e(TAG, "Ошибка при загрузке изображения категории из файла: ${result.message}")
+                    result
+                }
+                is Resource.Loading -> result
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при загрузке изображения категории из файла: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
+        }
+    }
+
+    /**
+     * Удаляет изображение
+     */
+    suspend fun deleteImage(imageUrl: String): Resource<Unit> {
+        return try {
+            val result = storageSource.deleteImage(imageUrl)
+            when (result) {
+                is Resource.Success -> {
+                    Log.d(TAG, "Изображение удалено: $imageUrl")
+                    result
+                }
+                is Resource.Error -> {
+                    Log.e(TAG, "Ошибка при удалении изображения: ${result.message}")
+                    result
+                }
+                is Resource.Loading -> result
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при удалении изображения: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
+        }
+    }
+
+    /**
+     * Поиск категорий по названию
+     */
+    suspend fun searchCategories(query: String): Resource<List<Category>> {
+        return try {
+            val result = firestoreSource.searchCategories(query)
+            Log.d(TAG, "Найдено категорий по запросу '$query': ${result.getDataOrNull()?.size ?: 0}")
+            result
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при поиске категорий: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
+        }
+    }
+
+    /**
+     * Изменяет статус активности категории
+     */
+    suspend fun updateCategoryStatus(categoryId: String, isActive: Boolean): Resource<Unit> {
+        return try {
+            val categoryResult = getCategoryById(categoryId)
+            when (categoryResult) {
+                is Resource.Success -> {
+                    val updatedCategory = categoryResult.data.withActiveStatus(isActive)
+                    updateCategory(updatedCategory)
+                }
+                is Resource.Error -> categoryResult
+                is Resource.Loading -> Resource.Loading()
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при обновлении статуса категории: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
+        }
+    }
+
+    /**
+     * Обновляет счетчик товаров в категории
+     */
+    suspend fun updateProductCount(categoryId: String, change: Int): Resource<Unit> {
+        return try {
+            val categoryResult = getCategoryById(categoryId)
+            when (categoryResult) {
+                is Resource.Success -> {
+                    val currentCount = categoryResult.data.productCount
+                    val newCount = (currentCount + change).coerceAtLeast(0)
+                    val updatedCategory = categoryResult.data.withProductCount(newCount)
+                    updateCategory(updatedCategory)
+                }
+                is Resource.Error -> categoryResult
+                is Resource.Loading -> Resource.Loading()
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при обновлении счетчика товаров: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
+        }
+    }
+
+    /**
+     * Обновляет порядок сортировки категорий
+     */
+    suspend fun updateCategoriesOrder(categories: List<Category>): Resource<Unit> {
+        return try {
+            var successCount = 0
+            var errorCount = 0
+
+            categories.forEachIndexed { index, category ->
+                val updatedCategory = category.copy(
+                    sortOrder = index,
+                    updatedAt = System.currentTimeMillis()
+                )
+                val updateResult = updateCategory(updatedCategory)
+                if (updateResult is Resource.Success) {
+                    successCount++
+                } else {
+                    errorCount++
                 }
             }
 
-            // Удаляем изображение категории, если оно есть
-            if (category.imageUrl.isNotEmpty()) {
-                storageSource.deleteFile(category.imageUrl)
-            }
+            Log.d(TAG, "Обновление порядка категорий: успешно $successCount, ошибок $errorCount")
 
-            // Удаляем категорию из Firestore
-            firestoreSource.deleteDocument(CATEGORIES_COLLECTION, categoryId)
-
-            Resource.Success<Unit>(Unit)
-        } catch (e: Exception) {
-            Log.e(tag, "Ошибка при удалении категории: ${e.message}")
-            Resource.Error<Unit>(e.message ?: "Ошибка при удалении категории")
-        }
-    }
-
-    /**
-     * Получает количество категорий
-     */
-    suspend fun getCategoriesCount(): Resource<Int> = withContext(Dispatchers.IO) {
-        return@withContext try {
-            val categoriesResult = getCategories()
-
-            if (categoriesResult is Resource.Success) {
-                Resource.Success<Int>(categoriesResult.data.size)
+            if (errorCount == 0) {
+                Resource.Success(Unit)
             } else {
-                Resource.Error<Int>("Не удалось получить количество категорий")
+                Resource.Error("Обновлено $successCount из ${categories.size} категорий")
             }
         } catch (e: Exception) {
-            Log.e(tag, "Ошибка при получении количества категорий: ${e.message}")
-            Resource.Error<Int>(e.message ?: "Ошибка при получении количества категорий")
+            Log.e(TAG, "Ошибка при обновлении порядка категорий: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
         }
     }
 
     /**
-     * Переключает видимость категории
+     * Получает категории с товарами (только те, в которых есть товары)
      */
-    suspend fun toggleCategoryStatus(categoryId: String, isActive: Boolean): Resource<Unit> = withContext(Dispatchers.IO) {
-        return@withContext try {
-            firestoreSource.updateField(
-                CATEGORIES_COLLECTION,
-                categoryId,
-                "isActive",
-                isActive
-            )
-            Resource.Success<Unit>(Unit)
+    suspend fun getCategoriesWithProducts(): Resource<List<Category>> {
+        return try {
+            val allCategoriesResult = getActiveCategories()
+            when (allCategoriesResult) {
+                is Resource.Success -> {
+                    val categoriesWithProducts = allCategoriesResult.data.filter { it.productCount > 0 }
+                    Log.d(TAG, "Категорий с товарами: ${categoriesWithProducts.size}")
+                    Resource.Success(categoriesWithProducts)
+                }
+                is Resource.Error -> allCategoriesResult
+                is Resource.Loading -> allCategoriesResult
+            }
         } catch (e: Exception) {
-            Log.e(tag, "Ошибка при изменении статуса категории: ${e.message}")
-            Resource.Error<Unit>(e.message ?: "Ошибка при изменении статуса категории")
+            Log.e(TAG, "Ошибка при загрузке категорий с товарами: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
         }
     }
 
     /**
-     * Изменяет порядок категорий
+     * Получает поток категорий в реальном времени
      */
-    suspend fun reorderCategories(categoryIds: List<String>): Resource<Unit> = withContext(Dispatchers.IO) {
-        return@withContext try {
-            categoryIds.forEachIndexed { index, categoryId ->
-                firestoreSource.updateField(
-                    CATEGORIES_COLLECTION,
-                    categoryId,
-                    "sortOrder",
-                    index
-                )
+    fun getCategoriesFlow(): Flow<Resource<List<Category>>> = flow {
+        try {
+            firestoreSource.getCategoriesFlow().collect { resource ->
+                emit(resource)
             }
-            Resource.Success<Unit>(Unit)
         } catch (e: Exception) {
-            Log.e(tag, "Ошибка при изменении порядка категорий: ${e.message}")
-            Resource.Error<Unit>(e.message ?: "Ошибка при изменении порядка категорий")
+            Log.e(TAG, "Ошибка в потоке категорий: ${e.message}", e)
+            emit(Resource.Error(e.message ?: "Неизвестная ошибка"))
+        }
+    }
+
+    /**
+     * Получает статистику по категориям
+     */
+    suspend fun getCategoriesStats(): Resource<Map<String, Any>> {
+        return try {
+            val categoriesResult = getCategories()
+            when (categoriesResult) {
+                is Resource.Success -> {
+                    val categories = categoriesResult.data
+                    val stats = mapOf(
+                        "totalCategories" to categories.size,
+                        "activeCategories" to categories.count { it.isActive },
+                        "parentCategories" to categories.count { it.isRootCategory() },
+                        "subcategories" to categories.count { it.isSubcategory() },
+                        "categoriesWithProducts" to categories.count { it.productCount > 0 },
+                        "emptyCate­gories" to categories.count { it.productCount == 0 }
+                    )
+                    Log.d(TAG, "Статистика категорий: $stats")
+                    Resource.Success(stats)
+                }
+                is Resource.Error -> Resource.Error(categoriesResult.message ?: "Ошибка загрузки категорий")
+                is Resource.Loading -> Resource.Loading()
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при получении статистики категорий: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
+        }
+    }
+
+    /**
+     * Проверяет уникальность названия категории
+     */
+    suspend fun isCategoryNameUnique(name: String, excludeCategoryId: String? = null): Boolean {
+        return try {
+            val categoriesResult = getCategories()
+            when (categoriesResult) {
+                is Resource.Success -> {
+                    val categories = categoriesResult.data
+                    val duplicateCategory = categories.find {
+                        it.name.equals(name, ignoreCase = true) && it.id != excludeCategoryId
+                    }
+                    duplicateCategory == null
+                }
+                else -> false
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при проверке уникальности названия: ${e.message}", e)
+            false
         }
     }
 }

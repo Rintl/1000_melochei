@@ -1,4 +1,4 @@
-package com.yourstore.app.util
+package com.example.a1000_melochei.util
 
 /**
  * Класс, содержащий константы для всего приложения.
@@ -20,6 +20,7 @@ object Constants {
     const val COLLECTION_PROMOTIONS = "promotions"
     const val COLLECTION_DELIVERY_ZONES = "delivery_zones"
     const val COLLECTION_SETTINGS = "settings"
+    const val COLLECTION_CARTS = "carts"
 
     const val STORAGE_PRODUCTS_FOLDER = "products"
     const val STORAGE_CATEGORIES_FOLDER = "categories"
@@ -40,73 +41,11 @@ object Constants {
     // Константы для работы с корзиной
     const val CART_CACHE_FILE = "cart_cache.json"
     const val MAX_CART_ITEMS = 99
-    const val MIN_ORDER_AMOUNT = 5000 // Минимальная сумма заказа в тенге
+    const val MIN_ORDER_AMOUNT = 5000.0 // Минимальная сумма заказа в тенге
 
-    // Константы для работы с датами и временем
-    const val DEFAULT_DATE_FORMAT = "dd.MM.yyyy"
-    const val DEFAULT_TIME_FORMAT = "HH:mm"
-    const val DEFAULT_DATETIME_FORMAT = "dd.MM.yyyy HH:mm"
-    const val DEFAULT_DATETIME_FORMAT_WITH_SECONDS = "dd.MM.yyyy HH:mm:ss"
-    const val SERVER_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-
-    // Константы для пагинации
-    const val DEFAULT_PAGE_SIZE = 20
-    const val PRODUCTS_PAGE_SIZE = 30
-    const val ORDERS_PAGE_SIZE = 15
-
-    // Константы для уведомлений
-    const val NOTIFICATION_CHANNEL_ORDER_ID = "order_notifications"
-    const val NOTIFICATION_CHANNEL_PROMO_ID = "promo_notifications"
-    const val NOTIFICATION_CHANNEL_SYSTEM_ID = "system_notifications"
-
-    const val NOTIFICATION_NEW_ORDER_ID = 1001
-    const val NOTIFICATION_ORDER_STATUS_ID = 2001
-    const val NOTIFICATION_PROMO_ID = 3001
-    const val NOTIFICATION_SYSTEM_ID = 4001
-
-    // Константы для Intent Actions и Extras
-    const val ACTION_UPDATE_DATA = "com.yourstore.app.ACTION_UPDATE_DATA"
-    const val ACTION_ORDER_STATUS_CHANGED = "com.yourstore.app.ACTION_ORDER_STATUS_CHANGED"
-    const val ACTION_LOGOUT = "com.yourstore.app.ACTION_LOGOUT"
-
-    const val EXTRA_ORDER_ID = "order_id"
-    const val EXTRA_PRODUCT_ID = "product_id"
-    const val EXTRA_CATEGORY_ID = "category_id"
-    const val EXTRA_NOTIFICATION_TYPE = "notification_type"
-
-    // Константы для работы с заказами
-    const val ORDER_STATUS_PENDING = "pending"           // Ожидает обработки
-    const val ORDER_STATUS_PROCESSING = "processing"     // В обработке
-    const val ORDER_STATUS_SHIPPING = "shipping"         // Доставляется
-    const val ORDER_STATUS_DELIVERED = "delivered"       // Доставлен
-    const val ORDER_STATUS_COMPLETED = "completed"       // Завершен
-    const val ORDER_STATUS_CANCELLED = "cancelled"       // Отменен
-
-    const val DELIVERY_METHOD_PICKUP = "pickup"          // Самовывоз
-    const val DELIVERY_METHOD_DELIVERY = "delivery"      // Доставка
-
-    const val PAYMENT_METHOD_CASH = "cash"               // Наличными
-    const val PAYMENT_METHOD_CARD = "card"               // Картой при получении
-    const val PAYMENT_METHOD_KASPI = "kaspi"             // Перевод на Kaspi
-
-    // Константы для работы с товарами
-    const val LOW_STOCK_THRESHOLD = 5                    // Порог низкого остатка товара
-
-    // Константы для аналитики
-    const val ANALYTICS_PERIOD_TODAY = "today"
-    const val ANALYTICS_PERIOD_YESTERDAY = "yesterday"
-    const val ANALYTICS_PERIOD_WEEK = "week"
-    const val ANALYTICS_PERIOD_MONTH = "month"
-    const val ANALYTICS_PERIOD_YEAR = "year"
-
-    // Константы для прав доступа
-    const val ADMIN_CODE = "123456"                      // Код для регистрации администратора
-
-    // Константы для валидации
+    // Валидация данных
     const val MIN_PASSWORD_LENGTH = 6
-    const val MAX_PASSWORD_LENGTH = 20
-    const val MIN_NAME_LENGTH = 2
-    const val MIN_ADDRESS_LENGTH = 5
+    const val MIN_PHONE_LENGTH = 10
     const val PHONE_REGEX = "^\\+?[0-9]{10,15}$"
     const val EMAIL_REGEX = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$"
 
@@ -120,14 +59,17 @@ object Constants {
     const val MAX_IMAGE_HEIGHT = 1200
 
     // Константы для работы с API
-    const val CONNECTION_TIMEOUT = 30000L                // 30 секунд
-    const val READ_TIMEOUT = 30000L                      // 30 секунд
-    const val WRITE_TIMEOUT = 30000L                     // 30 секунд
+    const val CONNECTION_TIMEOUT = 30000L
+    const val READ_TIMEOUT = 30000L
+    const val WRITE_TIMEOUT = 30000L
+    const val MAX_RETRY_ATTEMPTS = 3
+    const val RETRY_DELAY_MS = 1000L
 
     // Константы для системных настроек
-    const val DEFAULT_DELIVERY_COST = 1000               // Стоимость доставки в тенге
-    const val FREE_DELIVERY_THRESHOLD = 20000            // Порог бесплатной доставки в тенге
+    const val DEFAULT_DELIVERY_COST = 1000.0
+    const val FREE_DELIVERY_THRESHOLD = 20000.0
 
+    // Константы для уведомлений
     const val NOTIFICATION_CHANNEL_ORDER_ID = "channel_orders"
     const val NOTIFICATION_CHANNEL_PROMO_ID = "channel_promo"
     const val NOTIFICATION_CHANNEL_SYSTEM_ID = "channel_system"
@@ -139,52 +81,17 @@ object Constants {
     const val NOTIFICATION_SYSTEM_ID = 3001
 
     // Действия для broadcast receiver
-    const val ACTION_UPDATE_DATA = "com.yourstore.app.ACTION_UPDATE_DATA"
-
-    // Ключи для SharedPreferences
-    const val PREF_USER_ID = "user_id"
-    const val PREF_FCM_TOKEN = "fcm_token"
-    const val PREF_DARK_MODE = "dark_mode"
-    const val PREF_NOTIFICATIONS_ENABLED = "notifications_enabled"
-
-    // Ключи для Intent
-    const val EXTRA_PRODUCT_ID = "PRODUCT_ID"
-    const val EXTRA_CATEGORY_ID = "CATEGORY_ID"
-    const val EXTRA_ORDER_ID = "ORDER_ID"
-
-    const val USERS_COLLECTION = "users"
-    const val PRODUCTS_COLLECTION = "products"
-    const val CATEGORIES_COLLECTION = "categories"
-    const val ORDERS_COLLECTION = "orders"
-    const val CARTS_COLLECTION = "carts"
-
-    // Константы для Intent Actions
-    const val ACTION_UPDATE_DATA = "com.yourstore.app.ACTION_UPDATE_DATA"
-    const val ACTION_VIEW_PRODUCT = "com.yourstore.app.ACTION_VIEW_PRODUCT"
-    const val ACTION_VIEW_CATEGORY = "com.yourstore.app.ACTION_VIEW_CATEGORY"
-    const val ACTION_VIEW_ORDER = "com.yourstore.app.ACTION_VIEW_ORDER"
-
-    // Константы для уведомлений
-    const val NOTIFICATION_CHANNEL_ORDER_ID = "order_notifications"
-    const val NOTIFICATION_CHANNEL_PROMO_ID = "promo_notifications"
-    const val NOTIFICATION_CHANNEL_SYSTEM_ID = "system_notifications"
-
-    const val NOTIFICATION_NEW_ORDER_ID = 1001
-    const val NOTIFICATION_ORDER_STATUS_ID = 1002
-    const val NOTIFICATION_PROMO_ID = 1003
-    const val NOTIFICATION_SYSTEM_ID = 1004
+    const val ACTION_UPDATE_DATA = "com.example.a1000_melochei.ACTION_UPDATE_DATA"
+    const val ACTION_VIEW_PRODUCT = "com.example.a1000_melochei.ACTION_VIEW_PRODUCT"
+    const val ACTION_VIEW_CATEGORY = "com.example.a1000_melochei.ACTION_VIEW_CATEGORY"
+    const val ACTION_VIEW_ORDER = "com.example.a1000_melochei.ACTION_VIEW_ORDER"
 
     // Константы для FileProvider
-    const val FILE_PROVIDER_AUTHORITY = "com.yourstore.app.fileprovider"
+    const val FILE_PROVIDER_AUTHORITY = "com.example.a1000_melochei.fileprovider"
 
     // Лимиты и ограничения
     const val MAX_PRODUCT_IMAGES = 5
-    const val MAX_CART_ITEMS = 99
     const val PRICE_DECIMALS = 2
-
-    // Константы для аналитики заказов
-    const val MIN_ORDER_AMOUNT = 1000.0 // Минимальная сумма заказа
-    const val FREE_DELIVERY_THRESHOLD = 10000.0 // Порог для бесплатной доставки
 
     // Лимиты для пагинации
     const val DEFAULT_PAGE_SIZE = 20

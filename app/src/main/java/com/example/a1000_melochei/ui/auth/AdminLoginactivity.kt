@@ -1,146 +1,302 @@
-package com.yourstore.app.ui.auth
+package com.example.a1000_melochei.ui.auth
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
-import androidx.lifecycle.Observer
-import com.yourstore.app.R
-import com.yourstore.app.data.common.Resource
-import com.yourstore.app.databinding.ActivityAdminLoginBinding
-import com.yourstore.app.ui.admin.AdminActivity
-import com.yourstore.app.ui.auth.viewmodel.AuthViewModel
-import com.yourstore.app.util.ValidationUtils
+import com.example.a1000_melochei.R
+import com.example.a1000_melochei.data.common.Resource
+import com.example.a1000_melochei.databinding.ActivityAdminLoginBinding
+import com.example.a1000_melochei.ui.admin.AdminActivity
+import com.example.a1000_melochei.ui.auth.viewmodel.AuthViewModel
+import com.example.a1000_melochei.util.showToast
+import com.example.a1000_melochei.util.hideKeyboard
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
- * Экран входа для администратора
+ * Активность для авторизации администраторов.
+ * Предоставляет специальный интерфейс для входа администраторов с кодом доступа.
  */
 class AdminLoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAdminLoginBinding
-    private val viewModel: AuthViewModel by viewModel()
+    private val authViewModel: AuthViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAdminLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupViews()
+        setupUI()
         setupObservers()
         setupListeners()
+        handleIntent()
     }
 
-    private fun setupViews() {
-        binding.tvTitle.text = getString(R.string.admin_login_title)
-        binding.tvSubtitle.text = getString(R.string.admin_login_subtitle)
-        binding.toolbar.title = getString(R.string.admin_login)
+    /**
+     * Настраивает пользовательский интерфейс
+     */
+    private fun setupUI() {
+        // Настраиваем ActionBar
         setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowHomeEnabled(true)
+            title = getString(R.string.admin_login_title)
+        }
+
+        // Устанавливаем начальное состояние
+        updateLoginButtonState(false)
+
+        // Показываем предупреждение
+        binding.tvWarning.text = getString(R.string.admin_login_warning)
     }
 
-    private fun setupObservers() {
-        // Наблюдение за результатом входа администратора
-        viewModel.adminLoginResult.observe(this, Observer { result ->
-            when (result) {
-                is Resource.Loading -> {
-                    showLoading(true)
-                }
-                is Resource.Success -> {
-                    showLoading(false)
-                    navigateToAdminScreen()
-                }
-                is Resource.Error -> {
-                    showLoading(false)
-                    showError(result.message ?: getString(R.string.admin_login_error))
-                }
-            }
-        })
-
-        // Наблюдение за состоянием валидации формы
-        viewModel.adminFormValid.observe(this, Observer { isValid ->
-            binding.btnAdminLogin.isEnabled = isValid
-        })
+    /**
+     * Обрабатывает переданные данные
+     */
+    private fun handleIntent() {
+        // Если email был передан из предыдущего экрана
+        val email = intent.getStringExtra("email")
+        if (!email.isNullOrEmpty()) {
+            binding.etEmail.setText(email)
+        }
     }
 
+    /**
+     * Настраивает слушатели событий
+     */
     private fun setupListeners() {
-        // Ввод email
-        binding.etAdminEmail.doOnTextChanged { text, _, _, _ ->
-            binding.tilAdminEmail.error = if (ValidationUtils.isValidEmail(text.toString())) null
-            else getString(R.string.invalid_email)
-
-            viewModel.validateAdminForm(
-                binding.etAdminEmail.text.toString(),
-                binding.etAdminPassword.text.toString(),
-                binding.etAdminCode.text.toString()
-            )
+        // Слушатели изменения текста
+        binding.etEmail.doOnTextChanged { _, _, _, _ ->
+            updateFormValidation()
+            clearFieldError(binding.tilEmail)
         }
 
-        // Ввод пароля
-        binding.etAdminPassword.doOnTextChanged { text, _, _, _ ->
-            binding.tilAdminPassword.error = if (ValidationUtils.isValidPassword(text.toString())) null
-            else getString(R.string.invalid_password)
-
-            viewModel.validateAdminForm(
-                binding.etAdminEmail.text.toString(),
-                binding.etAdminPassword.text.toString(),
-                binding.etAdminCode.text.toString()
-            )
+        binding.etPassword.doOnTextChanged { _, _, _, _ ->
+            updateFormValidation()
+            clearFieldError(binding.tilPassword)
         }
 
-        // Ввод кода администратора
-        binding.etAdminCode.doOnTextChanged { text, _, _, _ ->
-            binding.tilAdminCode.error = if (text.toString().length >= 6) null
-            else getString(R.string.invalid_admin_code)
-
-            viewModel.validateAdminForm(
-                binding.etAdminEmail.text.toString(),
-                binding.etAdminPassword.text.toString(),
-                binding.etAdminCode.text.toString()
-            )
+        binding.etAdminCode.doOnTextChanged { _, _, _, _ ->
+            updateFormValidation()
+            clearFieldError(binding.tilAdminCode)
         }
 
         // Кнопка входа
-        binding.btnAdminLogin.setOnClickListener {
-            val email = binding.etAdminEmail.text.toString()
-            val password = binding.etAdminPassword.text.toString()
-            val adminCode = binding.etAdminCode.text.toString()
-            viewModel.loginAsAdmin(email, password, adminCode)
+        binding.btnLogin.setOnClickListener {
+            hideKeyboard()
+            performAdminLogin()
         }
 
-        // Переход на обычный экран входа
+        // Ссылка на обычный вход
         binding.tvRegularLogin.setOnClickListener {
-            startActivity(Intent(this, LoginActivity::class.java))
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-            finish()
-        }
-
-        binding.toolbar.setNavigationOnClickListener {
-            onBackPressed()
+            navigateToRegularLogin()
         }
     }
 
-    private fun showLoading(isLoading: Boolean) {
+    /**
+     * Настраивает наблюдателей ViewModel
+     */
+    private fun setupObservers() {
+        // Наблюдаем за валидацией формы
+        authViewModel.adminFormValid.observe(this) { isValid ->
+            updateLoginButtonState(isValid)
+        }
+
+        // Наблюдаем за результатом авторизации администратора
+        authViewModel.adminLoginResult.observe(this) { resource ->
+            when (resource) {
+                is Resource.Loading -> {
+                    showLoadingState(true)
+                }
+                is Resource.Success -> {
+                    showLoadingState(false)
+                    showToast("Добро пожаловать, администратор!")
+
+                    // Переходим к административной панели
+                    navigateToAdmin()
+                }
+                is Resource.Error -> {
+                    showLoadingState(false)
+                    handleLoginError(resource.message)
+                }
+            }
+        }
+    }
+
+    /**
+     * Обновляет валидацию формы
+     */
+    private fun updateFormValidation() {
+        val email = binding.etEmail.text.toString()
+        val password = binding.etPassword.text.toString()
+        val adminCode = binding.etAdminCode.text.toString()
+
+        authViewModel.updateAdminForm(email, password, adminCode)
+    }
+
+    /**
+     * Выполняет авторизацию администратора
+     */
+    private fun performAdminLogin() {
+        val email = binding.etEmail.text.toString().trim()
+        val password = binding.etPassword.text.toString()
+        val adminCode = binding.etAdminCode.text.toString().trim()
+
+        // Дополнительная валидация
+        if (!validateInput(email, password, adminCode)) {
+            return
+        }
+
+        // Очищаем предыдущие результаты
+        authViewModel.clearResults()
+
+        // Выполняем авторизацию администратора
+        authViewModel.loginAdmin(email, password, adminCode)
+    }
+
+    /**
+     * Валидирует введенные данные
+     */
+    private fun validateInput(email: String, password: String, adminCode: String): Boolean {
+        var isValid = true
+
+        // Проверяем email
+        val emailError = authViewModel.getEmailValidationError(email)
+        if (emailError != null) {
+            binding.tilEmail.error = emailError
+            isValid = false
+        }
+
+        // Проверяем пароль
+        val passwordError = authViewModel.getPasswordValidationError(password)
+        if (passwordError != null) {
+            binding.tilPassword.error = passwordError
+            isValid = false
+        }
+
+        // Проверяем код администратора
+        if (adminCode.isBlank()) {
+            binding.tilAdminCode.error = "Введите код администратора"
+            isValid = false
+        } else if (adminCode.length < 4) {
+            binding.tilAdminCode.error = "Код администратора должен содержать не менее 4 символов"
+            isValid = false
+        }
+
+        return isValid
+    }
+
+    /**
+     * Обрабатывает ошибки авторизации
+     */
+    private fun handleLoginError(errorMessage: String?) {
+        val message = errorMessage ?: getString(R.string.auth_failed)
+
+        when {
+            message.contains("email", ignoreCase = true) -> {
+                binding.tilEmail.error = message
+            }
+            message.contains("password", ignoreCase = true) -> {
+                binding.tilPassword.error = message
+            }
+            message.contains("код", ignoreCase = true) ||
+                    message.contains("code", ignoreCase = true) -> {
+                binding.tilAdminCode.error = message
+                // Очищаем поле кода для безопасности
+                binding.etAdminCode.setText("")
+            }
+            else -> {
+                showToast(message)
+            }
+        }
+    }
+
+    /**
+     * Обновляет состояние кнопки входа
+     */
+    private fun updateLoginButtonState(isEnabled: Boolean) {
+        binding.btnLogin.isEnabled = isEnabled
+        binding.btnLogin.alpha = if (isEnabled) 1.0f else 0.5f
+    }
+
+    /**
+     * Показывает/скрывает состояние загрузки
+     */
+    private fun showLoadingState(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-        binding.btnAdminLogin.isEnabled = !isLoading
-        binding.etAdminEmail.isEnabled = !isLoading
-        binding.etAdminPassword.isEnabled = !isLoading
+        binding.btnLogin.isEnabled = !isLoading
+        binding.etEmail.isEnabled = !isLoading
+        binding.etPassword.isEnabled = !isLoading
         binding.etAdminCode.isEnabled = !isLoading
+
+        if (isLoading) {
+            binding.btnLogin.text = getString(R.string.loading)
+        } else {
+            binding.btnLogin.text = getString(R.string.login)
+        }
     }
 
-    private fun showError(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    /**
+     * Очищает ошибку поля
+     */
+    private fun clearFieldError(textInputLayout: com.google.android.material.textfield.TextInputLayout) {
+        textInputLayout.error = null
     }
 
-    private fun navigateToAdminScreen() {
-        startActivity(Intent(this, AdminActivity::class.java))
+    /**
+     * Переходит к обычному экрану авторизации
+     */
+    private fun navigateToRegularLogin() {
+        finish() // Просто закрываем текущую активность
+    }
+
+    /**
+     * Переходит к административной панели
+     */
+    private fun navigateToAdmin() {
+        val intent = Intent(this, AdminActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
         finish()
     }
 
+    /**
+     * Обрабатывает нажатие кнопки "Назад" в ActionBar
+     */
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    /**
+     * Обрабатывает нажатие кнопки "Назад"
+     */
     override fun onBackPressed() {
         super.onBackPressed()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        // Очищаем введенный код администратора для безопасности
+        binding.etAdminCode.setText("")
+    }
+
+    /**
+     * Очищает наблюдателей и данные при уничтожении активности
+     */
+    override fun onDestroy() {
+        super.onDestroy()
+
+        // Очищаем наблюдателей
+        authViewModel.adminLoginResult.removeObservers(this)
+        authViewModel.adminFormValid.removeObservers(this)
+
+        // Очищаем поле кода администратора для безопасности
+        binding.etAdminCode.setText("")
     }
 }

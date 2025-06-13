@@ -1,4 +1,4 @@
-package com.yourstore.app.data.model
+package com.example.a1000_melochei.data.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

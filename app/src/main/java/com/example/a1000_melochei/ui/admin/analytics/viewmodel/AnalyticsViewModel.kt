@@ -1,14 +1,14 @@
-package com.yourstore.app.ui.admin.analytics.viewmodel
+package com.example.a1000_melochei.ui.admin.analytics.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yourstore.app.data.common.Resource
-import com.yourstore.app.data.model.Product
-import com.yourstore.app.data.repository.OrderRepository
-import com.yourstore.app.data.repository.ProductRepository
+import com.example.a1000_melochei.data.common.Resource
+import com.example.a1000_melochei.data.model.Product
+import com.example.a1000_melochei.data.repository.OrderRepository
+import com.example.a1000_melochei.data.repository.ProductRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -54,7 +54,8 @@ class AnalyticsViewModel(
         val totalSales: Double,
         val totalOrders: Int,
         val averageOrderValue: Double,
-        val comparisonPercentage: Double // процент изменения по сравнению с предыдущим периодом
+        val topCategory: String,
+        val growth: Double // Рост в процентах по сравнению с предыдущим периодом
     )
 
     // LiveData для данных о продажах по дням
@@ -65,308 +66,238 @@ class AnalyticsViewModel(
     private val _categorySalesData = MutableLiveData<Resource<List<CategorySalesData>>>()
     val categorySalesData: LiveData<Resource<List<CategorySalesData>>> = _categorySalesData
 
-    // LiveData для данных о самых продаваемых товарах
-    private val _topProducts = MutableLiveData<Resource<List<TopProductData>>>()
-    val topProducts: LiveData<Resource<List<TopProductData>>> = _topProducts
+    // LiveData для топ товаров
+    private val _topProductsData = MutableLiveData<Resource<List<TopProductData>>>()
+    val topProductsData: LiveData<Resource<List<TopProductData>>> = _topProductsData
 
-    // LiveData для общих показателей текущего периода
-    private val _currentPeriodSummary = MutableLiveData<Resource<SalesSummary>>()
-    val currentPeriodSummary: LiveData<Resource<SalesSummary>> = _currentPeriodSummary
+    // LiveData для общих показателей
+    private val _salesSummary = MutableLiveData<Resource<SalesSummary>>()
+    val salesSummary: LiveData<Resource<SalesSummary>> = _salesSummary
 
-    // LiveData для общих показателей предыдущего периода
-    private val _previousPeriodSummary = MutableLiveData<Resource<SalesSummary>>()
-    val previousPeriodSummary: LiveData<Resource<SalesSummary>> = _previousPeriodSummary
+    // Текущий выбранный период
+    private var selectedPeriod: AnalyticsPeriod = AnalyticsPeriod.LAST_30_DAYS
 
     /**
-     * Загружает все аналитические данные за указанный период
-     * @param startDate начальная дата периода
-     * @param endDate конечная дата периода
-     * @param compareWithPrevious сравнивать ли с предыдущим аналогичным периодом
+     * Загружает аналитические данные для выбранного периода
      */
-    fun loadAnalyticsData(
-        startDate: Date,
-        endDate: Date,
-        compareWithPrevious: Boolean = true
-    ) {
-        loadDailySalesData(startDate, endDate)
-        loadCategorySalesData(startDate, endDate)
-        loadTopProducts(startDate, endDate)
-        loadSalesSummary(startDate, endDate)
+    fun loadAnalyticsData(period: AnalyticsPeriod = selectedPeriod) {
+        selectedPeriod = period
 
-        if (compareWithPrevious) {
-            // Вычисляем предыдущий период той же длительности
-            val periodDifference = endDate.time - startDate.time
-            val previousEndDate = Date(startDate.time - 1) // день перед начальной датой
-            val previousStartDate = Date(previousEndDate.time - periodDifference)
+        viewModelScope.launch {
+            try {
+                // Определяем временные рамки для анализа
+                val dateRange = getDateRange(period)
 
-            loadPreviousPeriodSummary(previousStartDate, previousEndDate)
+                // Загружаем данные параллельно
+                val dailySalesDeferred = async { loadDailySalesData(dateRange) }
+                val categorySalesDeferred = async { loadCategorySalesData(dateRange) }
+                val topProductsDeferred = async { loadTopProductsData(dateRange) }
+                val summaryDeferred = async { loadSalesSummary(dateRange) }
+
+                // Ожидаем завершения всех операций
+                dailySalesDeferred.await()
+                categorySalesDeferred.await()
+                topProductsDeferred.await()
+                summaryDeferred.await()
+
+            } catch (e: Exception) {
+                Log.e(TAG, "Ошибка при загрузке аналитических данных: ${e.message}", e)
+                _dailySalesData.value = Resource.Error(e.message ?: "Неизвестная ошибка")
+                _categorySalesData.value = Resource.Error(e.message ?: "Неизвестная ошибка")
+                _topProductsData.value = Resource.Error(e.message ?: "Неизвестная ошибка")
+                _salesSummary.value = Resource.Error(e.message ?: "Неизвестная ошибка")
+            }
         }
     }
 
     /**
      * Загружает данные о продажах по дням
      */
-    private fun loadDailySalesData(startDate: Date, endDate: Date) {
+    private suspend fun loadDailySalesData(dateRange: Pair<Long, Long>) {
         _dailySalesData.value = Resource.Loading()
 
-        viewModelScope.launch {
-            try {
-                val result = orderRepository.getDailySalesData(startDate.time, endDate.time)
-
-                if (result is Resource.Success) {
-                    // Преобразуем сырые данные в формат для отображения
-                    val dateFormat = SimpleDateFormat("dd.MM", Locale.getDefault())
-                    val dailySales = result.data?.map { (timestamp, amount, count) ->
+        try {
+            val result = orderRepository.getDailySalesData(dateRange.first, dateRange.second)
+            when (result) {
+                is Resource.Success -> {
+                    val dailyData = result.data.map { order ->
+                        val date = SimpleDateFormat("dd.MM", Locale.getDefault()).format(Date(order.createdAt))
                         DailySalesData(
-                            date = dateFormat.format(Date(timestamp)),
-                            salesAmount = amount,
-                            ordersCount = count
+                            date = date,
+                            salesAmount = order.total,
+                            ordersCount = 1
                         )
-                    } ?: emptyList()
+                    }.groupBy { it.date }
+                        .map { (date, orders) ->
+                            DailySalesData(
+                                date = date,
+                                salesAmount = orders.sumOf { it.salesAmount },
+                                ordersCount = orders.size
+                            )
+                        }
+                        .sortedBy { it.date }
 
-                    _dailySalesData.value = Resource.Success(dailySales)
-                } else {
-                    _dailySalesData.value = Resource.Error(
-                        result.message ?: "Ошибка при загрузке данных о продажах по дням"
-                    )
+                    _dailySalesData.value = Resource.Success(dailyData)
                 }
-            } catch (e: Exception) {
-                Log.e(TAG, "Ошибка при загрузке данных о продажах по дням: ${e.message}")
-                _dailySalesData.value = Resource.Error(e.message ?: "Неизвестная ошибка")
+                is Resource.Error -> {
+                    _dailySalesData.value = Resource.Error(result.message)
+                }
+                is Resource.Loading -> {
+                    // Уже установлено выше
+                }
             }
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при загрузке данных продаж по дням: ${e.message}", e)
+            _dailySalesData.value = Resource.Error(e.message ?: "Неизвестная ошибка")
         }
     }
 
     /**
      * Загружает данные о продажах по категориям
      */
-    private fun loadCategorySalesData(startDate: Date, endDate: Date) {
+    private suspend fun loadCategorySalesData(dateRange: Pair<Long, Long>) {
         _categorySalesData.value = Resource.Loading()
 
-        viewModelScope.launch {
-            try {
-                val result = orderRepository.getCategorySalesData(startDate.time, endDate.time)
+        try {
+            val result = orderRepository.getCategorySalesData(dateRange.first, dateRange.second)
+            when (result) {
+                is Resource.Success -> {
+                    val totalSales = result.data.sumOf { it.salesAmount }
 
-                if (result is Resource.Success) {
-                    val totalSales = result.data?.sumOf { it.salesAmount } ?: 0.0
-
-                    // Преобразуем сырые данные в формат для отображения и рассчитываем проценты
-                    val categorySales = result.data?.map { data ->
+                    val categoryData = result.data.map { category ->
                         CategorySalesData(
-                            categoryId = data.categoryId,
-                            categoryName = data.categoryName,
-                            salesAmount = data.salesAmount,
-                            salesPercentage = if (totalSales > 0) (data.salesAmount / totalSales) * 100 else 0.0,
-                            itemsSold = data.itemsSold
+                            categoryId = category.categoryId,
+                            categoryName = category.categoryName,
+                            salesAmount = category.salesAmount,
+                            salesPercentage = if (totalSales > 0) (category.salesAmount / totalSales * 100) else 0.0,
+                            itemsSold = category.itemsSold
                         )
-                    }?.sortedByDescending { it.salesAmount } ?: emptyList()
+                    }.sortedByDescending { it.salesAmount }
 
-                    _categorySalesData.value = Resource.Success(categorySales)
-                } else {
-                    _categorySalesData.value = Resource.Error(
-                        result.message ?: "Ошибка при загрузке данных о продажах по категориям"
-                    )
+                    _categorySalesData.value = Resource.Success(categoryData)
                 }
-            } catch (e: Exception) {
-                Log.e(TAG, "Ошибка при загрузке данных о продажах по категориям: ${e.message}")
-                _categorySalesData.value = Resource.Error(e.message ?: "Неизвестная ошибка")
-            }
-        }
-    }
-
-    /**
-     * Загружает данные о самых продаваемых товарах
-     */
-    private fun loadTopProducts(startDate: Date, endDate: Date) {
-        _topProducts.value = Resource.Loading()
-
-        viewModelScope.launch {
-            try {
-                val result = orderRepository.getTopSellingProducts(startDate.time, endDate.time, 10)
-
-                if (result is Resource.Success) {
-                    // Загружаем дополнительные данные о продуктах
-                    val topProductsWithDetails = result.data?.mapNotNull { data ->
-                        // Загружаем информацию о продукте
-                        val productResult = productRepository.getProductById(data.productId)
-                        if (productResult is Resource.Success && productResult.data != null) {
-                            TopProductData(
-                                product = productResult.data,
-                                salesCount = data.salesCount,
-                                salesAmount = data.salesAmount
-                            )
-                        } else {
-                            null
-                        }
-                    }?.sortedByDescending { it.salesCount } ?: emptyList()
-
-                    _topProducts.value = Resource.Success(topProductsWithDetails)
-                } else {
-                    _topProducts.value = Resource.Error(
-                        result.message ?: "Ошибка при загрузке данных о топовых товарах"
-                    )
+                is Resource.Error -> {
+                    _categorySalesData.value = Resource.Error(result.message)
                 }
-            } catch (e: Exception) {
-                Log.e(TAG, "Ошибка при загрузке данных о топовых товарах: ${e.message}")
-                _topProducts.value = Resource.Error(e.message ?: "Неизвестная ошибка")
-            }
-        }
-    }
-
-    /**
-     * Загружает обобщенные данные о продажах за текущий период
-     */
-    private fun loadSalesSummary(startDate: Date, endDate: Date) {
-        _currentPeriodSummary.value = Resource.Loading()
-
-        viewModelScope.launch {
-            try {
-                val result = orderRepository.getSalesSummary(startDate.time, endDate.time)
-
-                if (result is Resource.Success && result.data != null) {
-                    val data = result.data
-                    val summary = SalesSummary(
-                        totalSales = data.totalSales,
-                        totalOrders = data.ordersCount,
-                        averageOrderValue = if (data.ordersCount > 0) data.totalSales / data.ordersCount else 0.0,
-                        comparisonPercentage = 0.0 // заполним позже при сравнении с предыдущим периодом
-                    )
-
-                    _currentPeriodSummary.value = Resource.Success(summary)
-                } else {
-                    _currentPeriodSummary.value = Resource.Error(
-                        result.message ?: "Ошибка при загрузке общих данных о продажах"
-                    )
+                is Resource.Loading -> {
+                    // Уже установлено выше
                 }
-            } catch (e: Exception) {
-                Log.e(TAG, "Ошибка при загрузке общих данных о продажах: ${e.message}")
-                _currentPeriodSummary.value = Resource.Error(e.message ?: "Неизвестная ошибка")
             }
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при загрузке данных продаж по категориям: ${e.message}", e)
+            _categorySalesData.value = Resource.Error(e.message ?: "Неизвестная ошибка")
         }
     }
 
     /**
-     * Загружает обобщенные данные о продажах за предыдущий период
+     * Загружает данные о топ товарах
      */
-    private fun loadPreviousPeriodSummary(startDate: Date, endDate: Date) {
-        _previousPeriodSummary.value = Resource.Loading()
+    private suspend fun loadTopProductsData(dateRange: Pair<Long, Long>) {
+        _topProductsData.value = Resource.Loading()
 
-        viewModelScope.launch {
-            try {
-                val result = orderRepository.getSalesSummary(startDate.time, endDate.time)
-
-                if (result is Resource.Success && result.data != null) {
-                    val data = result.data
-                    val summary = SalesSummary(
-                        totalSales = data.totalSales,
-                        totalOrders = data.ordersCount,
-                        averageOrderValue = if (data.ordersCount > 0) data.totalSales / data.ordersCount else 0.0,
-                        comparisonPercentage = 0.0 // не используется для предыдущего периода
-                    )
-
-                    _previousPeriodSummary.value = Resource.Success(summary)
-
-                    // Теперь вычисляем процент изменения и обновляем текущий период
-                    calculateComparisonPercentage()
-                } else {
-                    _previousPeriodSummary.value = Resource.Error(
-                        result.message ?: "Ошибка при загрузке данных о продажах за предыдущий период"
-                    )
+        try {
+            val result = orderRepository.getTopProductsData(dateRange.first, dateRange.second)
+            when (result) {
+                is Resource.Success -> {
+                    val topProducts = result.data.take(10) // Топ 10 товаров
+                    _topProductsData.value = Resource.Success(topProducts)
                 }
-            } catch (e: Exception) {
-                Log.e(TAG, "Ошибка при загрузке данных о продажах за предыдущий период: ${e.message}")
-                _previousPeriodSummary.value = Resource.Error(e.message ?: "Неизвестная ошибка")
+                is Resource.Error -> {
+                    _topProductsData.value = Resource.Error(result.message)
+                }
+                is Resource.Loading -> {
+                    // Уже установлено выше
+                }
             }
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при загрузке данных топ товаров: ${e.message}", e)
+            _topProductsData.value = Resource.Error(e.message ?: "Неизвестная ошибка")
         }
     }
 
     /**
-     * Вычисляет процент изменения в сравнении с предыдущим периодом
+     * Загружает общие показатели продаж
      */
-    private fun calculateComparisonPercentage() {
-        val current = _currentPeriodSummary.value
-        val previous = _previousPeriodSummary.value
+    private suspend fun loadSalesSummary(dateRange: Pair<Long, Long>) {
+        _salesSummary.value = Resource.Loading()
 
-        if (current is Resource.Success && previous is Resource.Success &&
-            current.data != null && previous.data != null) {
-
-            val currentSales = current.data.totalSales
-            val previousSales = previous.data.totalSales
-
-            val percentage = if (previousSales > 0) {
-                ((currentSales - previousSales) / previousSales) * 100
-            } else {
-                100.0 // если в предыдущем периоде продаж не было, считаем рост как 100%
+        try {
+            val result = orderRepository.getSalesSummary(dateRange.first, dateRange.second)
+            when (result) {
+                is Resource.Success -> {
+                    _salesSummary.value = Resource.Success(result.data)
+                }
+                is Resource.Error -> {
+                    _salesSummary.value = Resource.Error(result.message)
+                }
+                is Resource.Loading -> {
+                    // Уже установлено выше
+                }
             }
-
-            // Создаем новый объект с обновленным процентом сравнения
-            val updatedSummary = current.data.copy(comparisonPercentage = percentage)
-            _currentPeriodSummary.value = Resource.Success(updatedSummary)
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при загрузке общих показателей: ${e.message}", e)
+            _salesSummary.value = Resource.Error(e.message ?: "Неизвестная ошибка")
         }
     }
 
     /**
-     * Загружает данные об общей статистике продаж по товарам
+     * Возвращает временные рамки для выбранного периода
      */
-    fun loadProductsPerformanceStats() {
-        viewModelScope.launch {
-            try {
-                // Здесь можно реализовать дополнительную аналитику по товарам
-                // Например, статистику возвратов, рейтинги товаров и т.д.
-            } catch (e: Exception) {
-                Log.e(TAG, "Ошибка при загрузке статистики товаров: ${e.message}")
-            }
-        }
-    }
-
-    /**
-     * Загружает данные о предзаказах и товарах "в ожидании"
-     */
-    fun loadPreorderStats() {
-        viewModelScope.launch {
-            try {
-                // Здесь можно реализовать статистику по предзаказам
-            } catch (e: Exception) {
-                Log.e(TAG, "Ошибка при загрузке статистики предзаказов: ${e.message}")
-            }
-        }
-    }
-
-    /**
-     * Формирует данные для предустановленных периодов (сегодня, неделя, месяц, год)
-     */
-    fun loadDataForPredefinedPeriod(periodType: PeriodType) {
+    private fun getDateRange(period: AnalyticsPeriod): Pair<Long, Long> {
         val calendar = Calendar.getInstance()
-        val endDate = calendar.time
+        val endTime = calendar.timeInMillis
 
-        val startDate = when (periodType) {
-            PeriodType.TODAY -> {
+        when (period) {
+            AnalyticsPeriod.TODAY -> {
                 calendar.set(Calendar.HOUR_OF_DAY, 0)
                 calendar.set(Calendar.MINUTE, 0)
                 calendar.set(Calendar.SECOND, 0)
-                calendar.time
+                calendar.set(Calendar.MILLISECOND, 0)
+                return Pair(calendar.timeInMillis, endTime)
             }
-            PeriodType.WEEK -> {
+            AnalyticsPeriod.LAST_7_DAYS -> {
                 calendar.add(Calendar.DAY_OF_YEAR, -7)
-                calendar.time
+                return Pair(calendar.timeInMillis, endTime)
             }
-            PeriodType.MONTH -> {
-                calendar.add(Calendar.MONTH, -1)
-                calendar.time
+            AnalyticsPeriod.LAST_30_DAYS -> {
+                calendar.add(Calendar.DAY_OF_YEAR, -30)
+                return Pair(calendar.timeInMillis, endTime)
             }
-            PeriodType.YEAR -> {
+            AnalyticsPeriod.LAST_YEAR -> {
                 calendar.add(Calendar.YEAR, -1)
-                calendar.time
+                return Pair(calendar.timeInMillis, endTime)
+            }
+            AnalyticsPeriod.CUSTOM -> {
+                // Для пользовательского периода используем последние 30 дней по умолчанию
+                calendar.add(Calendar.DAY_OF_YEAR, -30)
+                return Pair(calendar.timeInMillis, endTime)
             }
         }
-
-        loadAnalyticsData(startDate, endDate)
     }
 
     /**
-     * Перечисление типов периодов для предустановленных фильтров
+     * Обновляет данные аналитики
      */
-    enum class PeriodType {
-        TODAY, WEEK, MONTH, YEAR
+    fun refreshData() {
+        loadAnalyticsData(selectedPeriod)
     }
+
+    /**
+     * Экспортирует данные аналитики в CSV
+     */
+    fun exportAnalyticsData(): String {
+        // Здесь будет логика экспорта данных в CSV формат
+        return "Экспорт данных пока не реализован"
+    }
+}
+
+/**
+ * Перечисление периодов для аналитики
+ */
+enum class AnalyticsPeriod {
+    TODAY,
+    LAST_7_DAYS,
+    LAST_30_DAYS,
+    LAST_YEAR,
+    CUSTOM
 }

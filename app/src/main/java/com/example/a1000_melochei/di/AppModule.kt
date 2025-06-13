@@ -1,27 +1,27 @@
-package com.yourstore.app.di
+package com.example.a1000_melochei.di
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.yourstore.app.data.repository.*
-import com.yourstore.app.data.source.local.CartCache
-import com.yourstore.app.data.source.local.PreferencesManager
-import com.yourstore.app.data.source.remote.FirebaseAuthSource
-import com.yourstore.app.data.source.remote.FirestoreSource
-import com.yourstore.app.data.source.remote.StorageSource
-import com.yourstore.app.service.NotificationService
-import com.yourstore.app.ui.admin.analytics.viewmodel.AnalyticsViewModel
-import com.yourstore.app.ui.admin.categories.viewmodel.CategoryViewModel
-import com.yourstore.app.ui.admin.dashboard.viewmodel.DashboardViewModel
-import com.yourstore.app.ui.admin.orders.viewmodel.AdminOrderViewModel
-import com.yourstore.app.ui.admin.products.viewmodel.AdminProductViewModel
-import com.yourstore.app.ui.auth.viewmodel.AuthViewModel
-import com.yourstore.app.ui.customer.cart.viewmodel.CartViewModel
-import com.yourstore.app.ui.customer.catalog.viewmodel.CatalogViewModel
-import com.yourstore.app.ui.customer.catalog.viewmodel.ProductViewModel
-import com.yourstore.app.ui.customer.home.viewmodel.HomeViewModel
-import com.yourstore.app.ui.customer.orders.viewmodel.OrderViewModel
-import com.yourstore.app.ui.customer.profile.viewmodel.ProfileViewModel
+import com.example.a1000_melochei.data.repository.*
+import com.example.a1000_melochei.data.source.local.CartCache
+import com.example.a1000_melochei.data.source.local.PreferencesManager
+import com.example.a1000_melochei.data.source.remote.FirebaseAuthSource
+import com.example.a1000_melochei.data.source.remote.FirestoreSource
+import com.example.a1000_melochei.data.source.remote.StorageSource
+import com.example.a1000_melochei.service.NotificationService
+import com.example.a1000_melochei.ui.admin.analytics.viewmodel.AnalyticsViewModel
+import com.example.a1000_melochei.ui.admin.categories.viewmodel.CategoryViewModel
+import com.example.a1000_melochei.ui.admin.dashboard.viewmodel.DashboardViewModel
+import com.example.a1000_melochei.ui.admin.orders.viewmodel.AdminOrderViewModel
+import com.example.a1000_melochei.ui.admin.products.viewmodel.AdminProductViewModel
+import com.example.a1000_melochei.ui.auth.viewmodel.AuthViewModel
+import com.example.a1000_melochei.ui.customer.cart.viewmodel.CartViewModel
+import com.example.a1000_melochei.ui.customer.catalog.viewmodel.CatalogViewModel
+import com.example.a1000_melochei.ui.customer.catalog.viewmodel.ProductViewModel
+import com.example.a1000_melochei.ui.customer.home.viewmodel.HomeViewModel
+import com.example.a1000_melochei.ui.customer.orders.viewmodel.OrderViewModel
+import com.example.a1000_melochei.ui.customer.profile.viewmodel.ProfileViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -56,28 +56,37 @@ val dataModule = module {
     single { CategoryRepository(get<FirestoreSource>(), get<StorageSource>()) }
     single { CartRepository(get<FirestoreSource>(), get<CartCache>(), get<FirebaseAuth>()) }
     // OrderRepository зависит от CartRepository, поэтому определяем его последним
-    single { OrderRepository(get<FirestoreSource>(), get<CartRepository>(), get<CartCache>()) }
+    single { OrderRepository(get<FirestoreSource>(), get<CartRepository>()) }
 }
 
 /**
- * Модуль ViewModel-ей
+ * Модуль ViewModels
  */
 val viewModelModule = module {
-    // Авторизация
-    viewModel { AuthViewModel(get<UserRepository>(), get<PreferencesManager>()) }
+    // Auth ViewModels
+    viewModel { AuthViewModel(get()) }
 
-    // Пользовательские экраны
-    viewModel { HomeViewModel(get<CategoryRepository>(), get<ProductRepository>()) }
-    viewModel { CatalogViewModel(get<CategoryRepository>(), get<ProductRepository>()) }
-    viewModel { ProductViewModel(get<ProductRepository>(), get<CartRepository>()) }
-    viewModel { CartViewModel(get<CartRepository>(), get<UserRepository>()) }
-    viewModel { OrderViewModel(get<OrderRepository>()) }
-    viewModel { ProfileViewModel(get<UserRepository>(), get<PreferencesManager>()) }
+    // Customer ViewModels
+    viewModel { HomeViewModel(get(), get(), get()) }
+    viewModel { CatalogViewModel(get(), get()) }
+    viewModel { ProductViewModel(get()) }
+    viewModel { CartViewModel(get()) }
+    viewModel { OrderViewModel(get()) }
+    viewModel { ProfileViewModel(get()) }
 
-    // Административные экраны
-    viewModel { DashboardViewModel(get<OrderRepository>(), get<ProductRepository>(), get<CategoryRepository>()) }
-    viewModel { AdminProductViewModel(get<ProductRepository>(), get<CategoryRepository>()) }
-    viewModel { CategoryViewModel(get<CategoryRepository>()) }
-    viewModel { AdminOrderViewModel(get<OrderRepository>()) }
-    viewModel { AnalyticsViewModel(get<OrderRepository>(), get<ProductRepository>()) }
+    // Admin ViewModels
+    viewModel { DashboardViewModel(get(), get(), get()) }
+    viewModel { AdminProductViewModel(get()) }
+    viewModel { CategoryViewModel(get()) }
+    viewModel { AdminOrderViewModel(get()) }
+    viewModel { AnalyticsViewModel(get(), get()) }
 }
+
+/**
+ * Список всех модулей приложения
+ */
+val allModules = listOf(
+    appModule,
+    dataModule,
+    viewModelModule
+)

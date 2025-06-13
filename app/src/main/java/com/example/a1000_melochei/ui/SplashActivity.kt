@@ -1,108 +1,184 @@
-package com.yourstore.app.ui
+package com.example.a1000_melochei.ui
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
-import com.yourstore.app.R
-import com.yourstore.app.data.source.local.PreferencesManager
-import com.yourstore.app.databinding.ActivitySplashBinding
-import com.yourstore.app.ui.admin.AdminActivity
-import com.yourstore.app.ui.auth.LoginActivity
-import com.yourstore.app.ui.customer.CustomerActivity
+import androidx.lifecycle.lifecycleScope
+import com.example.a1000_melochei.R
+import com.example.a1000_melochei.data.source.local.PreferencesManager
+import com.example.a1000_melochei.service.NotificationService
+import com.example.a1000_melochei.ui.auth.viewmodel.AuthViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
- * Экран-заставка (сплэш-скрин) приложения.
- * Отображается при запуске приложения и обеспечивает плавный переход
- * к основному интерфейсу, выполняя начальную инициализацию.
+ * Экран загрузки приложения.
+ * Показывается при запуске приложения, выполняет инициализацию и проверку авторизации.
  */
-@SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivitySplashBinding
+    private val authViewModel: AuthViewModel by viewModel()
     private val preferencesManager: PreferencesManager by inject()
-    private val firebaseAuth: FirebaseAuth by inject()
-
-    // Длительность отображения заставки в миллисекундах
-    private val SPLASH_DURATION = 2000L
+    private val notificationService: NotificationService by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySplashBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_splash)
 
-        // Запускаем анимации для элементов
-        startAnimations()
+        // Скрываем status bar для полноэкранного отображения
+        supportActionBar?.hide()
 
-        // Определяем, куда перейти после заставки
-        Handler(Looper.getMainLooper()).postDelayed({
-            navigateToNextScreen()
-        }, SPLASH_DURATION)
+        // Запускаем инициализацию
+        initializeApp()
     }
 
     /**
-     * Запускает анимации для элементов экрана-заставки
+     * Инициализирует приложение
      */
-    private fun startAnimations() {
-        try {
-            // Анимация появления логотипа
-            val fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in)
-            binding.ivLogo.startAnimation(fadeInAnimation)
+    private fun initializeApp() {
+        lifecycleScope.launch {
+            try {
+                // Минимальное время показа splash screen
+                delay(1500)
 
-            // Анимация движения снизу вверх для названия приложения
-            val slideUpAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_up)
-            binding.tvAppName.startAnimation(slideUpAnimation)
+                // Выполняем инициализацию параллельно
+                initializeServices()
+
+                // Проверяем первый запуск
+                if (preferencesManager.isFirstLaunch()) {
+                    handleFirstLaunch()
+                } else {
+                    // Проверяем авторизацию и переходим к основному экрану
+                    checkAuthAndProceed()
+                }
+
+            } catch (e: Exception) {
+                // При ошибке переходим к экрану авторизации
+                navigateToLogin()
+            }
+        }
+    }
+
+    /**
+     * Инициализирует сервисы приложения
+     */
+    private suspend fun initializeServices() {
+        try {
+            // Создаем каналы уведомлений
+            notificationService.createNotificationChannels()
+
+            // Проверяем состояние авторизации
+            authViewModel.checkCurrentUser()
+
         } catch (e: Exception) {
-            // В случае ошибки с анимацией просто продолжаем работу
+            // Логируем ошибки, но не прерываем процесс
             e.printStackTrace()
         }
     }
 
     /**
-     * Определяет, куда перейти после заставки:
-     * - Если пользователь авторизован как админ, то в панель управления
-     * - Если пользователь авторизован как клиент, то в интерфейс клиента
-     * - Иначе на экран входа
+     * Обрабатывает первый запуск приложения
      */
-    private fun navigateToNextScreen() {
-        val currentUser = firebaseAuth.currentUser
+    private fun handleFirstLaunch() {
+        // Отмечаем, что первый запуск завершен
+        preferencesManager.setFirstLaunchCompleted()
 
-        val intent = when {
-            // Если пользователь авторизован
-            currentUser != null -> {
-                // Проверяем, является ли пользователь администратором
-                if (preferencesManager.isAdmin()) {
-                    Intent(this, AdminActivity::class.java)
-                } else {
-                    Intent(this, CustomerActivity::class.java)
+        // Устанавливаем настройки по умолчанию
+        setDefaultSettings()
+
+        // Переходим к авторизации
+        navigateToLogin()
+    }
+
+    /**
+     * Устанавливает настройки по умолчанию
+     */
+    private fun setDefaultSettings() {
+        // Включаем уведомления по умолчанию
+        preferencesManager.saveNotificationsEnabled(true)
+
+        // Включаем отчеты о сбоях
+        preferencesManager.saveCrashReportingEnabled(true)
+
+        // Устанавливаем язык по умолчанию
+        preferencesManager.saveSelectedLanguage("ru")
+
+        // Устанавливаем режим отображения товаров
+        preferencesManager.saveProductsViewMode("grid")
+
+        // Устанавливаем сортировку товаров по умолчанию
+        preferencesManager.saveProductsSortOrder("name_asc")
+    }
+
+    /**
+     * Проверяет авторизацию и переходит к соответствующему экрану
+     */
+    private fun checkAuthAndProceed() {
+        // Наблюдаем за состоянием пользователя
+        authViewModel.currentUser.observe(this) { user ->
+            when {
+                user == null -> {
+                    // Пользователь не авторизован
+                    navigateToLogin()
+                }
+                user.isAdmin -> {
+                    // Администратор
+                    navigateToAdmin()
+                }
+                else -> {
+                    // Обычный пользователь
+                    navigateToCustomer()
                 }
             }
-            // Если это первый запуск приложения, можно показать онбординг
-            preferencesManager.isFirstLaunch() -> {
-                // В будущем здесь можно добавить переход на экран онбординга
-                // Intent(this, OnboardingActivity::class.java)
-                preferencesManager.setFirstLaunch(false)
-                Intent(this, LoginActivity::class.java)
-            }
-            // В остальных случаях переходим на экран входа
-            else -> {
-                Intent(this, LoginActivity::class.java)
-            }
         }
+    }
 
-        // Запускаем переход с анимацией затухания
+    /**
+     * Переходит к экрану авторизации
+     */
+    private fun navigateToLogin() {
+        val intent = Intent(this, com.example.a1000_melochei.ui.auth.LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
-        try {
-            overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
-        } catch (e: Exception) {
-            // Игнорируем ошибки анимации при переходе
-            e.printStackTrace()
-        }
         finish()
+    }
+
+    /**
+     * Переходит к клиентской части
+     */
+    private fun navigateToCustomer() {
+        val intent = Intent(this, com.example.a1000_melochei.ui.customer.CustomerActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
+    }
+
+    /**
+     * Переходит к административной части
+     */
+    private fun navigateToAdmin() {
+        val intent = Intent(this, com.example.a1000_melochei.ui.admin.AdminActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
+    }
+
+    /**
+     * Обрабатывает нажатие кнопки "Назад"
+     */
+    override fun onBackPressed() {
+        // Не позволяем пользователю вернуться на splash screen
+        // Просто закрываем приложение
+        finishAffinity()
+    }
+
+    /**
+     * Очищаем наблюдателей при уничтожении активности
+     */
+    override fun onDestroy() {
+        super.onDestroy()
+        authViewModel.currentUser.removeObservers(this)
     }
 }

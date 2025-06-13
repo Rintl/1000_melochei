@@ -67,21 +67,22 @@
         <activity android:name=".ui.admin.products.EditProductActivity" android:exported="false" />
         <activity android:name=".ui.admin.products.ImportProductsActivity" android:exported="false" />
         <activity android:name=".ui.admin.categories.AddCategoryActivity" android:exported="false" />
+        <activity android:name=".ui.admin.categories.EditCategoryActivity" android:exported="false" />
         <activity android:name=".ui.admin.orders.OrderDetailAdminActivity" android:exported="false" />
+        <activity android:name=".ui.admin.analytics.AnalyticsActivity" android:exported="false" />
 
-        <!-- FCM сервис для уведомлений -->
-        <service
-            android:name=".service.MelocheiFirebaseMessagingService"
-            android:exported="false">
+        <!-- Сервисы -->
+        <service android:name=".service.NotificationService" android:exported="false" />
+        <service android:name=".service.MyFirebaseMessagingService" android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <!-- Провайдер для доступа к файлам (для экспорта данных) -->
+        <!-- Провайдер файлов -->
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.fileprovider"
+            android:authorities="com.example.a1000_melochei.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -89,7 +90,7 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <!-- Метаданные для Firebase Messaging -->
+        <!-- Метаданные Firebase -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_notification" />
@@ -98,6 +99,8 @@
             android:resource="@color/colorPrimary" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="@string/notification_channel_id" />
+            android:value="@string/notification_channel_order_id" />
+
     </application>
+
 </manifest>

@@ -1,447 +1,548 @@
-package com.yourstore.app.data.repository
+package com.example.a1000_melochei.data.repository
 
+import android.net.Uri
 import android.util.Log
-import com.google.firebase.auth.FirebaseAuth
-import com.yourstore.app.data.common.Resource
-import com.yourstore.app.data.model.Address
-import com.yourstore.app.data.model.User
-import com.yourstore.app.data.source.remote.FirebaseAuthSource
-import com.yourstore.app.data.source.remote.FirestoreSource
-import com.yourstore.app.data.source.remote.StorageSource
-import kotlinx.coroutines.Dispatchers
+import com.example.a1000_melochei.data.common.Resource
+import com.example.a1000_melochei.data.model.Address
+import com.example.a1000_melochei.data.model.User
+import com.example.a1000_melochei.data.source.remote.FirebaseAuthSource
+import com.example.a1000_melochei.data.source.remote.FirestoreSource
+import com.example.a1000_melochei.util.Constants
+import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.withContext
-import java.io.File
-import java.util.UUID
 
 /**
- * Репозиторий для управления данными пользователей.
- * Обеспечивает доступ к данным пользователей из Firebase Auth и Firestore.
+ * Репозиторий для управления пользователями.
+ * Обеспечивает взаимодействие с Firebase Auth и Firestore для пользователей.
  */
 class UserRepository(
-    private val firebaseAuthSource: FirebaseAuthSource,
-    private val firestoreSource: FirestoreSource,
-    private val storageSource: StorageSource
+    private val authSource: FirebaseAuthSource,
+    private val firestoreSource: FirestoreSource
 ) {
     private val TAG = "UserRepository"
-
-    // Константы для работы с Firestore
-    private val USERS_COLLECTION = "users"
-
-    /**
-     * Выполняет вход пользователя
-     */
-    suspend fun login(email: String, password: String): Resource<String> = withContext(Dispatchers.IO) {
-        return@withContext try {
-            val result = firebaseAuthSource.login(email, password)
-            result
-        } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при входе в аккаунт: ${e.message}")
-            Resource.Error(e.message ?: "Ошибка при входе в аккаунт")
-        }
-    }
-
-    // Добавляем в класс UserRepository новый метод для обновления FCM токена
-
-    /**
-     * Обновляет FCM токен пользователя в Firestore
-     * @param token Новый FCM токен
-     * @return Resource с результатом операции
-     */
-    suspend fun updateFcmToken(token: String): Resource<Unit> = withContext(Dispatchers.IO) {
-        val currentUserId = firebaseAuth.currentUser?.uid
-            ?: return@withContext Resource.Error("Пользователь не авторизован")
-
-        return@withContext try {
-            // Получаем текущие данные пользователя
-            val userDoc = firestoreSource.getDocument(USERS_COLLECTION, currentUserId)
-            val user = userDoc.toObject(User::class.java)
-                ?: return@withContext Resource.Error("Профиль пользователя не найден")
-
-            // Обновляем FCM токен
-            firestoreSource.updateField(
-                USERS_COLLECTION,
-                currentUserId,
-                "fcmToken",
-                token
-            )
-
-            Resource.Success(Unit)
-        } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при обновлении FCM токена: ${e.message}")
-            Resource.Error(e.message ?: "Ошибка при обновлении FCM токена")
-        }
-    }
 
     /**
      * Регистрирует нового пользователя
      */
-    suspend fun register(email: String, password: String): Resource<String> = withContext(Dispatchers.IO) {
-        return@withContext try {
-            val result = firebaseAuthSource.register(email, password)
-            result
-        } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при регистрации: ${e.message}")
-            Resource.Error(e.message ?: "Ошибка при регистрации")
-        }
-    }
+    suspend fun registerUser(
+        email: String,
+        password: String,
+        name: String,
+        phone: String
+    ): Resource<User> {
+        return try {
+            // Валидация данных
+            if (!User.isValidEmail(email)) {
+                return Resource.Error("Некорректный email")
+            }
+            if (password.length < Constants.MIN_PASSWORD_LENGTH) {
+                return Resource.Error("Пароль должен содержать не менее ${Constants.MIN_PASSWORD_LENGTH} символов")
+            }
+            if (!User.isValidName(name)) {
+                return Resource.Error("Некорректное имя")
+            }
+            if (!User.isValidPhone(phone)) {
+                return Resource.Error("Некорректный номер телефона")
+            }
 
-    /**
-     * Создает профиль пользователя в Firestore
-     */
-    suspend fun createUserProfile(user: User): Resource<Unit> = withContext(Dispatchers.IO) {
-        return@withContext try {
-            val result = firestoreSource.setDocument(USERS_COLLECTION, user.id, user)
-            result
-        } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при создании профиля: ${e.message}")
-            Resource.Error(e.message ?: "Ошибка при создании профиля")
-        }
-    }
+            // Регистрируем пользователя в Firebase Auth
+            val authResult = authSource.createUser(email, password)
+            when (authResult) {
+                is Resource.Success -> {
+                    val firebaseUser = authResult.data
 
-    /**
-     * Получает профиль текущего пользователя
-     */
-    suspend fun getUserProfile(): Resource<User> = withContext(Dispatchers.IO) {
-        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
-            ?: return@withContext Resource.Error("Пользователь не авторизован")
+                    // Создаем профиль пользователя в Firestore
+                    val user = User(
+                        id = firebaseUser.uid,
+                        email = email,
+                        name = name,
+                        phone = phone,
+                        isAdmin = false,
+                        createdAt = System.currentTimeMillis(),
+                        lastLoginAt = System.currentTimeMillis()
+                    )
 
-        return@withContext try {
-            val userDocResult = firestoreSource.getDocument(USERS_COLLECTION, currentUserId)
-
-            if (userDocResult is Resource.Success) {
-                val userDoc = userDocResult.data
-                val user = userDoc?.toObject(User::class.java)?.copy(id = currentUserId)
-                    ?: return@withContext Resource.Error("Профиль пользователя не найден")
-
-                Resource.Success(user)
-            } else {
-                Resource.Error((userDocResult as Resource.Error).message ?: "Ошибка при получении данных пользователя")
+                    val createProfileResult = firestoreSource.createUserProfile(user)
+                    when (createProfileResult) {
+                        is Resource.Success -> {
+                            Log.d(TAG, "Пользователь зарегистрирован: $email")
+                            Resource.Success(user)
+                        }
+                        is Resource.Error -> {
+                            // Удаляем пользователя из Auth, если не удалось создать профиль
+                            authSource.deleteUser()
+                            Resource.Error("Ошибка создания профиля: ${createProfileResult.message}")
+                        }
+                        is Resource.Loading -> Resource.Loading()
+                    }
+                }
+                is Resource.Error -> {
+                    Log.e(TAG, "Ошибка регистрации: ${authResult.message}")
+                    Resource.Error(authResult.message ?: "Ошибка регистрации")
+                }
+                is Resource.Loading -> Resource.Loading()
             }
         } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при получении профиля: ${e.message}")
-            Resource.Error(e.message ?: "Ошибка при получении профиля")
+            Log.e(TAG, "Ошибка при регистрации пользователя: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
         }
     }
 
     /**
-     * Получает профиль пользователя как Flow
+     * Авторизует пользователя
      */
-    fun getUserProfileAsFlow(): Flow<Resource<User>> = flow {
-        emit(Resource.Loading())
-        emit(getUserProfile())
+    suspend fun loginUser(email: String, password: String): Resource<User> {
+        return try {
+            if (!User.isValidEmail(email)) {
+                return Resource.Error("Некорректный email")
+            }
+            if (password.isBlank()) {
+                return Resource.Error("Введите пароль")
+            }
+
+            val authResult = authSource.signInUser(email, password)
+            when (authResult) {
+                is Resource.Success -> {
+                    val firebaseUser = authResult.data
+
+                    // Получаем профиль пользователя из Firestore
+                    val profileResult = getUserProfile(firebaseUser.uid)
+                    when (profileResult) {
+                        is Resource.Success -> {
+                            // Обновляем время последнего входа
+                            val updatedUser = profileResult.data.copy(
+                                lastLoginAt = System.currentTimeMillis()
+                            )
+                            firestoreSource.updateUserProfile(updatedUser)
+
+                            Log.d(TAG, "Пользователь авторизован: $email")
+                            Resource.Success(updatedUser)
+                        }
+                        is Resource.Error -> {
+                            Log.e(TAG, "Ошибка получения профиля: ${profileResult.message}")
+                            Resource.Error("Профиль пользователя не найден")
+                        }
+                        is Resource.Loading -> Resource.Loading()
+                    }
+                }
+                is Resource.Error -> {
+                    Log.e(TAG, "Ошибка авторизации: ${authResult.message}")
+                    Resource.Error(authResult.message ?: "Ошибка авторизации")
+                }
+                is Resource.Loading -> Resource.Loading()
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при авторизации пользователя: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
+        }
+    }
+
+    /**
+     * Авторизует администратора
+     */
+    suspend fun loginAdmin(email: String, password: String, adminCode: String): Resource<User> {
+        return try {
+            // Проверяем код администратора (в реальном приложении код должен храниться в безопасном месте)
+            val validAdminCode = "ADMIN2024" // Это должно быть в конфигурации
+            if (adminCode != validAdminCode) {
+                return Resource.Error("Неверный код администратора")
+            }
+
+            val loginResult = loginUser(email, password)
+            when (loginResult) {
+                is Resource.Success -> {
+                    val user = loginResult.data
+                    if (!user.isAdmin) {
+                        // Можно либо отклонить доступ, либо повысить права
+                        // Для демо повышаем права
+                        val adminUser = user.copy(isAdmin = true)
+                        updateUserProfile(adminUser)
+                        Resource.Success(adminUser)
+                    } else {
+                        Resource.Success(user)
+                    }
+                }
+                is Resource.Error -> loginResult
+                is Resource.Loading -> loginResult
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при авторизации администратора: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
+        }
+    }
+
+    /**
+     * Выходит из системы
+     */
+    suspend fun logout(): Resource<Unit> {
+        return try {
+            val result = authSource.signOut()
+            when (result) {
+                is Resource.Success -> {
+                    Log.d(TAG, "Пользователь вышел из системы")
+                    result
+                }
+                is Resource.Error -> {
+                    Log.e(TAG, "Ошибка выхода: ${result.message}")
+                    result
+                }
+                is Resource.Loading -> result
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при выходе: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
+        }
+    }
+
+    /**
+     * Получает профиль пользователя
+     */
+    suspend fun getUserProfile(userId: String): Resource<User> {
+        return try {
+            val result = firestoreSource.getUserProfile(userId)
+            Log.d(TAG, "Загружен профиль пользователя: ${result.getDataOrNull()?.name}")
+            result
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при загрузке профиля: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
+        }
+    }
+
+    /**
+     * Получает текущего пользователя
+     */
+    suspend fun getCurrentUser(): Resource<User?> {
+        return try {
+            val currentFirebaseUser = authSource.getCurrentUser()
+            if (currentFirebaseUser != null) {
+                getUserProfile(currentFirebaseUser.uid)
+            } else {
+                Resource.Success(null)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при получении текущего пользователя: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
+        }
     }
 
     /**
      * Обновляет профиль пользователя
      */
-    suspend fun updateUserProfile(
-        name: String,
-        phone: String,
-        avatarFile: File? = null
-    ): Resource<Unit> = withContext(Dispatchers.IO) {
-        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
-            ?: return@withContext Resource.Error("Пользователь не авторизован")
-
-        return@withContext try {
-            // Получаем текущие данные пользователя
-            val userDocResult = firestoreSource.getDocument(USERS_COLLECTION, currentUserId)
-
-            if (userDocResult !is Resource.Success) {
-                return@withContext Resource.Error((userDocResult as Resource.Error).message ?: "Ошибка при получении данных пользователя")
+    suspend fun updateUserProfile(user: User): Resource<Unit> {
+        return try {
+            if (!user.isValid()) {
+                return Resource.Error("Данные пользователя некорректны")
             }
 
-            val userDoc = userDocResult.data
-            val currentUser = userDoc?.toObject(User::class.java)
-                ?: return@withContext Resource.Error("Профиль пользователя не найден")
-
-            // Обновляем аватар, если он предоставлен
-            var avatarUrl = currentUser.avatarUrl
-            if (avatarFile != null) {
-                val fileName = "users/$currentUserId/avatar_${System.currentTimeMillis()}.jpg"
-                val uploadResult = storageSource.uploadFile(fileName, avatarFile)
-
-                if (uploadResult is Resource.Success) {
-                    avatarUrl = uploadResult.data ?: avatarUrl
+            val result = firestoreSource.updateUserProfile(user)
+            when (result) {
+                is Resource.Success -> {
+                    Log.d(TAG, "Профиль пользователя обновлен: ${user.name}")
+                    result
                 }
+                is Resource.Error -> {
+                    Log.e(TAG, "Ошибка обновления профиля: ${result.message}")
+                    result
+                }
+                is Resource.Loading -> result
             }
-
-            // Обновляем данные пользователя
-            val updatedUser = currentUser.copy(
-                name = name,
-                phone = phone,
-                avatarUrl = avatarUrl
-            )
-
-            firestoreSource.updateDocument(USERS_COLLECTION, currentUserId, updatedUser)
         } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при обновлении профиля: ${e.message}")
-            Resource.Error(e.message ?: "Ошибка при обновлении профиля")
+            Log.e(TAG, "Ошибка при обновлении профиля: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
         }
     }
 
     /**
-     * Изменяет пароль пользователя
+     * Добавляет адрес пользователю
      */
-    suspend fun changePassword(currentPassword: String, newPassword: String): Resource<Unit> = withContext(Dispatchers.IO) {
-        val currentUser = FirebaseAuth.getInstance().currentUser
-            ?: return@withContext Resource.Error("Пользователь не авторизован")
+    suspend fun addUserAddress(userId: String, address: Address): Resource<Unit> {
+        return try {
+            val userResult = getUserProfile(userId)
+            when (userResult) {
+                is Resource.Success -> {
+                    val user = userResult.data
+                    val newAddress = address.copy(
+                        id = if (address.id.isEmpty()) generateAddressId() else address.id
+                    )
 
-        return@withContext try {
-            // Для изменения пароля сначала нужно повторно аутентифицировать пользователя
-            val email = currentUser.email ?: return@withContext Resource.Error("Email пользователя не найден")
-            val reauthResult = firebaseAuthSource.reauthenticate(email, currentPassword)
+                    // Если это первый адрес, делаем его основным
+                    val isPrimary = user.addresses.isEmpty() || address.isPrimary
+                    val finalAddress = newAddress.copy(isPrimary = isPrimary)
 
-            if (reauthResult is Resource.Error) {
-                return@withContext reauthResult
+                    // Если новый адрес основной, убираем флаг с других адресов
+                    val updatedAddresses = if (isPrimary) {
+                        user.addresses.map { it.copy(isPrimary = false) } + finalAddress
+                    } else {
+                        user.addresses + finalAddress
+                    }
+
+                    val updatedUser = user.copy(addresses = updatedAddresses)
+                    updateUserProfile(updatedUser)
+                }
+                is Resource.Error -> userResult
+                is Resource.Loading -> Resource.Loading()
             }
-
-            // Затем изменяем пароль
-            val updateResult = firebaseAuthSource.updatePassword(newPassword)
-            updateResult
         } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при смене пароля: ${e.message}")
-            Resource.Error(e.message ?: "Ошибка при смене пароля")
+            Log.e(TAG, "Ошибка при добавлении адреса: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
+        }
+    }
+
+    /**
+     * Обновляет адрес пользователя
+     */
+    suspend fun updateUserAddress(userId: String, address: Address): Resource<Unit> {
+        return try {
+            val userResult = getUserProfile(userId)
+            when (userResult) {
+                is Resource.Success -> {
+                    val user = userResult.data
+                    val updatedAddresses = user.addresses.map { userAddress ->
+                        if (userAddress.id == address.id) {
+                            // Если делаем адрес основным, убираем флаг с других
+                            if (address.isPrimary) {
+                                address
+                            } else {
+                                address
+                            }
+                        } else {
+                            // Убираем флаг основного с других адресов, если новый адрес основной
+                            if (address.isPrimary) {
+                                userAddress.copy(isPrimary = false)
+                            } else {
+                                userAddress
+                            }
+                        }
+                    }
+
+                    val updatedUser = user.copy(addresses = updatedAddresses)
+                    updateUserProfile(updatedUser)
+                }
+                is Resource.Error -> userResult
+                is Resource.Loading -> Resource.Loading()
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при обновлении адреса: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
+        }
+    }
+
+    /**
+     * Удаляет адрес пользователя
+     */
+    suspend fun deleteUserAddress(userId: String, addressId: String): Resource<Unit> {
+        return try {
+            val userResult = getUserProfile(userId)
+            when (userResult) {
+                is Resource.Success -> {
+                    val user = userResult.data
+                    val addressToDelete = user.addresses.find { it.id == addressId }
+
+                    if (addressToDelete == null) {
+                        return Resource.Error("Адрес не найден")
+                    }
+
+                    val updatedAddresses = user.addresses.filter { it.id != addressId }
+
+                    // Если удаляемый адрес был основным, делаем основным первый из оставшихся
+                    val finalAddresses = if (addressToDelete.isPrimary && updatedAddresses.isNotEmpty()) {
+                        updatedAddresses.mapIndexed { index, address ->
+                            if (index == 0) address.copy(isPrimary = true) else address
+                        }
+                    } else {
+                        updatedAddresses
+                    }
+
+                    val updatedUser = user.copy(addresses = finalAddresses)
+                    updateUserProfile(updatedUser)
+                }
+                is Resource.Error -> userResult
+                is Resource.Loading -> Resource.Loading()
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при удалении адреса: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
+        }
+    }
+
+    /**
+     * Устанавливает основной адрес
+     */
+    suspend fun setPrimaryAddress(userId: String, addressId: String): Resource<Unit> {
+        return try {
+            val userResult = getUserProfile(userId)
+            when (userResult) {
+                is Resource.Success -> {
+                    val user = userResult.data
+                    val updatedAddresses = user.addresses.map { address ->
+                        address.copy(isPrimary = address.id == addressId)
+                    }
+
+                    val updatedUser = user.copy(addresses = updatedAddresses)
+                    updateUserProfile(updatedUser)
+                }
+                is Resource.Error -> userResult
+                is Resource.Loading -> Resource.Loading()
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при установке основного адреса: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
         }
     }
 
     /**
      * Сбрасывает пароль пользователя
      */
-    suspend fun resetPassword(email: String): Resource<Unit> = withContext(Dispatchers.IO) {
-        return@withContext try {
-            firebaseAuthSource.resetPassword(email)
-        } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при сбросе пароля: ${e.message}")
-            Resource.Error(e.message ?: "Ошибка при сбросе пароля")
-        }
-    }
-
-    /**
-     * Выход из аккаунта
-     */
-    fun logout(): Resource<Unit> {
+    suspend fun resetPassword(email: String): Resource<Unit> {
         return try {
-            firebaseAuthSource.logout()
-            Resource.Success(Unit)
-        } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при выходе из аккаунта: ${e.message}")
-            Resource.Error(e.message ?: "Ошибка при выходе из аккаунта")
-        }
-    }
-
-    /**
-     * Добавляет новый адрес
-     */
-    suspend fun addAddress(title: String, address: String, isDefault: Boolean): Resource<Unit> = withContext(Dispatchers.IO) {
-        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
-            ?: return@withContext Resource.Error("Пользователь не авторизован")
-
-        return@withContext try {
-            // Получаем текущие данные пользователя
-            val userDocResult = firestoreSource.getDocument(USERS_COLLECTION, currentUserId)
-
-            if (userDocResult !is Resource.Success) {
-                return@withContext Resource.Error((userDocResult as Resource.Error).message ?: "Ошибка при получении данных пользователя")
+            if (!User.isValidEmail(email)) {
+                return Resource.Error("Некорректный email")
             }
 
-            val userDoc = userDocResult.data
-            val user = userDoc?.toObject(User::class.java)
-                ?: return@withContext Resource.Error("Профиль пользователя не найден")
-
-            // Создаем новый адрес
-            val newAddress = Address(
-                id = UUID.randomUUID().toString(),
-                title = title,
-                address = address,
-                isDefault = isDefault
-            )
-
-            // Если новый адрес помечен как основной, сбрасываем флаг у остальных адресов
-            val updatedAddresses = if (isDefault) {
-                user.addresses.map { it.copy(isDefault = false) } + newAddress
-            } else {
-                // Если у пользователя нет адресов, делаем этот адрес основным
-                if (user.addresses.isEmpty()) {
-                    listOf(newAddress.copy(isDefault = true))
-                } else {
-                    user.addresses + newAddress
+            val result = authSource.resetPassword(email)
+            when (result) {
+                is Resource.Success -> {
+                    Log.d(TAG, "Письмо для сброса пароля отправлено на: $email")
+                    result
                 }
-            }
-
-            // Обновляем пользователя с новым списком адресов
-            val updatedUser = user.copy(addresses = updatedAddresses)
-            firestoreSource.updateDocument(USERS_COLLECTION, currentUserId, updatedUser)
-        } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при добавлении адреса: ${e.message}")
-            Resource.Error(e.message ?: "Ошибка при добавлении адреса")
-        }
-    }
-
-    /**
-     * Обновляет существующий адрес
-     */
-    suspend fun updateAddress(
-        addressId: String,
-        title: String,
-        address: String,
-        isDefault: Boolean
-    ): Resource<Unit> = withContext(Dispatchers.IO) {
-        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
-            ?: return@withContext Resource.Error("Пользователь не авторизован")
-
-        return@withContext try {
-            // Получаем текущие данные пользователя
-            val userDocResult = firestoreSource.getDocument(USERS_COLLECTION, currentUserId)
-
-            if (userDocResult !is Resource.Success) {
-                return@withContext Resource.Error((userDocResult as Resource.Error).message ?: "Ошибка при получении данных пользователя")
-            }
-
-            val userDoc = userDocResult.data
-            val user = userDoc?.toObject(User::class.java)
-                ?: return@withContext Resource.Error("Профиль пользователя не найден")
-
-            // Находим адрес, который нужно обновить
-            val addressIndex = user.addresses.indexOfFirst { it.id == addressId }
-            if (addressIndex == -1) {
-                return@withContext Resource.Error("Адрес не найден")
-            }
-
-            // Обновляем адрес
-            val updatedAddress = user.addresses[addressIndex].copy(
-                title = title,
-                address = address,
-                isDefault = isDefault
-            )
-
-            // Если адрес помечен как основной, сбрасываем флаг у остальных адресов
-            val updatedAddresses = if (isDefault) {
-                user.addresses.mapIndexed { index, addr ->
-                    if (index == addressIndex) updatedAddress else addr.copy(isDefault = false)
+                is Resource.Error -> {
+                    Log.e(TAG, "Ошибка сброса пароля: ${result.message}")
+                    result
                 }
-            } else {
-                val mutableList = user.addresses.toMutableList()
-                mutableList[addressIndex] = updatedAddress
-                mutableList
+                is Resource.Loading -> result
             }
-
-            // Обновляем пользователя с новым списком адресов
-            val updatedUser = user.copy(addresses = updatedAddresses)
-            firestoreSource.updateDocument(USERS_COLLECTION, currentUserId, updatedUser)
         } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при обновлении адреса: ${e.message}")
-            Resource.Error(e.message ?: "Ошибка при обновлении адреса")
+            Log.e(TAG, "Ошибка при сбросе пароля: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
         }
     }
 
     /**
-     * Удаляет адрес
+     * Изменяет пароль пользователя
      */
-    suspend fun deleteAddress(addressId: String): Resource<Unit> = withContext(Dispatchers.IO) {
-        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
-            ?: return@withContext Resource.Error("Пользователь не авторизован")
-
-        return@withContext try {
-            // Получаем текущие данные пользователя
-            val userDocResult = firestoreSource.getDocument(USERS_COLLECTION, currentUserId)
-
-            if (userDocResult !is Resource.Success) {
-                return@withContext Resource.Error((userDocResult as Resource.Error).message ?: "Ошибка при получении данных пользователя")
+    suspend fun changePassword(currentPassword: String, newPassword: String): Resource<Unit> {
+        return try {
+            if (newPassword.length < Constants.MIN_PASSWORD_LENGTH) {
+                return Resource.Error("Новый пароль должен содержать не менее ${Constants.MIN_PASSWORD_LENGTH} символов")
             }
 
-            val userDoc = userDocResult.data
-            val user = userDoc?.toObject(User::class.java)
-                ?: return@withContext Resource.Error("Профиль пользователя не найден")
-
-            // Удаляем адрес
-            val deletedAddress = user.addresses.find { it.id == addressId }
-                ?: return@withContext Resource.Error("Адрес не найден")
-
-            val updatedAddresses = user.addresses.filter { it.id != addressId }
-
-            // Если удаляем основной адрес и есть другие адреса, делаем первый из оставшихся основным
-            val finalAddresses = if (deletedAddress.isDefault && updatedAddresses.isNotEmpty()) {
-                val mutableList = updatedAddresses.toMutableList()
-                mutableList[0] = mutableList[0].copy(isDefault = true)
-                mutableList
-            } else {
-                updatedAddresses
+            val result = authSource.changePassword(currentPassword, newPassword)
+            when (result) {
+                is Resource.Success -> {
+                    Log.d(TAG, "Пароль изменен")
+                    result
+                }
+                is Resource.Error -> {
+                    Log.e(TAG, "Ошибка изменения пароля: ${result.message}")
+                    result
+                }
+                is Resource.Loading -> result
             }
-
-            // Обновляем пользователя с новым списком адресов
-            val updatedUser = user.copy(addresses = finalAddresses)
-            firestoreSource.updateDocument(USERS_COLLECTION, currentUserId, updatedUser)
         } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при удалении адреса: ${e.message}")
-            Resource.Error(e.message ?: "Ошибка при удалении адреса")
+            Log.e(TAG, "Ошибка при изменении пароля: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
         }
     }
 
     /**
-     * Устанавливает адрес по умолчанию
+     * Загружает аватар пользователя
      */
-    suspend fun setDefaultAddress(addressId: String): Resource<Unit> = withContext(Dispatchers.IO) {
-        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
-            ?: return@withContext Resource.Error("Пользователь не авторизован")
+    suspend fun uploadUserAvatar(userId: String, imageUri: Uri): Resource<String> {
+        return try {
+            val result = firestoreSource.uploadUserAvatar(userId, imageUri)
+            when (result) {
+                is Resource.Success -> {
+                    // Обновляем профиль пользователя с новым URL аватара
+                    val userResult = getUserProfile(userId)
+                    if (userResult is Resource.Success) {
+                        val updatedUser = userResult.data.copy(avatarUrl = result.data)
+                        updateUserProfile(updatedUser)
+                    }
 
-        return@withContext try {
-            // Получаем текущие данные пользователя
-            val userDocResult = firestoreSource.getDocument(USERS_COLLECTION, currentUserId)
-
-            if (userDocResult !is Resource.Success) {
-                return@withContext Resource.Error((userDocResult as Resource.Error).message ?: "Ошибка при получении данных пользователя")
+                    Log.d(TAG, "Аватар загружен: ${result.data}")
+                    result
+                }
+                is Resource.Error -> {
+                    Log.e(TAG, "Ошибка загрузки аватара: ${result.message}")
+                    result
+                }
+                is Resource.Loading -> result
             }
-
-            val userDoc = userDocResult.data
-            val user = userDoc?.toObject(User::class.java)
-                ?: return@withContext Resource.Error("Профиль пользователя не найден")
-
-            // Проверяем, существует ли адрес
-            if (user.addresses.none { it.id == addressId }) {
-                return@withContext Resource.Error("Адрес не найден")
-            }
-
-            // Обновляем флаги у всех адресов
-            val updatedAddresses = user.addresses.map { address ->
-                address.copy(isDefault = address.id == addressId)
-            }
-
-            // Обновляем пользователя с новым списком адресов
-            val updatedUser = user.copy(addresses = updatedAddresses)
-            firestoreSource.updateDocument(USERS_COLLECTION, currentUserId, updatedUser)
         } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при установке адреса по умолчанию: ${e.message}")
-            Resource.Error(e.message ?: "Ошибка при установке адреса по умолчанию")
+            Log.e(TAG, "Ошибка при загрузке аватара: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
         }
     }
 
     /**
-     * Устанавливает статус администратора
+     * Проверяет, авторизован ли пользователь
      */
-    suspend fun setAdminStatus(isAdmin: Boolean): Resource<Unit> = withContext(Dispatchers.IO) {
-        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
-            ?: return@withContext Resource.Error("Пользователь не авторизован")
+    fun isUserLoggedIn(): Boolean {
+        return authSource.getCurrentUser() != null
+    }
 
-        return@withContext try {
-            // Получаем текущие данные пользователя
-            val userDocResult = firestoreSource.getDocument(USERS_COLLECTION, currentUserId)
+    /**
+     * Получает поток состояния авторизации
+     */
+    fun getAuthStateFlow(): Flow<FirebaseUser?> {
+        return authSource.getAuthStateFlow()
+    }
 
-            if (userDocResult !is Resource.Success) {
-                return@withContext Resource.Error((userDocResult as Resource.Error).message ?: "Ошибка при получении данных пользователя")
+    /**
+     * Обновляет FCM токен пользователя
+     */
+    suspend fun updateFcmToken(userId: String, token: String): Resource<Unit> {
+        return try {
+            val userResult = getUserProfile(userId)
+            when (userResult) {
+                is Resource.Success -> {
+                    val updatedUser = userResult.data.copy(fcmToken = token)
+                    updateUserProfile(updatedUser)
+                }
+                is Resource.Error -> userResult
+                is Resource.Loading -> Resource.Loading()
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Ошибка при обновлении FCM токена: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
+        }
+    }
+
+    /**
+     * Удаляет аккаунт пользователя
+     */
+    suspend fun deleteUserAccount(userId: String): Resource<Unit> {
+        return try {
+            // Сначала удаляем данные из Firestore
+            val deleteProfileResult = firestoreSource.deleteUserProfile(userId)
+            if (deleteProfileResult is Resource.Error) {
+                return deleteProfileResult
             }
 
-            val userDoc = userDocResult.data
-            val user = userDoc?.toObject(User::class.java)
-                ?: return@withContext Resource.Error("Профиль пользователя не найден")
-
-            // Обновляем статус администратора
-            val updatedUser = user.copy(isAdmin = isAdmin)
-            firestoreSource.updateDocument(USERS_COLLECTION, currentUserId, updatedUser)
+            // Затем удаляем пользователя из Firebase Auth
+            val deleteAuthResult = authSource.deleteUser()
+            when (deleteAuthResult) {
+                is Resource.Success -> {
+                    Log.d(TAG, "Аккаунт пользователя удален: $userId")
+                    deleteAuthResult
+                }
+                is Resource.Error -> {
+                    Log.e(TAG, "Ошибка удаления аккаунта: ${deleteAuthResult.message}")
+                    deleteAuthResult
+                }
+                is Resource.Loading -> deleteAuthResult
+            }
         } catch (e: Exception) {
-            Log.e(TAG, "Ошибка при установке статуса администратора: ${e.message}")
-            Resource.Error(e.message ?: "Ошибка при установке статуса администратора")
+            Log.e(TAG, "Ошибка при удалении аккаунта: ${e.message}", e)
+            Resource.Error(e.message ?: "Неизвестная ошибка")
         }
+    }
+
+    /**
+     * Генерирует уникальный ID для адреса
+     */
+    private fun generateAddressId(): String {
+        return "addr_${System.currentTimeMillis()}_${(1000..9999).random()}"
     }
 }

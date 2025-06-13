@@ -1,107 +1,95 @@
-package com.yourstore.app
+package com.example.a1000_melochei
 
 import android.app.Application
-import android.util.Log
-import androidx.appcompat.app.AppCompatDelegate
-import com.google.firebase.FirebaseApp
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreSettings
-import com.yourstore.app.data.source.local.PreferencesManager
-import com.yourstore.app.di.appModule
-import com.yourstore.app.di.dataModule
-import com.yourstore.app.di.viewModelModule
-import com.yourstore.app.util.NotificationHelper
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
+import com.example.a1000_melochei.di.allModules
+import com.example.a1000_melochei.util.Constants
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 
+/**
+ * Основной класс приложения.
+ * Инициализирует Koin DI и настраивает каналы уведомлений.
+ */
 class MyApplication : Application() {
-
-    companion object {
-        private const val TAG = "MyApplication"
-        lateinit var instance: MyApplication
-            private set
-    }
-
-    private lateinit var preferencesManager: PreferencesManager
 
     override fun onCreate() {
         super.onCreate()
-        instance = this
 
-        // Initialize Firebase
-        initializeFirebase()
+        // Инициализация Koin
+        initKoin()
 
-        // Initialize Koin for Dependency Injection
-        initializeKoin()
-
-        // Initialize Preferences
-        preferencesManager = PreferencesManager(this)
-
-        // Set up theme based on saved preference
-        setupTheme()
-
-        // Инициализируем каналы уведомлений
-        NotificationHelper.createNotificationChannels(this)
-
-        // Setup crash reporting
-        setupCrashReporting()
-
-        Log.d(TAG, "Application initialized")
+        // Создание каналов уведомлений
+        createNotificationChannels()
     }
 
-    private fun initializeFirebase() {
-        try {
-            FirebaseApp.initializeApp(this)
-
-            // Configure Firestore for offline persistence
-            val settings = FirebaseFirestoreSettings.Builder()
-                .setPersistenceEnabled(true)
-                .setCacheSizeBytes(FirebaseFirestoreSettings.CACHE_SIZE_UNLIMITED)
-                .build()
-
-            FirebaseFirestore.getInstance().firestoreSettings = settings
-
-            Log.d(TAG, "Firebase initialized successfully")
-        } catch (e: Exception) {
-            Log.e(TAG, "Error initializing Firebase", e)
-            FirebaseCrashlytics.getInstance().recordException(e)
-        }
-    }
-
-    private fun initializeKoin() {
+    /**
+     * Инициализация Koin Dependency Injection
+     */
+    private fun initKoin() {
         startKoin {
-            androidLogger(Level.ERROR) // Using ERROR level to avoid Koin issues with Kotlin 1.4+
+            // Логирование только в debug режиме
+            if (BuildConfig.DEBUG) {
+                androidLogger(Level.DEBUG)
+            }
+
+            // Контекст Android
             androidContext(this@MyApplication)
-            modules(listOf(appModule, dataModule, viewModelModule))
+
+            // Модули зависимостей
+            modules(allModules)
         }
-        Log.d(TAG, "Koin initialized")
     }
 
-    private fun setupTheme() {
-        val isDarkMode = preferencesManager.getDarkMode()
-        val mode = if (isDarkMode) {
-            AppCompatDelegate.MODE_NIGHT_YES
-        } else {
-            AppCompatDelegate.MODE_NIGHT_NO
+    /**
+     * Создание каналов уведомлений для Android 8.0+
+     */
+    private fun createNotificationChannels() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+            // Канал для заказов
+            val orderChannel = NotificationChannel(
+                Constants.NOTIFICATION_CHANNEL_ORDER_ID,
+                getString(R.string.notification_channel_orders_name),
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = getString(R.string.notification_channel_orders_description)
+                enableLights(true)
+                enableVibration(true)
+            }
+
+            // Канал для промо-акций
+            val promoChannel = NotificationChannel(
+                Constants.NOTIFICATION_CHANNEL_PROMO_ID,
+                getString(R.string.notification_channel_promo_name),
+                NotificationManager.IMPORTANCE_DEFAULT
+            ).apply {
+                description = getString(R.string.notification_channel_promo_description)
+                enableLights(true)
+                enableVibration(false)
+            }
+
+            // Канал для системных уведомлений
+            val systemChannel = NotificationChannel(
+                Constants.NOTIFICATION_CHANNEL_SYSTEM_ID,
+                getString(R.string.notification_channel_system_name),
+                NotificationManager.IMPORTANCE_LOW
+            ).apply {
+                description = getString(R.string.notification_channel_system_description)
+                enableLights(false)
+                enableVibration(false)
+            }
+
+            // Регистрация каналов
+            notificationManager.createNotificationChannels(
+                listOf(orderChannel, promoChannel, systemChannel)
+            )
         }
-        AppCompatDelegate.setDefaultNightMode(mode)
-        Log.d(TAG, "Theme setup completed. Dark mode: $isDarkMode")
-    }
-
-    private fun setupCrashReporting() {
-        // Only collect crash reports if user has opted in
-        val collectCrashReports = preferencesManager.getCrashReportingEnabled()
-        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(collectCrashReports)
-
-        // Add user ID to crash reports if user is logged in
-        FirebaseAuth.getInstance().currentUser?.let { user ->
-            FirebaseCrashlytics.getInstance().setUserId(user.uid)
-        }
-
-        Log.d(TAG, "Crash reporting setup completed")
     }
 }

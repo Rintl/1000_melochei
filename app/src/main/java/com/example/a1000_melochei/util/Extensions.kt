@@ -1,19 +1,13 @@
-package com.yourstore.app.util
+package com.example.a1000_melochei.util
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.DisplayMetrics
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -21,29 +15,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.example.a1000_melochei.R
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputLayout
-import com.yourstore.app.R
 import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.InputStream
-import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.math.roundToInt
-
-/**
- * Файл с расширениями Kotlin (extension functions) для различных классов.
- * Эти расширения упрощают часто используемые операции и повышают читаемость кода.
- */
+import java.util.Date
+import java.util.Locale
 
 /**
  * Расширения для Context
@@ -57,30 +39,16 @@ fun Context.showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
 }
 
 /**
- * Получает цвет из ресурсов с учетом версии Android
+ * Показывает длинный Toast с сообщением
  */
-fun Context.getColorCompat(colorResId: Int): Int {
-    return ContextCompat.getColor(this, colorResId)
+fun Context.showLongToast(message: String) {
+    Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 }
 
 /**
- * Преобразует значение из dp в пиксели
+ * Показывает диалог с подтверждением
  */
-fun Context.dpToPx(dp: Float): Int {
-    return (dp * (resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)).roundToInt()
-}
-
-/**
- * Преобразует значение из пикселей в dp
- */
-fun Context.pxToDp(px: Int): Float {
-    return px.toFloat() / (resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
-}
-
-/**
- * Создает диалог подтверждения с заданным заголовком и сообщением
- */
-fun Context.showConfirmationDialog(
+fun Context.showConfirmDialog(
     title: String,
     message: String,
     positiveButtonText: String = getString(R.string.yes),
@@ -93,6 +61,22 @@ fun Context.showConfirmationDialog(
         .setMessage(message)
         .setPositiveButton(positiveButtonText) { _, _ -> onPositiveClick() }
         .setNegativeButton(negativeButtonText) { _, _ -> onNegativeClick?.invoke() }
+        .show()
+}
+
+/**
+ * Показывает простой информационный диалог
+ */
+fun Context.showInfoDialog(
+    title: String,
+    message: String,
+    buttonText: String = getString(R.string.ok),
+    onButtonClick: (() -> Unit)? = null
+) {
+    AlertDialog.Builder(this)
+        .setTitle(title)
+        .setMessage(message)
+        .setPositiveButton(buttonText) { _, _ -> onButtonClick?.invoke() }
         .show()
 }
 
@@ -118,6 +102,50 @@ fun Context.getUriForFile(file: File): Uri {
 }
 
 /**
+ * Проверяет, доступен ли интернет
+ */
+fun Context.isNetworkAvailable(): Boolean {
+    val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        val network = connectivityManager.activeNetwork
+        val capabilities = connectivityManager.getNetworkCapabilities(network)
+        capabilities?.hasCapability(android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
+    } else {
+        @Suppress("DEPRECATION")
+        val networkInfo = connectivityManager.activeNetworkInfo
+        networkInfo?.isConnected == true
+    }
+}
+
+/**
+ * Открывает номер телефона в приложении для звонков
+ */
+fun Context.openPhoneDialer(phoneNumber: String) {
+    try {
+        val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phoneNumber"))
+        startActivity(intent)
+    } catch (e: Exception) {
+        showToast("Не удалось открыть приложение для звонков")
+    }
+}
+
+/**
+ * Открывает email в почтовом приложении
+ */
+fun Context.openEmailClient(email: String, subject: String = "", body: String = "") {
+    try {
+        val intent = Intent(Intent.ACTION_SENDTO).apply {
+            data = Uri.parse("mailto:$email")
+            putExtra(Intent.EXTRA_SUBJECT, subject)
+            putExtra(Intent.EXTRA_TEXT, body)
+        }
+        startActivity(Intent.createChooser(intent, "Выберите почтовое приложение"))
+    } catch (e: Exception) {
+        showToast("Не удалось открыть почтовое приложение")
+    }
+}
+
+/**
  * Расширения для Activity
  */
 
@@ -131,7 +159,7 @@ fun Activity.hideKeyboard() {
 }
 
 /**
- * Показывает клавиатуру
+ * Показывает клавиатуру для определенного View
  */
 fun Activity.showKeyboard(view: View) {
     val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -146,6 +174,15 @@ fun AppCompatActivity.setTransparentStatusBar() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         window.statusBarColor = ContextCompat.getColor(this, android.R.color.transparent)
+    }
+}
+
+/**
+ * Устанавливает цвет статус-бара
+ */
+fun AppCompatActivity.setStatusBarColor(colorRes: Int) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        window.statusBarColor = ContextCompat.getColor(this, colorRes)
     }
 }
 
@@ -169,8 +206,8 @@ fun Fragment.showSnackbar(
     actionText: String? = null,
     action: ((View) -> Unit)? = null
 ) {
-    view?.let {
-        val snackbar = Snackbar.make(it, message, duration)
+    view?.let { view ->
+        val snackbar = Snackbar.make(view, message, duration)
         if (actionText != null && action != null) {
             snackbar.setAction(actionText, action)
         }
@@ -179,107 +216,24 @@ fun Fragment.showSnackbar(
 }
 
 /**
- * Расширения для View
+ * Скрывает клавиатуру в контексте фрагмента
  */
-
-/**
- * Делает view видимой
- */
-fun View.show() {
-    visibility = View.VISIBLE
+fun Fragment.hideKeyboard() {
+    activity?.hideKeyboard()
 }
 
 /**
- * Скрывает view (оставляет место)
+ * Показывает диалог подтверждения в контексте фрагмента
  */
-fun View.hide() {
-    visibility = View.INVISIBLE
-}
-
-/**
- * Скрывает view (не оставляет место)
- */
-fun View.gone() {
-    visibility = View.GONE
-}
-
-/**
- * Переключает видимость view
- */
-fun View.toggleVisibility() {
-    visibility = if (visibility == View.VISIBLE) View.GONE else View.VISIBLE
-}
-
-/**
- * Показывает Snackbar для данной View
- */
-fun View.showSnackbar(
+fun Fragment.showConfirmDialog(
+    title: String,
     message: String,
-    duration: Int = Snackbar.LENGTH_SHORT,
-    actionText: String? = null,
-    action: ((View) -> Unit)? = null
+    positiveButtonText: String = getString(R.string.yes),
+    negativeButtonText: String = getString(R.string.no),
+    onPositiveClick: () -> Unit,
+    onNegativeClick: (() -> Unit)? = null
 ) {
-    val snackbar = Snackbar.make(this, message, duration)
-    if (actionText != null && action != null) {
-        snackbar.setAction(actionText, action)
-    }
-    snackbar.show()
-}
-
-/**
- * Устанавливает видимость View в зависимости от условия
- */
-fun View.setVisibleIf(condition: Boolean) {
-    visibility = if (condition) View.VISIBLE else View.GONE
-}
-
-/**
- * Устанавливает состояние enabled для View и всех дочерних элементов
- */
-fun View.setEnabledRecursively(enabled: Boolean) {
-    isEnabled = enabled
-    if (this is ViewGroup) {
-        for (i in 0 until childCount) {
-            getChildAt(i).setEnabledRecursively(enabled)
-        }
-    }
-}
-
-/**
- * Расширения для EditText
- */
-
-/**
- * Устанавливает слушатель изменения текста с упрощенным интерфейсом
- */
-fun EditText.onTextChanged(listener: (String) -> Unit) {
-    this.addTextChangedListener(object : TextWatcher {
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        override fun afterTextChanged(s: Editable?) {
-            listener(s.toString())
-        }
-    })
-}
-
-/**
- * Устанавливает курсор в конец текста
- */
-fun EditText.placeCursorToEnd() {
-    this.setSelection(this.text.length)
-}
-
-/**
- * Расширения для TextInputLayout
- */
-
-/**
- * Проверяет валидность ввода и устанавливает сообщение об ошибке
- */
-fun TextInputLayout.validate(validator: () -> Boolean, errorMessage: String): Boolean {
-    val isValid = validator()
-    error = if (isValid) null else errorMessage
-    return isValid
+    context?.showConfirmDialog(title, message, positiveButtonText, negativeButtonText, onPositiveClick, onNegativeClick)
 }
 
 /**
@@ -287,90 +241,51 @@ fun TextInputLayout.validate(validator: () -> Boolean, errorMessage: String): Bo
  */
 
 /**
- * Загружает изображение из URL с использованием Glide
+ * Загружает изображение с помощью Glide
  */
-fun ImageView.loadFromUrl(
-    url: String,
-    placeholder: Int = R.drawable.placeholder_image,
-    error: Int = R.drawable.placeholder_image
+fun ImageView.loadImage(
+    imageUrl: String?,
+    placeholder: Int = R.drawable.ic_placeholder,
+    error: Int = R.drawable.ic_error
 ) {
-    Glide.with(this.context)
-        .load(url)
+    Glide.with(context)
+        .load(imageUrl)
         .placeholder(placeholder)
         .error(error)
-        .transition(DrawableTransitionOptions.withCrossFade())
         .into(this)
 }
 
 /**
- * Загружает круглое изображение из URL с использованием Glide
+ * Загружает изображение с закругленными углами
  */
-fun ImageView.loadCircleImageFromUrl(
-    url: String,
-    placeholder: Int = R.drawable.default_avatar,
-    error: Int = R.drawable.default_avatar
+fun ImageView.loadRoundedImage(
+    imageUrl: String?,
+    cornerRadius: Int = 8,
+    placeholder: Int = R.drawable.ic_placeholder,
+    error: Int = R.drawable.ic_error
 ) {
-    Glide.with(this.context)
-        .load(url)
+    Glide.with(context)
+        .load(imageUrl)
+        .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(cornerRadius)))
         .placeholder(placeholder)
         .error(error)
+        .into(this)
+}
+
+/**
+ * Загружает круглое изображение
+ */
+fun ImageView.loadCircularImage(
+    imageUrl: String?,
+    placeholder: Int = R.drawable.ic_placeholder,
+    error: Int = R.drawable.ic_error
+) {
+    Glide.with(context)
+        .load(imageUrl)
         .apply(RequestOptions.circleCropTransform())
-        .transition(DrawableTransitionOptions.withCrossFade())
+        .placeholder(placeholder)
+        .error(error)
         .into(this)
-}
-
-/**
- * Расширения для Uri
- */
-
-/**
- * Копирует Uri во временный файл
- */
-fun Uri.copyToFile(context: Context): File? {
-    var inputStream: InputStream? = null
-    var outputStream: FileOutputStream? = null
-
-    try {
-        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-        val fileName = "temp_${timeStamp}.jpg"
-        val outputFile = File(context.cacheDir, fileName)
-
-        inputStream = context.contentResolver.openInputStream(this)
-        outputStream = FileOutputStream(outputFile)
-
-        val buffer = ByteArray(4 * 1024) // 4KB buffer
-        var read: Int
-
-        while (inputStream?.read(buffer).also { read = it ?: -1 } != -1) {
-            outputStream.write(buffer, 0, read)
-        }
-
-        outputStream.flush()
-        return outputFile
-    } catch (e: IOException) {
-        e.printStackTrace()
-        return null
-    } finally {
-        try {
-            inputStream?.close()
-            outputStream?.close()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }
-}
-
-/**
- * Получает Bitmap из Uri
- */
-fun Uri.toBitmap(context: Context): Bitmap? {
-    return try {
-        val inputStream = context.contentResolver.openInputStream(this)
-        BitmapFactory.decodeStream(inputStream)
-    } catch (e: IOException) {
-        e.printStackTrace()
-        null
-    }
 }
 
 /**
@@ -378,73 +293,163 @@ fun Uri.toBitmap(context: Context): Bitmap? {
  */
 
 /**
- * Форматирует строку как номер телефона
+ * Проверяет, является ли строка валидным email
  */
-fun String.formatAsPhoneNumber(): String {
-    if (this.isEmpty()) return this
+fun String.isValidEmail(): Boolean {
+    return android.util.Patterns.EMAIL_ADDRESS.matcher(this).matches()
+}
 
-    val digitsOnly = this.replace(Regex("[^\\d]"), "")
-    if (digitsOnly.length < 10) return this
+/**
+ * Проверяет, является ли строка валидным номером телефона
+ */
+fun String.isValidPhone(): Boolean {
+    val cleanPhone = this.replace(Regex("[^+\\d]"), "")
+    return cleanPhone.length >= 10 && cleanPhone.length <= 15
+}
 
-    val countryCode = if (digitsOnly.length > 10) digitsOnly.substring(0, digitsOnly.length - 10) else ""
-    val areaCode = digitsOnly.substring(digitsOnly.length - 10, digitsOnly.length - 7)
-    val firstPart = digitsOnly.substring(digitsOnly.length - 7, digitsOnly.length - 4)
-    val secondPart = digitsOnly.substring(digitsOnly.length - 4)
-
-    return if (countryCode.isNotEmpty()) {
-        "+$countryCode ($areaCode) $firstPart-$secondPart"
-    } else {
-        "($areaCode) $firstPart-$secondPart"
+/**
+ * Форматирует строку как цену в тенге
+ */
+fun String.formatAsPrice(): String {
+    return try {
+        val number = this.toDoubleOrNull() ?: 0.0
+        "${NumberFormat.getNumberInstance(Locale("ru", "KZ")).format(number.toInt())} ₸"
+    } catch (e: Exception) {
+        "$this ₸"
     }
 }
 
 /**
- * Возвращает первые N символов строки, добавляя многоточие, если строка длиннее
+ * Обрезает строку до указанной длины с добавлением многоточия
  */
-fun String.truncate(length: Int, ellipsis: String = "..."): String {
-    return if (this.length > length) {
-        this.substring(0, length - ellipsis.length) + ellipsis
-    } else {
+fun String.truncate(maxLength: Int): String {
+    return if (length <= maxLength) {
         this
-    }
-}
-
-/**
- * Расширения для Number
- */
-
-/**
- * Форматирует число как валюту
- */
-fun Number.formatAsCurrency(
-    currency: String = "₸",
-    showDecimals: Boolean = true
-): String {
-    val format = NumberFormat.getNumberInstance(Locale("ru", "KZ")) as DecimalFormat
-
-    if (showDecimals) {
-        format.minimumFractionDigits = 2
-        format.maximumFractionDigits = 2
     } else {
-        format.minimumFractionDigits = 0
-        format.maximumFractionDigits = 0
+        substring(0, maxLength - 3) + "..."
     }
-
-    return "${format.format(this)} $currency"
 }
 
 /**
- * Расширения для LiveData
+ * Капитализирует первую букву строки
+ */
+fun String.capitalize(): String {
+    return if (isEmpty()) {
+        this
+    } else {
+        this[0].uppercase() + substring(1).lowercase()
+    }
+}
+
+/**
+ * Расширения для Double
  */
 
 /**
- * Наблюдает за LiveData один раз (сразу удаляет Observer после первого вызова)
+ * Форматирует число как цену в тенге
  */
-fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
-    observe(lifecycleOwner, object : Observer<T> {
-        override fun onChanged(t: T) {
-            observer.onChanged(t)
-            removeObserver(this)
-        }
-    })
+fun Double.formatAsPrice(): String {
+    return "${NumberFormat.getNumberInstance(Locale("ru", "KZ")).format(this.toInt())} ₸"
+}
+
+/**
+ * Форматирует число с указанием количества знаков после запятой
+ */
+fun Double.formatWithDecimals(decimals: Int = 2): String {
+    return String.format(Locale.getDefault(), "%.${decimals}f", this)
+}
+
+/**
+ * Расширения для Long (timestamp)
+ */
+
+/**
+ * Форматирует timestamp как дату
+ */
+fun Long.formatAsDate(pattern: String = "dd.MM.yyyy"): String {
+    return SimpleDateFormat(pattern, Locale.getDefault()).format(Date(this))
+}
+
+/**
+ * Форматирует timestamp как дату и время
+ */
+fun Long.formatAsDateTime(pattern: String = "dd.MM.yyyy HH:mm"): String {
+    return SimpleDateFormat(pattern, Locale.getDefault()).format(Date(this))
+}
+
+/**
+ * Форматирует timestamp как время
+ */
+fun Long.formatAsTime(pattern: String = "HH:mm"): String {
+    return SimpleDateFormat(pattern, Locale.getDefault()).format(Date(this))
+}
+
+/**
+ * Возвращает разницу во времени в читаемом формате
+ */
+fun Long.getTimeAgo(): String {
+    val now = System.currentTimeMillis()
+    val diff = now - this
+
+    return when {
+        diff < 60_000 -> "только что"
+        diff < 3600_000 -> "${diff / 60_000} мин назад"
+        diff < 86400_000 -> "${diff / 3600_000} ч назад"
+        diff < 604800_000 -> "${diff / 86400_000} дн назад"
+        else -> formatAsDate()
+    }
+}
+
+/**
+ * Расширения для View
+ */
+
+/**
+ * Делает View видимым
+ */
+fun View.visible() {
+    visibility = View.VISIBLE
+}
+
+/**
+ * Делает View невидимым (занимает место)
+ */
+fun View.invisible() {
+    visibility = View.INVISIBLE
+}
+
+/**
+ * Скрывает View (не занимает место)
+ */
+fun View.gone() {
+    visibility = View.GONE
+}
+
+/**
+ * Переключает видимость View
+ */
+fun View.toggleVisibility() {
+    visibility = if (visibility == View.VISIBLE) View.GONE else View.VISIBLE
+}
+
+/**
+ * Устанавливает видимость View в зависимости от условия
+ */
+fun View.visibleIf(condition: Boolean) {
+    visibility = if (condition) View.VISIBLE else View.GONE
+}
+
+/**
+ * Расширения для Intent
+ */
+
+/**
+ * Безопасно запускает Intent
+ */
+fun Context.safeStartActivity(intent: Intent) {
+    try {
+        startActivity(intent)
+    } catch (e: Exception) {
+        showToast("Не удалось открыть приложение")
+    }
 }

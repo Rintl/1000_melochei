@@ -1,4 +1,4 @@
-package com.yourstore.app.data.common
+package com.example.a1000_melochei.data.common
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
