@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Фон -->
-    <item>
-        <shape android:shape="rectangle">
-            <gradient
-                android:startColor="@color/colorPrimary"
-                android:endColor="@color/colorPrimaryDark"
-                android:angle="135" />
-        </shape>
-    </item>
+    <!-- Фоновый цвет -->
+    <item android:drawable="@color/colorPrimary" />
 
-    <!-- Логотип -->
+    <!-- Логотип по центру (если есть) -->
+    <!-- Раскомментируйте и укажите ваш логотип, если он есть -->
+    <!--
+    <item>
+        <bitmap
+            android:gravity="center"
+            android:src="@drawable/ic_logo" />
+    </item>
+    -->
+
+    <!-- Альтернативный вариант с векторным логотипом -->
+    <!--
     <item
         android:width="120dp"
         android:height="120dp"
-        android:gravity="center"
-        android:drawable="@drawable/ic_launcher_foreground"
-        android:top="-60dp" />
-
-    <!-- Название приложения -->
-    <item
-        android:drawable="@drawable/splash_title"
-        android:gravity="center"
-        android:top="80dp" />
+        android:gravity="center">
+        <shape android:shape="oval">
+            <solid android:color="@color/white" />
+        </shape>
+    </item>
+    -->
 </layer-list>

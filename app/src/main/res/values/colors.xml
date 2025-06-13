@@ -56,4 +56,20 @@
     <color name="colorDiscount">#F44336</color>
     <color name="colorRating">#FFC107</color>
     <color name="colorPositive">#4CAF50</color>
+
+    <!-- Добавьте эти цвета в существующий файл app/src/main/res/values/colors.xml -->
+
+    <!-- Дополнительные цвета для темной темы -->
+    <color name="colorPrimaryDarker">#4A148C</color>
+    <color name="colorAccentDarker">#880E4F</color>
+    <color name="colorBackgroundDark">#121212</color>
+    <color name="colorSurfaceDark">#1E1E1E</color>
+    <color name="colorErrorDark">#CF6679</color>
+    <color name="primaryTextColorDark">#FFFFFF</color>
+
+    <!-- Цвета для админской панели -->
+    <color name="colorAdminPrimary">#1976D2</color>
+    <color name="colorAdminPrimaryDark">#1565C0</color>
+    <color name="colorAdminAccent">#FF6F00</color>
+
 </resources>

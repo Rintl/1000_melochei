@@ -88,13 +88,15 @@
 
     <!-- Типографика -->
     <style name="TextAppearance.MelocheiApp.Headline1" parent="TextAppearance.MaterialComponents.Headline1">
-        <item name="fontFamily">@font/roboto_light</item>
-        <item name="android:fontFamily">@font/roboto_light</item>
+        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textSize">32sp</item>
     </style>
 
     <style name="TextAppearance.MelocheiApp.Headline2" parent="TextAppearance.MaterialComponents.Headline2">
-        <item name="fontFamily">@font/roboto_light</item>
-        <item name="android:fontFamily">@font/roboto_light</item>
+        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textSize">28sp</item>
     </style>
 
     <style name="TextAppearance.MelocheiApp.Headline3" parent="TextAppearance.MaterialComponents.Headline3">
@@ -173,94 +175,41 @@
     </style>
 
     <style name="Widget.MelocheiApp.Button.Text" parent="Widget.MaterialComponents.Button.TextButton">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">8dp</item>
-        <item name="android:insetTop">0dp</item>
-        <item name="android:insetBottom">0dp</item>
         <item name="android:minHeight">48dp</item>
         <item name="android:textAppearance">@style/TextAppearance.MelocheiApp.Button</item>
     </style>
 
+    <!-- Остальные компоненты -->
     <style name="Widget.MelocheiApp.CardView" parent="Widget.MaterialComponents.CardView">
-        <item name="cardCornerRadius">12dp</item>
-        <item name="cardElevation">4dp</item>
+        <item name="cardCornerRadius">8dp</item>
+        <item name="cardElevation">2dp</item>
         <item name="contentPadding">16dp</item>
     </style>
 
     <style name="Widget.MelocheiApp.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="boxCornerRadiusTopStart">8dp</item>
-        <item name="boxCornerRadiusTopEnd">8dp</item>
-        <item name="boxCornerRadiusBottomStart">8dp</item>
         <item name="boxCornerRadiusBottomEnd">8dp</item>
-        <item name="hintTextAppearance">@style/TextAppearance.MelocheiApp.Caption</item>
-        <item name="android:layout_marginBottom">8dp</item>
+        <item name="boxCornerRadiusBottomStart">8dp</item>
+        <item name="boxCornerRadiusTopEnd">8dp</item>
+        <item name="boxCornerRadiusTopStart">8dp</item>
     </style>
 
-    <style name="Widget.MelocheiApp.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
-        <item name="titleTextAppearance">@style/TextAppearance.MelocheiApp.Headline6</item>
+    <style name="Widget.MelocheiApp.Toolbar" parent="Widget.MaterialComponents.Toolbar">
+        <item name="android:background">?attr/colorPrimary</item>
         <item name="titleTextColor">@color/white</item>
-        <item name="android:elevation">4dp</item>
     </style>
 
     <style name="Widget.MelocheiApp.TabLayout" parent="Widget.MaterialComponents.TabLayout">
-        <item name="tabTextAppearance">@style/TextAppearance.MelocheiApp.Button</item>
-        <item name="tabIndicatorColor">@color/colorAccent</item>
-        <item name="tabSelectedTextColor">@color/colorAccent</item>
-        <item name="tabTextColor">@color/secondaryTextColor</item>
+        <item name="tabIndicatorColor">@color/white</item>
+        <item name="tabTextColor">@color/white</item>
+        <item name="tabSelectedTextColor">@color/white</item>
     </style>
 
     <style name="Widget.MelocheiApp.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView">
-        <item name="itemTextAppearanceActive">@style/TextAppearance.MelocheiApp.Caption</item>
-        <item name="itemTextAppearanceInactive">@style/TextAppearance.MelocheiApp.Caption</item>
-        <item name="android:elevation">8dp</item>
+        <item name="itemIconTint">@color/primaryTextColor</item>
+        <item name="itemTextColor">@color/primaryTextColor</item>
     </style>
 
-    <!-- Специальные стили для форм -->
-    <style name="Widget.MelocheiApp.TextInputLayout.Dense" parent="Widget.MelocheiApp.TextInputLayout">
-        <item name="android:layout_marginBottom">4dp</item>
-    </style>
-
-    <!-- Стили для диалогов -->
-    <style name="ThemeOverlay.MelocheiApp.MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorSecondary">@color/colorAccent</item>
-        <item name="android:colorBackground">@color/colorSurface</item>
-        <item name="colorOnSurface">@color/primaryTextColor</item>
-        <item name="alertDialogStyle">@style/MaterialAlertDialog.MelocheiApp</item>
-        <item name="materialAlertDialogTitleTextStyle">@style/MaterialAlertDialog.MelocheiApp.Title.Text</item>
-        <item name="materialAlertDialogBodyTextStyle">@style/MaterialAlertDialog.MelocheiApp.Body.Text</item>
-        <item name="buttonBarButtonStyle">@style/Widget.MelocheiApp.Button.Text</item>
-    </style>
-
-    <style name="MaterialAlertDialog.MelocheiApp" parent="MaterialComponents.MaterialAlertDialog">
-        <item name="shapeAppearance">@style/ShapeAppearance.MelocheiApp.MediumComponent</item>
-    </style>
-
-    <style name="MaterialAlertDialog.MelocheiApp.Title.Text" parent="MaterialComponents.MaterialAlertDialog.Title.Text">
-        <item name="android:textAppearance">@style/TextAppearance.MelocheiApp.Headline6</item>
-    </style>
-
-    <style name="MaterialAlertDialog.MelocheiApp.Body.Text" parent="MaterialComponents.MaterialAlertDialog.Body.Text">
-        <item name="android:textAppearance">@style/TextAppearance.MelocheiApp.Body1</item>
-    </style>
-
-    <!-- Фигуры -->
-    <style name="ShapeAppearance.MelocheiApp.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">4dp</item>
-    </style>
-
-    <style name="ShapeAppearance.MelocheiApp.MediumComponent" parent="ShapeAppearance.MaterialComponents.MediumComponent">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">8dp</item>
-    </style>
-
-    <style name="ShapeAppearance.MelocheiApp.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">12dp</item>
-    </style>
-
-    <!-- Стили для списков -->
+    <!-- Стили для RecyclerView -->
     <style name="Widget.MelocheiApp.RecyclerView" parent="">
         <item name="android:scrollbars">vertical</item>
         <item name="android:fadeScrollbars">true</item>

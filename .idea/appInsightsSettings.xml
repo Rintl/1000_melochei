@@ -9,10 +9,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.a1000_melochei" />
+                  <option name="mobileSdkAppId" value="1:318949322959:android:fa0bf0c2a5cd9e405e47ba" />
+                  <option name="projectId" value="melochei-f078b" />
+                  <option name="projectNumber" value="318949322959" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

@@ -590,6 +590,7 @@
 
     <string name="app_version" translatable="false">Версия 1.0</string>
 
+
     <!-- Строки для импорта CSV -->
     <string name="import_instructions_text" translatable="false">Загрузите файл CSV или Excel со списком товаров. Файл должен содержать следующие столбцы: SKU, Название, Категория, Цена, Количество.</string>
     <string name="product_active">Активен</string>
