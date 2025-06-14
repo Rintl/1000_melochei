@@ -17,7 +17,7 @@
     <string name="next">Далее</string>
     <string name="done">Готово</string>
     <string name="retry">Повторить</string>
-    <string name="loading">Загрузка...</string>
+    <string name="loading">Загрузка</string>
     <string name="change">Изменить</string>
     <string name="error_occurred">Произошла ошибка</string>
     <string name="empty_field">Поле не может быть пустым</string>
@@ -650,5 +650,50 @@
     <string name="no_internet_connection">Нет подключения к интернету</string>
     <string name="check_connection">Проверьте подключение к интернету и повторите попытку</string>
     <string name="go_to_settings">Перейти в настройки</string>
+
+    <string name="open_map" translatable="false">Открыть карту</string>
+    <string name="manage_order_status" translatable="false">Управление статусом доставки</string>
+    <string name="last_update" translatable="false">Последнее обновление</string>
+    <string name="current_status" translatable="false">Текущий статус</string>
+    <string name="set_processing" translatable="false">Установить обработку</string>
+    <string name="set_shipping" translatable="false">Установить доставку</string>
+    <string name="set_delivered" translatable="false">Установить доставлено</string>
+    <string name="set_completed" translatable="false">Установить завершено</string>
+    <string name="additional_actions" translatable="false">Дополнительные действия</string>
+    <string name="print_order" translatable="false">Распечатать заказ</string>
+    <string name="export_order" translatable="false">Поделиться заказом</string>
+    <string name="notify_customer" translatable="false">Уведовить покупателя</string>
+    <string name="shipping_orders" translatable="false">Заказы на доставке</string>
+    <string name="delivered_orders" translatable="false">Доставленные заказы</string>
+    <string name="cancelled_orders" translatable="false">Отмененные заказы</string>
+    <string name="search_orders" translatable="false">Поиск заказов</string>
+    <string name="date_from" translatable="false">Дата с</string>
+    <string name="date_to" translatable="false">Дата к</string>
+    <string name="clear_filters" translatable="false">Отчистить фильтр</string>
+    <string name="period_today" translatable="false">Сегодня</string>
+    <string name="period_yesterday" translatable="false">Вчера</string>
+    <string name="period_week" translatable="false">Неделя</string>
+    <string name="period_month" translatable="false">Месяц</string>
+    <string name="period_year" translatable="false">Год</string>
+    <string name="period_custom" translatable="false">Произвольный</string>
+    <string name="apply_period" translatable="false">Применить</string>
+    <string name="analytics_key_metrics" translatable="false">Ключевые метрики</string>
+    <string name="analytics_revenue" translatable="false">Доход</string>
+    <string name="analytics_orders" translatable="false">Заказы</string>
+    <string name="analytics_avg_order" translatable="false">Средний чек</string>
+    <string name="analytics_products_sold" translatable="false">Продано товаров</string>
+    <string name="analytics_sales_chart" translatable="false">График продаж</string>
+    <string name="chart_revenue" translatable="false">Доход</string>
+    <string name="chart_orders" translatable="false">Заказы</string>
+    <string name="analytics_popular_products" translatable="false">Популярные товары</string>
+    <string name="analytics_category_stats" translatable="false">Статистика по категориям</string>
+    <string name="total_categories" translatable="false">Всего категорий</string>
+    <string name="root_categories" translatable="false">Корневые категории</string>
+    <string name="subcategories" translatable="false">Подкатегории</string>
+    <string name="search_categories" translatable="false">Поиск категорий</string>
+    <string name="category_type" translatable="false">Тип категорий</string>
+    <string name="no_categories_found" translatable="false">Категория не найдена</string>
+    <string name="add_first_category" translatable="false">Добавьте первую категорию</string>
+    <string name="trend" translatable="false">Тренд</string>
 
 </resources>
