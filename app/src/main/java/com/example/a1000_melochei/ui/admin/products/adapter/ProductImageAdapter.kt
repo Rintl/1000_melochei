@@ -1,4 +1,4 @@
-package com.yourstore.app.ui.admin.products.adapter
+package com.example.a1000_melochei.ui.admin.products.adapter
 
 import android.net.Uri
 import android.view.LayoutInflater
@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.yourstore.app.R
-import com.yourstore.app.databinding.ItemProductImageBinding
+import com.example.a1000_melochei.R
+import com.example.a1000_melochei.databinding.ItemProductImageBinding
 
 /**
  * Адаптер для отображения списка изображений товара в режиме редактирования.

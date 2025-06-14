@@ -1,8 +1,9 @@
-package com.yourstore.app.util
+package com.example.a1000_melochei.util
 
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Locale
+
 
 /**
  * Утилитный класс для форматирования валютных значений.

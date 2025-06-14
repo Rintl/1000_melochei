@@ -549,7 +549,7 @@
     <string name="default_value" translatable="false">По умолчанию</string>
     <string name="title_import_products">Импорт товаров</string>
     <string name="notification_channel_id" translatable="false">channel_orders</string>
-    <string name="notification_channel_orders_id" translatable="false">channel_orders</string>
+    <string name="notification_channel_order_id" translatable="false">channel_orders</string>
     <string name="notification_channel_promo_id" translatable="false">channel_promo</string>
     <string name="notification_channel_system_id" translatable="false">channel_system</string>
 

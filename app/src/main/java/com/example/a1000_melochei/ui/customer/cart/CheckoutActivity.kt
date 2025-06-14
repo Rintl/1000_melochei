@@ -1,4 +1,4 @@
-package com.yourstore.app.ui.customer.cart
+package com.example.a1000_melochei.ui.customer.cart
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
@@ -13,16 +13,16 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.yourstore.app.R
-import com.yourstore.app.data.common.Resource
-import com.yourstore.app.data.model.Address
-import com.yourstore.app.databinding.ActivityCheckoutBinding
-import com.yourstore.app.ui.customer.CartItemSummaryAdapter
-import com.yourstore.app.ui.customer.CustomerActivity
-import com.yourstore.app.ui.customer.cart.viewmodel.CartViewModel
-import com.yourstore.app.ui.customer.profile.AddressActivity
-import com.yourstore.app.util.CurrencyFormatter
-import com.yourstore.app.util.DateUtils
+import com.example.a1000_melochei.R
+import com.example.a1000_melochei.data.common.Resource
+import com.example.a1000_melochei.data.model.Address
+import com.example.a1000_melochei.databinding.ActivityCheckoutBinding
+import com.example.a1000_melochei.ui.customer.CartItemSummaryAdapter
+import com.example.a1000_melochei.ui.customer.CustomerActivity
+import com.example.a1000_melochei.ui.customer.cart.viewmodel.CartViewModel
+import com.example.a1000_melochei.ui.customer.profile.AddressActivity
+import com.example.a1000_melochei.util.CurrencyFormatter
+import com.example.a1000_melochei.util.DateUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Calendar
 import java.util.Date

@@ -1,4 +1,4 @@
-package com.yourstore.app.ui.admin.products.adapter
+package com.example.a1000_melochei.ui.admin.products.adapter
 
 import android.graphics.Paint
 import android.view.LayoutInflater
@@ -10,10 +10,10 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.yourstore.app.R
-import com.yourstore.app.data.model.Product
-import com.yourstore.app.databinding.ItemAdminProductBinding
-import com.yourstore.app.util.CurrencyFormatter
+import com.example.a1000_melochei.R
+import com.example.a1000_melochei.data.model.Product
+import com.example.a1000_melochei.databinding.ItemAdminProductBinding
+import com.example.a1000_melochei.util.CurrencyFormatter
 
 /**
  * Адаптер для отображения списка товаров в административной панели.

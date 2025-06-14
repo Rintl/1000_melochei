@@ -1,4 +1,4 @@
-package com.yourstore.app.ui.admin.dashboard
+package com.example.a1000_melochei.ui.admin.dashboard
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,15 +9,15 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.yourstore.app.R
-import com.yourstore.app.data.common.Resource
-import com.yourstore.app.databinding.FragmentDashboardBinding
-import com.yourstore.app.ui.admin.AdminActivity
-import com.yourstore.app.ui.admin.dashboard.viewmodel.DashboardViewModel
-import com.yourstore.app.ui.admin.orders.OrderDetailAdminActivity
-import com.yourstore.app.ui.admin.products.AddProductActivity
-import com.yourstore.app.ui.admin.products.ImportProductsActivity
-import com.yourstore.app.util.CurrencyFormatter
+import com.example.a1000_melochei.R
+import com.example.a1000_melochei.data.common.Resource
+import com.example.a1000_melochei.databinding.FragmentDashboardBinding
+import com.example.a1000_melochei.ui.admin.AdminActivity
+import com.example.a1000_melochei.ui.admin.dashboard.viewmodel.DashboardViewModel
+import com.example.a1000_melochei.ui.admin.orders.OrderDetailAdminActivity
+import com.example.a1000_melochei.ui.admin.products.AddProductActivity
+import com.example.a1000_melochei.ui.admin.products.ImportProductsActivity
+import com.example.a1000_melochei.util.CurrencyFormatter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Date

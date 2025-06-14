@@ -1,4 +1,4 @@
-package com.yourstore.app.ui.customer.profile
+package com.example.a1000_melochei.ui.customer.profile
 
 import android.content.Intent
 import android.net.Uri
@@ -13,16 +13,17 @@ import androidx.core.widget.doOnTextChanged
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.yourstore.app.R
-import com.yourstore.app.data.common.Resource
-import com.yourstore.app.data.model.User
-import com.yourstore.app.databinding.ActivityEditProfileBinding
-import com.yourstore.app.ui.customer.profile.viewmodel.ProfileViewModel
-import com.yourstore.app.util.ValidationUtils
+import com.example.a1000_melochei.R
+import com.example.a1000_melochei.data.common.Resource
+import com.example.a1000_melochei.data.model.User
+import com.example.a1000_melochei.databinding.ActivityEditProfileBinding
+import com.example.a1000_melochei.ui.customer.profile.viewmodel.ProfileViewModel
+import com.example.a1000_melochei.util.ValidationUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
+
 
 /**
  * Активность для редактирования профиля пользователя.

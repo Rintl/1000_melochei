@@ -1,4 +1,4 @@
-package com.yourstore.app.ui.customer.cart
+package com.example.a1000_melochei.ui.customer.cart
 
 import android.content.Intent
 import android.os.Bundle
@@ -11,14 +11,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.yourstore.app.R
-import com.yourstore.app.data.common.Resource
-import com.yourstore.app.data.model.CartItem
-import com.yourstore.app.databinding.FragmentCartBinding
-import com.yourstore.app.ui.customer.cart.adapter.CartItemAdapter
-import com.yourstore.app.ui.customer.cart.viewmodel.CartViewModel
-import com.yourstore.app.ui.customer.catalog.ProductDetailActivity
-import com.yourstore.app.util.CurrencyFormatter
+import com.example.a1000_melochei.R
+import com.example.a1000_melochei.data.common.Resource
+import com.example.a1000_melochei.data.model.CartItem
+import com.example.a1000_melochei.databinding.FragmentCartBinding
+import com.example.a1000_melochei.ui.customer.cart.adapter.CartItemAdapter
+import com.example.a1000_melochei.ui.customer.cart.viewmodel.CartViewModel
+import com.example.a1000_melochei.ui.customer.catalog.ProductDetailActivity
+import com.example.a1000_melochei.util.CurrencyFormatter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**

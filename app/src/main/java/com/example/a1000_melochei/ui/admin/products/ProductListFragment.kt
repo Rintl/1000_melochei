@@ -1,4 +1,4 @@
-package com.yourstore.app.ui.admin.products
+package com.example.a1000_melochei.ui.admin.products
 
 import android.content.Intent
 import android.os.Bundle
@@ -19,13 +19,13 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.yourstore.app.R
-import com.yourstore.app.data.common.Resource
-import com.yourstore.app.data.model.Product
-import com.yourstore.app.databinding.FragmentProductListBinding
-import com.yourstore.app.ui.admin.AdminActivity
-import com.yourstore.app.ui.admin.products.adapter.AdminProductAdapter
-import com.yourstore.app.ui.admin.products.viewmodel.AdminProductViewModel
+import com.example.a1000_melochei.R
+import com.example.a1000_melochei.data.common.Resource
+import com.example.a1000_melochei.data.model.Product
+import com.example.a1000_melochei.databinding.FragmentProductListBinding
+import com.example.a1000_melochei.ui.admin.AdminActivity
+import com.example.a1000_melochei.ui.admin.products.adapter.AdminProductAdapter
+import com.example.a1000_melochei.ui.admin.products.viewmodel.AdminProductViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**

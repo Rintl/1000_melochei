@@ -1,4 +1,4 @@
-package com.yourstore.app.ui.customer.profile
+package com.example.a1000_melochei.ui.customer.profile
 
 import android.Manifest
 import android.content.Intent
@@ -16,12 +16,13 @@ import androidx.core.widget.doOnTextChanged
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.yourstore.app.R
-import com.yourstore.app.data.common.Resource
-import com.yourstore.app.databinding.ActivityAddressBinding
-import com.yourstore.app.ui.customer.profile.viewmodel.ProfileViewModel
+import com.example.a1000_melochei.R
+import com.example.a1000_melochei.data.common.Resource
+import com.example.a1000_melochei.databinding.ActivityAddressBinding
+import com.example.a1000_melochei.ui.customer.profile.viewmodel.ProfileViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Locale
+
 
 /**
  * Активность для добавления и редактирования адресов доставки.

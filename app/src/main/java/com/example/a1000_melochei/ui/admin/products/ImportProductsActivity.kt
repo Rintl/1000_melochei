@@ -1,4 +1,4 @@
-package com.yourstore.app.ui.admin.products
+package com.example.a1000_melochei.ui.admin.products
 
 import android.Manifest
 import android.app.Activity
@@ -16,11 +16,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import com.yourstore.app.R
-import com.yourstore.app.data.common.Resource
-import com.yourstore.app.data.model.Category
-import com.yourstore.app.databinding.ActivityImportProductsBinding
-import com.yourstore.app.ui.admin.products.viewmodel.AdminProductViewModel
+import com.example.a1000_melochei.R
+import com.example.a1000_melochei.data.common.Resource
+import com.example.a1000_melochei.data.model.Category
+import com.example.a1000_melochei.databinding.ActivityImportProductsBinding
+import com.example.a1000_melochei.ui.admin.products.viewmodel.AdminProductViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileOutputStream

@@ -1,17 +1,18 @@
-package com.yourstore.app.ui.customer.profile.viewmodel
+package com.example.a1000_melochei.ui.customer.profile.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yourstore.app.data.common.Resource
-import com.yourstore.app.data.model.User
-import com.yourstore.app.data.repository.UserRepository
-import com.yourstore.app.data.source.local.PreferencesManager
-import com.yourstore.app.util.ValidationUtils
+import com.example.a1000_melochei.data.common.Resource
+import com.example.a1000_melochei.data.model.User
+import com.example.a1000_melochei.data.repository.UserRepository
+import com.example.a1000_melochei.data.source.local.PreferencesManager
+import com.example.a1000_melochei.util.ValidationUtils
 import kotlinx.coroutines.launch
 import java.io.File
+
 
 /**
  * ViewModel для управления данными профиля пользователя

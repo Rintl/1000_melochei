@@ -1,4 +1,4 @@
-package com.yourstore.app.ui.admin.orders
+package com.example.a1000_melochei.ui.admin.orders
 
 import android.content.Intent
 import android.os.Bundle
@@ -16,13 +16,13 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.yourstore.app.R
-import com.yourstore.app.data.common.Resource
-import com.yourstore.app.data.model.Order
-import com.yourstore.app.databinding.FragmentAdminOrdersBinding
-import com.yourstore.app.ui.admin.AdminActivity
-import com.yourstore.app.ui.admin.orders.adapter.AdminOrderAdapter
-import com.yourstore.app.ui.admin.orders.viewmodel.AdminOrderViewModel
+import com.example.a1000_melochei.R
+import com.example.a1000_melochei.data.common.Resource
+import com.example.a1000_melochei.data.model.Order
+import com.example.a1000_melochei.databinding.FragmentAdminOrdersBinding
+import com.example.a1000_melochei.ui.admin.AdminActivity
+import com.example.a1000_melochei.ui.admin.orders.adapter.AdminOrderAdapter
+import com.example.a1000_melochei.ui.admin.orders.viewmodel.AdminOrderViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Calendar
 import java.util.Date

@@ -1,4 +1,4 @@
-package com.yourstore.app.ui.customer.catalog
+package com.example.a1000_melochei.ui.customer.catalog
 
 import android.content.Intent
 import android.os.Bundle
@@ -11,14 +11,15 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.chip.Chip
-import com.yourstore.app.R
-import com.yourstore.app.data.common.Resource
-import com.yourstore.app.data.model.Category
-import com.yourstore.app.data.model.Product
-import com.yourstore.app.databinding.ActivitySearchBinding
-import com.yourstore.app.ui.customer.catalog.adapter.ProductAdapter
-import com.yourstore.app.ui.customer.catalog.viewmodel.CatalogViewModel
+import com.example.a1000_melochei.R
+import com.example.a1000_melochei.data.common.Resource
+import com.example.a1000_melochei.data.model.Category
+import com.example.a1000_melochei.data.model.Product
+import com.example.a1000_melochei.databinding.ActivitySearchBinding
+import com.example.a1000_melochei.ui.customer.catalog.adapter.ProductAdapter
+import com.example.a1000_melochei.ui.customer.catalog.viewmodel.CatalogViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 /**
  * Активность для поиска товаров.

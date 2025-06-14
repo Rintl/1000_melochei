@@ -1,4 +1,4 @@
-package com.yourstore.app.ui.customer.home
+package com.example.a1000_melochei.ui.customer.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,17 +10,18 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.yourstore.app.R
-import com.yourstore.app.data.common.Resource
-import com.yourstore.app.data.model.Category
-import com.yourstore.app.data.model.Product
-import com.yourstore.app.data.model.Promotion
-import com.yourstore.app.databinding.FragmentHomeBinding
-import com.yourstore.app.ui.customer.catalog.adapter.CategoryAdapter
-import com.yourstore.app.ui.customer.catalog.adapter.ProductAdapter
-import com.yourstore.app.ui.customer.home.adapter.PromotionAdapter
-import com.yourstore.app.ui.customer.home.viewmodel.HomeViewModel
+import com.example.a1000_melochei.R
+import com.example.a1000_melochei.data.common.Resource
+import com.example.a1000_melochei.data.model.Category
+import com.example.a1000_melochei.data.model.Product
+import com.example.a1000_melochei.data.model.Promotion
+import com.example.a1000_melochei.databinding.FragmentHomeBinding
+import com.example.a1000_melochei.ui.customer.catalog.adapter.CategoryAdapter
+import com.example.a1000_melochei.ui.customer.catalog.adapter.ProductAdapter
+import com.example.a1000_melochei.ui.customer.home.adapter.PromotionAdapter
+import com.example.a1000_melochei.ui.customer.home.viewmodel.HomeViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 /**
  * Фрагмент главной страницы клиентского интерфейса.

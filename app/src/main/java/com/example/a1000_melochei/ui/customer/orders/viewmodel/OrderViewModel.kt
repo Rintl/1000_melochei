@@ -1,15 +1,16 @@
-package com.yourstore.app.ui.customer.orders.viewmodel
+package com.example.a1000_melochei.ui.customer.orders.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yourstore.app.data.common.Resource
-import com.yourstore.app.data.model.Order
-import com.yourstore.app.data.repository.CartRepository
-import com.yourstore.app.data.repository.OrderRepository
+import com.example.a1000_melochei.data.common.Resource
+import com.example.a1000_melochei.data.model.Order
+import com.example.a1000_melochei.data.repository.CartRepository
+import com.example.a1000_melochei.data.repository.OrderRepository
 import kotlinx.coroutines.launch
+
 
 /**
  * ViewModel для управления данными заказов

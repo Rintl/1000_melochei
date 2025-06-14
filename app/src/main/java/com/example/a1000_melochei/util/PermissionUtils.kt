@@ -1,4 +1,4 @@
-package com.yourstore.app.util
+package com.example.a1000_melochei.util
 
 import android.Manifest
 import android.app.Activity
@@ -14,7 +14,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.yourstore.app.R
+import com.example.a1000_melochei.R
+
 
 /**
  * Утилитный класс для работы с разрешениями Android.

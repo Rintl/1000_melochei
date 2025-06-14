@@ -1,4 +1,4 @@
-package com.yourstore.app.ui.admin.orders.adapter
+package com.example.a1000_melochei.ui.admin.orders.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,12 +8,12 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.yourstore.app.R
-import com.yourstore.app.data.model.Order
-import com.yourstore.app.data.model.OrderStatus
-import com.yourstore.app.databinding.ItemAdminOrderBinding
-import com.yourstore.app.util.CurrencyFormatter
-import com.yourstore.app.util.DateUtils
+import com.example.a1000_melochei.R
+import com.example.a1000_melochei.data.model.Order
+import com.example.a1000_melochei.data.model.OrderStatus
+import com.example.a1000_melochei.databinding.ItemAdminOrderBinding
+import com.example.a1000_melochei.util.CurrencyFormatter
+import com.example.a1000_melochei.util.DateUtils
 
 /**
  * Адаптер для отображения списка заказов в панели администратора.

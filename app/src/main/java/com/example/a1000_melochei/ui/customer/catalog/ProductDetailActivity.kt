@@ -1,4 +1,4 @@
-package com.yourstore.app.ui.customer.catalog
+package com.example.a1000_melochei.ui.customer.catalog
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -15,15 +15,16 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.snackbar.Snackbar
-import com.yourstore.app.R
-import com.yourstore.app.data.common.Resource
-import com.yourstore.app.data.model.Product
-import com.yourstore.app.databinding.ActivityProductDetailBinding
-import com.yourstore.app.ui.customer.CustomerActivity
-import com.yourstore.app.ui.customer.catalog.adapter.ProductImageAdapter
-import com.yourstore.app.ui.customer.catalog.viewmodel.ProductViewModel
-import com.yourstore.app.util.CurrencyFormatter
+import com.example.a1000_melochei.R
+import com.example.a1000_melochei.data.common.Resource
+import com.example.a1000_melochei.data.model.Product
+import com.example.a1000_melochei.databinding.ActivityProductDetailBinding
+import com.example.a1000_melochei.ui.customer.CustomerActivity
+import com.example.a1000_melochei.ui.customer.catalog.adapter.ProductImageAdapter
+import com.example.a1000_melochei.ui.customer.catalog.viewmodel.ProductViewModel
+import com.example.a1000_melochei.util.CurrencyFormatter
 import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 /**
  * Активность с подробной информацией о товаре.

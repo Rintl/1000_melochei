@@ -1,11 +1,11 @@
-package com.yourstore.app.util
+package com.example.a1000_melochei.util
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationManagerCompat
-import com.yourstore.app.R
+import com.example.a1000_melochei.R
 
 /**
  * Вспомогательный класс для работы с уведомлениями
@@ -21,7 +21,7 @@ object NotificationHelper {
             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
             // Канал для уведомлений о заказах
-            val orderChannelId = context.getString(R.string.notification_channel_orders_id)
+            val orderChannelId = context.getString(R.string.notification_channel_order_id)
             val orderChannel = NotificationChannel(
                 orderChannelId,
                 context.getString(R.string.notification_channel_orders),

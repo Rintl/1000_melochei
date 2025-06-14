@@ -1,4 +1,4 @@
-package com.yourstore.app.ui.customer.catalog
+package com.example.a1000_melochei.ui.customer.catalog
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,13 +16,14 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
-import com.yourstore.app.R
-import com.yourstore.app.data.common.Resource
-import com.yourstore.app.data.model.Product
-import com.yourstore.app.databinding.FragmentCategoryBinding
-import com.yourstore.app.ui.customer.catalog.adapter.ProductAdapter
-import com.yourstore.app.ui.customer.catalog.viewmodel.CatalogViewModel
+import com.example.a1000_melochei.R
+import com.example.a1000_melochei.data.common.Resource
+import com.example.a1000_melochei.data.model.Product
+import com.example.a1000_melochei.databinding.FragmentCategoryBinding
+import com.example.a1000_melochei.ui.customer.catalog.adapter.ProductAdapter
+import com.example.a1000_melochei.ui.customer.catalog.viewmodel.CatalogViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 /**
  * Фрагмент для отображения товаров в выбранной категории.

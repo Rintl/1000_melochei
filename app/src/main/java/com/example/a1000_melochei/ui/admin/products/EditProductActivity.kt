@@ -1,4 +1,4 @@
-package com.yourstore.app.ui.admin.products
+package com.example.a1000_melochei.ui.admin.products
 
 import android.Manifest
 import android.app.Activity
@@ -21,15 +21,15 @@ import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.yourstore.app.R
-import com.yourstore.app.data.common.Resource
-import com.yourstore.app.data.model.Category
-import com.yourstore.app.data.model.Product
-import com.yourstore.app.databinding.ActivityEditProductBinding
-import com.yourstore.app.ui.admin.products.adapter.ProductImageAdapter
-import com.yourstore.app.ui.admin.products.viewmodel.AdminProductViewModel
-import com.yourstore.app.util.CurrencyFormatter
-import com.yourstore.app.util.ValidationUtils
+import com.example.a1000_melochei.R
+import com.example.a1000_melochei.data.common.Resource
+import com.example.a1000_melochei.data.model.Category
+import com.example.a1000_melochei.data.model.Product
+import com.example.a1000_melochei.databinding.ActivityEditProductBinding
+import com.example.a1000_melochei.ui.admin.products.adapter.ProductImageAdapter
+import com.example.a1000_melochei.ui.admin.products.viewmodel.AdminProductViewModel
+import com.example.a1000_melochei.util.CurrencyFormatter
+import com.example.a1000_melochei.util.ValidationUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileOutputStream

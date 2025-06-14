@@ -1,8 +1,9 @@
-package com.yourstore.app.util
+package com.example.a1000_melochei.util
 
 import android.text.TextUtils
 import android.util.Patterns
 import java.util.regex.Pattern
+
 
 /**
  * Класс-утилита для валидации пользовательского ввода в формах приложения.

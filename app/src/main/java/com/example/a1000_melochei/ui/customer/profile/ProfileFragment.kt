@@ -1,4 +1,4 @@
-package com.yourstore.app.ui.customer.profile
+package com.example.a1000_melochei.ui.customer.profile
 
 import android.content.Intent
 import android.os.Bundle
@@ -14,15 +14,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.yourstore.app.R
-import com.yourstore.app.data.common.Resource
-import com.yourstore.app.data.model.Address
-import com.yourstore.app.data.model.User
-import com.yourstore.app.databinding.FragmentProfileBinding
-import com.yourstore.app.ui.auth.LoginActivity
-import com.yourstore.app.ui.customer.profile.adapter.AddressAdapter
-import com.yourstore.app.ui.customer.profile.viewmodel.ProfileViewModel
+import com.example.a1000_melochei.R
+import com.example.a1000_melochei.data.common.Resource
+import com.example.a1000_melochei.data.model.Address
+import com.example.a1000_melochei.data.model.User
+import com.example.a1000_melochei.databinding.FragmentProfileBinding
+import com.example.a1000_melochei.ui.auth.LoginActivity
+import com.example.a1000_melochei.ui.customer.profile.adapter.AddressAdapter
+import com.example.a1000_melochei.ui.customer.profile.viewmodel.ProfileViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 /**
  * Фрагмент профиля пользователя.

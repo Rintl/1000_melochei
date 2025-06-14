@@ -1,4 +1,4 @@
-package com.yourstore.app.ui.admin.categories
+package com.example.a1000_melochei.ui.admin.categories
 
 import android.Manifest
 import android.app.Activity
@@ -19,11 +19,11 @@ import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.yourstore.app.R
-import com.yourstore.app.data.common.Resource
-import com.yourstore.app.data.model.Category
-import com.yourstore.app.databinding.ActivityAddCategoryBinding
-import com.yourstore.app.ui.admin.categories.viewmodel.CategoryViewModel
+import com.example.a1000_melochei.R
+import com.example.a1000_melochei.data.common.Resource
+import com.example.a1000_melochei.data.model.Category
+import com.example.a1000_melochei.databinding.ActivityAddCategoryBinding
+import com.example.a1000_melochei.ui.admin.categories.viewmodel.CategoryViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileOutputStream

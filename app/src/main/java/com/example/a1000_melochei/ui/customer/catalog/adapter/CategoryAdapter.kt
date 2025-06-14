@@ -1,4 +1,4 @@
-package com.yourstore.app.ui.customer.catalog.adapter
+package com.example.a1000_melochei.ui.customer.catalog.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.yourstore.app.R
-import com.yourstore.app.data.model.Category
-import com.yourstore.app.databinding.ItemCategoryBinding
+import com.example.a1000_melochei.R
+import com.example.a1000_melochei.data.model.Category
+import com.example.a1000_melochei.databinding.ItemCategoryBinding
 
 /**
  * Адаптер для отображения списка категорий в RecyclerView.

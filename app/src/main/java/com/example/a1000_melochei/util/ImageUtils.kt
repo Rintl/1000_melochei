@@ -1,4 +1,4 @@
-package com.yourstore.app.util
+package com.example.a1000_melochei.util
 
 import android.content.ContentResolver
 import android.content.Context
@@ -17,6 +17,7 @@ import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+
 
 /**
  * Класс-утилита для работы с изображениями в приложении.

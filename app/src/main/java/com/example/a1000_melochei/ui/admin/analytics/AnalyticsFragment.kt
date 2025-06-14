@@ -1,4 +1,4 @@
-package com.yourstore.app.ui.admin.analytics
+package com.example.a1000_melochei.ui.admin.analytics
 
 import android.app.DatePickerDialog
 import android.os.Bundle
@@ -20,13 +20,13 @@ import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.yourstore.app.R
-import com.yourstore.app.data.common.Resource
-import com.yourstore.app.databinding.FragmentAnalyticsBinding
-import com.yourstore.app.ui.admin.AdminActivity
-import com.yourstore.app.ui.admin.analytics.adapter.TopProductsAdapter
-import com.yourstore.app.ui.admin.analytics.viewmodel.AnalyticsViewModel
-import com.yourstore.app.util.CurrencyFormatter
+import com.example.a1000_melochei.R
+import com.example.a1000_melochei.data.common.Resource
+import com.example.a1000_melochei.databinding.FragmentAnalyticsBinding
+import com.example.a1000_melochei.ui.admin.AdminActivity
+import com.example.a1000_melochei.ui.admin.analytics.adapter.TopProductsAdapter
+import com.example.a1000_melochei.ui.admin.analytics.viewmodel.AnalyticsViewModel
+import com.example.a1000_melochei.util.CurrencyFormatter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar

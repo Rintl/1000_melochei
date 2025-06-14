@@ -1,17 +1,17 @@
-package com.yourstore.app.service
+package com.example.a1000_melochei.service
 
 import android.content.Intent
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.yourstore.app.R
-import com.yourstore.app.data.repository.UserRepository
-import com.yourstore.app.data.source.local.PreferencesManager
-import com.yourstore.app.ui.customer.CustomerActivity
-import com.yourstore.app.ui.customer.catalog.ProductDetailActivity
-import com.yourstore.app.ui.customer.orders.OrderDetailActivity
-import com.yourstore.app.util.Constants
+import com.example.a1000_melochei.R
+import com.example.a1000_melochei.data.repository.UserRepository
+import com.example.a1000_melochei.data.source.local.PreferencesManager
+import com.example.a1000_melochei.ui.customer.CustomerActivity
+import com.example.a1000_melochei.ui.customer.catalog.ProductDetailActivity
+import com.example.a1000_melochei.ui.customer.orders.OrderDetailActivity
+import com.example.a1000_melochei.util.Constants
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

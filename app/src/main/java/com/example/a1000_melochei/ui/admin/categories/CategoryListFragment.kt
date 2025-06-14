@@ -1,4 +1,4 @@
-package com.yourstore.app.ui.admin.categories
+package com.example.a1000_melochei.ui.admin.categories
 
 import android.content.Intent
 import android.os.Bundle
@@ -16,13 +16,13 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.yourstore.app.R
-import com.yourstore.app.data.common.Resource
-import com.yourstore.app.data.model.Category
-import com.yourstore.app.databinding.FragmentCategoryListBinding
-import com.yourstore.app.ui.admin.AdminActivity
-import com.yourstore.app.ui.admin.categories.adapter.AdminCategoryAdapter
-import com.yourstore.app.ui.admin.categories.viewmodel.CategoryViewModel
+import com.example.a1000_melochei.R
+import com.example.a1000_melochei.data.common.Resource
+import com.example.a1000_melochei.data.model.Category
+import com.example.a1000_melochei.databinding.FragmentCategoryListBinding
+import com.example.a1000_melochei.ui.admin.AdminActivity
+import com.example.a1000_melochei.ui.admin.categories.adapter.AdminCategoryAdapter
+import com.example.a1000_melochei.ui.admin.categories.viewmodel.CategoryViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**

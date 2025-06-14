@@ -1,15 +1,15 @@
-package com.yourstore.app.ui.customer.catalog.viewmodel
+package com.example.a1000_melochei.ui.customer.catalog.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yourstore.app.data.common.Resource
-import com.yourstore.app.data.model.Category
-import com.yourstore.app.data.model.Product
-import com.yourstore.app.data.repository.CategoryRepository
-import com.yourstore.app.data.repository.ProductRepository
+import com.example.a1000_melochei.data.common.Resource
+import com.example.a1000_melochei.data.model.Category
+import com.example.a1000_melochei.data.model.Product
+import com.example.a1000_melochei.data.repository.CategoryRepository
+import com.example.a1000_melochei.data.repository.ProductRepository
 import kotlinx.coroutines.launch
 import java.util.Locale
 

@@ -1,4 +1,4 @@
-package com.yourstore.app.util
+package com.example.a1000_melochei.util
 
 import android.text.format.DateUtils
 import java.text.SimpleDateFormat
@@ -7,6 +7,7 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 import java.util.concurrent.TimeUnit
+
 
 /**
  * Класс-утилита для работы с датами и временем в приложении.

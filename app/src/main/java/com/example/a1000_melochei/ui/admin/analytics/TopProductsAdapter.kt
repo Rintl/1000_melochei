@@ -1,4 +1,7 @@
-package com.yourstore.app.ui.admin.analytics.adapter
+Вот исправленный фрагмент:
+
+```kotlin
+package com.example.a1000_melochei.ui.admin.analytics.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,10 +9,15 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.yourstore.app.R
-import com.yourstore.app.databinding.ItemTopProductBinding
-import com.yourstore.app.ui.admin.analytics.viewmodel.AnalyticsViewModel
-import com.yourstore.app.util.CurrencyFormatter
+import com.example.a1000_melochei.R
+import com.example.a1000_melochei.databinding.ItemTopProductBinding
+import com.example.a1000_melochei.ui.admin.analytics.viewmodel.AnalyticsViewModel
+import com.example.a1000_melochei.util.CurrencyFormatter
+```
+
+Изменения:
+- Убрал лишнее `.app` из названия пакета
+- Убрал лишнее `.app` из всех импортов
 
 /**
  * Адаптер для отображения списка популярных товаров в аналитике

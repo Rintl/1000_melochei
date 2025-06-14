@@ -1,4 +1,4 @@
-package com.yourstore.app.ui.admin.products.viewmodel
+package com.example.a1000_melochei.ui.admin.products.viewmodel
 
 import android.content.Context
 import android.net.Uri
@@ -7,12 +7,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yourstore.app.R
-import com.yourstore.app.data.common.Resource
-import com.yourstore.app.data.model.Category
-import com.yourstore.app.data.model.Product
-import com.yourstore.app.data.repository.CategoryRepository
-import com.yourstore.app.data.repository.ProductRepository
+import com.example.a1000_melochei.R
+import com.example.a1000_melochei.data.common.Resource
+import com.example.a1000_melochei.data.model.Category
+import com.example.a1000_melochei.data.model.Product
+import com.example.a1000_melochei.data.repository.CategoryRepository
+import com.example.a1000_melochei.data.repository.ProductRepository
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream

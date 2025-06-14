@@ -1,4 +1,4 @@
-package com.yourstore.app.ui.admin.orders
+package com.example.a1000_melochei.ui.admin.orders
 
 import android.content.Intent
 import android.net.Uri
@@ -14,16 +14,16 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.yourstore.app.R
-import com.yourstore.app.data.common.Resource
-import com.yourstore.app.data.model.Order
-import com.yourstore.app.data.model.OrderStatus
-import com.yourstore.app.data.model.User
-import com.yourstore.app.databinding.ActivityOrderDetailAdminBinding
-import com.yourstore.app.ui.admin.orders.adapter.OrderItemAdminAdapter
-import com.yourstore.app.ui.admin.orders.viewmodel.AdminOrderViewModel
-import com.yourstore.app.util.CurrencyFormatter
-import com.yourstore.app.util.DateUtils
+import com.example.a1000_melochei.R
+import com.example.a1000_melochei.data.common.Resource
+import com.example.a1000_melochei.data.model.Order
+import com.example.a1000_melochei.data.model.OrderStatus
+import com.example.a1000_melochei.data.model.User
+import com.example.a1000_melochei.databinding.ActivityOrderDetailAdminBinding
+import com.example.a1000_melochei.ui.admin.orders.adapter.OrderItemAdminAdapter
+import com.example.a1000_melochei.ui.admin.orders.viewmodel.AdminOrderViewModel
+import com.example.a1000_melochei.util.CurrencyFormatter
+import com.example.a1000_melochei.util.DateUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.text.SimpleDateFormat
