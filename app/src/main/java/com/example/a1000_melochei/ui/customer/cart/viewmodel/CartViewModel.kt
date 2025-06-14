@@ -42,8 +42,8 @@ class CartViewModel(
     val removeItemResult: LiveData<Resource<Unit>> = _removeItemResult
 
     // LiveData для списка адресов пользователя
-    private val _userAddresses = MutableLiveData<Resource<List<com.yourstore.app.data.model.Address>>>()
-    val userAddresses: LiveData<Resource<List<com.yourstore.app.data.model.Address>>> = _userAddresses
+    private val _userAddresses = MutableLiveData<Resource<List<com.example.a1000_melochei.data.model.Address>>>()
+    val userAddresses: LiveData<Resource<List<com.example.a1000_melochei.data.model.Address>>> = _userAddresses
 
     // LiveData для результата оформления заказа
     private val _placeOrderResult = MutableLiveData<Resource<String>>()

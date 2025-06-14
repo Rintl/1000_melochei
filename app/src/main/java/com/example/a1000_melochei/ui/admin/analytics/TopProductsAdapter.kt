@@ -1,6 +1,3 @@
-Вот исправленный фрагмент:
-
-```kotlin
 package com.example.a1000_melochei.ui.admin.analytics.adapter
 
 import android.view.LayoutInflater
@@ -13,11 +10,6 @@ import com.example.a1000_melochei.R
 import com.example.a1000_melochei.databinding.ItemTopProductBinding
 import com.example.a1000_melochei.ui.admin.analytics.viewmodel.AnalyticsViewModel
 import com.example.a1000_melochei.util.CurrencyFormatter
-```
-
-Изменения:
-- Убрал лишнее `.app` из названия пакета
-- Убрал лишнее `.app` из всех импортов
 
 /**
  * Адаптер для отображения списка популярных товаров в аналитике

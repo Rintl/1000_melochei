@@ -58,27 +58,6 @@ data class Order(
     }
 
     /**
-     * Проверяет, можно ли отменить заказ
-     */
-    fun canBeCancelled(): Boolean {
-        return status in listOf(OrderStatus.PENDING, OrderStatus.CONFIRMED, OrderStatus.PROCESSING)
-    }
-
-    /**
-     * Проверяет, завершен ли заказ
-     */
-    fun isCompleted(): Boolean {
-        return status in listOf(OrderStatus.DELIVERED, OrderStatus.COMPLETED)
-    }
-
-    /**
-     * Проверяет, отменен ли заказ
-     */
-    fun isCancelled(): Boolean {
-        return status == OrderStatus.CANCELLED
-    }
-
-    /**
      * Возвращает отформатированную общую сумму
      */
     fun getFormattedTotal(): String {
@@ -100,13 +79,28 @@ data class Order(
     }
 
     /**
-     * Возвращает описание статуса заказа
+     * Проверяет, можно ли отменить заказ
      */
-    fun getStatusDescription(): String {
+    fun canBeCancelled(): Boolean {
+        return status in listOf(OrderStatus.PENDING, OrderStatus.CONFIRMED, OrderStatus.PROCESSING)
+    }
+
+    /**
+     * Проверяет, завершен ли заказ
+     */
+    fun isCompleted(): Boolean {
+        return status in listOf(OrderStatus.DELIVERED, OrderStatus.COMPLETED)
+    }
+
+    /**
+     * Возвращает локализованное название статуса
+     */
+    fun getStatusDisplayName(): String {
         return when (status) {
             OrderStatus.PENDING -> "Ожидает подтверждения"
             OrderStatus.CONFIRMED -> "Подтвержден"
             OrderStatus.PROCESSING -> "В обработке"
+            OrderStatus.READY -> "Готов"
             OrderStatus.READY_FOR_DELIVERY -> "Готов к доставке"
             OrderStatus.IN_DELIVERY -> "В доставке"
             OrderStatus.DELIVERED -> "Доставлен"
@@ -153,39 +147,46 @@ data class Order(
 }
 
 /**
- * Товар в заказе
+ * Статусы заказа
  */
-@Parcelize
-data class OrderItem(
-    val productId: String = "",
-    val productName: String = "",
-    val productImage: String = "",
-    val price: Double = 0.0,
-    val originalPrice: Double = 0.0,
-    val quantity: Int = 1,
-    val subtotal: Double = 0.0
-) : Parcelable {
+enum class OrderStatus {
+    PENDING,          // Ожидает подтверждения
+    CONFIRMED,        // Подтвержден
+    PROCESSING,       // В обработке
+    READY,            // Готов
+    READY_FOR_DELIVERY, // Готов к доставке
+    IN_DELIVERY,      // В доставке
+    DELIVERED,        // Доставлен
+    COMPLETED,        // Выполнен
+    CANCELLED,        // Отменен
+    RETURNED          // Возвращен
+}
 
-    /**
-     * Возвращает отформатированную цену
-     */
-    fun getFormattedPrice(): String {
-        return "${price.toInt()} ₸"
-    }
+/**
+ * Типы доставки
+ */
+enum class DeliveryType {
+    PICKUP,   // Самовывоз
+    DELIVERY  // Доставка
+}
 
-    /**
-     * Возвращает отформатированную сумму
-     */
-    fun getFormattedSubtotal(): String {
-        return "${subtotal.toInt()} ₸"
-    }
+/**
+ * Методы оплаты
+ */
+enum class PaymentMethod {
+    CASH,     // Наличные
+    CARD,     // Карта
+    KASPI     // Kaspi QR
+}
 
-    /**
-     * Проверяет, есть ли скидка на товар
-     */
-    fun hasDiscount(): Boolean {
-        return originalPrice > 0 && originalPrice > price
-    }
+/**
+ * Статусы оплаты
+ */
+enum class PaymentStatus {
+    PENDING,    // Ожидает оплаты
+    PAID,       // Оплачен
+    FAILED,     // Ошибка оплаты
+    REFUNDED    // Возврат
 }
 
 /**
@@ -199,7 +200,7 @@ data class CustomerInfo(
 ) : Parcelable
 
 /**
- * История изменения статуса заказа
+ * История изменения статусов заказа
  */
 @Parcelize
 data class OrderStatusHistory(
@@ -207,46 +208,3 @@ data class OrderStatusHistory(
     val comment: String = "",
     val timestamp: Long = System.currentTimeMillis()
 ) : Parcelable
-
-/**
- * Статус заказа
- */
-enum class OrderStatus {
-    PENDING,              // Ожидает подтверждения
-    CONFIRMED,            // Подтвержден
-    PROCESSING,           // В обработке
-    READY_FOR_DELIVERY,   // Готов к доставке
-    IN_DELIVERY,          // В доставке
-    DELIVERED,            // Доставлен
-    COMPLETED,            // Выполнен
-    CANCELLED,            // Отменен
-    RETURNED              // Возвращен
-}
-
-/**
- * Тип доставки
- */
-enum class DeliveryType {
-    DELIVERY,   // Доставка
-    PICKUP      // Самовывоз
-}
-
-/**
- * Метод оплаты
- */
-enum class PaymentMethod {
-    CASH,           // Наличные
-    CARD,           // Банковская карта
-    KASPI_PAY,      // Kaspi Pay
-    BANK_TRANSFER   // Банковский перевод
-}
-
-/**
- * Статус оплаты
- */
-enum class PaymentStatus {
-    PENDING,    // Ожидает оплаты
-    PAID,       // Оплачен
-    FAILED,     // Ошибка оплаты
-    REFUNDED    // Возвращен
-}

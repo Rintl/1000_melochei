@@ -343,7 +343,7 @@ class DashboardFragment : Fragment(), AdminActivity.Refreshable {
     }
 
     private fun navigateToProductEdit(productId: String) {
-        val intent = Intent(requireContext(), com.yourstore.app.ui.admin.products.EditProductActivity::class.java).apply {
+        val intent = Intent(requireContext(), com.example.a1000_melochei.ui.admin.products.EditProductActivity::class.java).apply {
             putExtra("PRODUCT_ID", productId)
         }
         startActivity(intent)

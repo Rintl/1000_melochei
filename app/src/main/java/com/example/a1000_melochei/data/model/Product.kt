@@ -11,6 +11,7 @@ import kotlinx.parcelize.Parcelize
  * @property categoryId Идентификатор категории
  * @property categoryName Название категории (для отображения)
  * @property price Цена товара
+ * @property discountPrice Цена со скидкой (если есть)
  * @property originalPrice Оригинальная цена (если есть скидка)
  * @property sku Артикул товара
  * @property barcode Штрих-код товара
@@ -39,6 +40,7 @@ data class Product(
     val categoryId: String = "",
     val categoryName: String = "",
     val price: Double = 0.0,
+    val discountPrice: Double = 0.0,
     val originalPrice: Double = 0.0,
     val sku: String = "",
     val barcode: String = "",
@@ -61,32 +63,6 @@ data class Product(
 ) : Parcelable {
 
     /**
-     * Проверяет, есть ли товар в наличии
-     */
-    fun isInStock(): Boolean = quantity > 0
-
-    /**
-     * Проверяет, заканчивается ли товар (менее 5 штук)
-     */
-    fun isLowStock(): Boolean = quantity in 1..5
-
-    /**
-     * Проверяет, есть ли скидка на товар
-     */
-    fun hasDiscount(): Boolean = originalPrice > 0 && originalPrice > price
-
-    /**
-     * Возвращает размер скидки в процентах
-     */
-    fun getDiscountPercent(): Int {
-        return if (hasDiscount()) {
-            ((originalPrice - price) / originalPrice * 100).toInt()
-        } else {
-            0
-        }
-    }
-
-    /**
      * Возвращает статус наличия товара
      */
     fun getStockStatus(): StockStatus {
@@ -98,7 +74,32 @@ data class Product(
     }
 
     /**
-     * Возвращает основное изображение товара
+     * Проверяет, есть ли товар в наличии
+     */
+    fun isInStock(): Boolean {
+        return quantity > 0
+    }
+
+    /**
+     * Проверяет, есть ли скидка на товар
+     */
+    fun hasDiscount(): Boolean {
+        return discountPrice > 0 && discountPrice < price
+    }
+
+    /**
+     * Возвращает размер скидки в процентах
+     */
+    fun getDiscountPercent(): Int {
+        return if (hasDiscount()) {
+            ((price - discountPrice) / price * 100).toInt()
+        } else {
+            0
+        }
+    }
+
+    /**
+     * Возвращает главное изображение товара
      */
     fun getMainImage(): String {
         return images.firstOrNull() ?: ""
@@ -120,14 +121,26 @@ data class Product(
      * Возвращает форматированную цену
      */
     fun getFormattedPrice(): String {
-        return "${price.toInt()} ₸"
+        val effectivePrice = if (hasDiscount()) discountPrice else price
+        return "${effectivePrice.toInt()} ₸"
     }
 
     /**
      * Возвращает форматированную оригинальную цену
      */
     fun getFormattedOriginalPrice(): String {
-        return if (hasDiscount()) "${originalPrice.toInt()} ₸" else ""
+        return if (hasDiscount()) "${price.toInt()} ₸" else ""
+    }
+
+    /**
+     * Возвращает статус наличия в виде строки
+     */
+    fun getStockStatusText(): String {
+        return when (getStockStatus()) {
+            StockStatus.IN_STOCK -> "В наличии"
+            StockStatus.LOW_STOCK -> "Заканчивается"
+            StockStatus.OUT_OF_STOCK -> "Нет в наличии"
+        }
     }
 
     /**
@@ -155,6 +168,13 @@ data class Product(
             viewsCount = viewsCount + 1,
             updatedAt = System.currentTimeMillis()
         )
+    }
+
+    /**
+     * Переопределенный toString для корректного отображения в логах
+     */
+    override fun toString(): String {
+        return "Product(id='$id', name='$name', price=$price, quantity=$quantity)"
     }
 
     companion object {
@@ -217,7 +237,7 @@ data class ProductDimensions(
     /**
      * Возвращает размеры в виде строки
      */
-    fun toString(): String {
+    override fun toString(): String {
         return if (isDefined()) {
             "${length}x${width}x${height} см"
         } else {

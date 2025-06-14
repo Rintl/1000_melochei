@@ -38,6 +38,16 @@ object Constants {
     const val PREF_FCM_TOKEN = "fcm_token"
     const val PREF_LAST_SYNC_TIME = "last_sync_time"
 
+    // Константы для каналов уведомлений
+    const val NOTIFICATION_CHANNEL_ORDER_ID = "channel_orders"
+    const val NOTIFICATION_CHANNEL_PROMO_ID = "channel_promo"
+    const val NOTIFICATION_CHANNEL_SYSTEM_ID = "channel_system"
+
+    // Константы уведомлений
+    const val NOTIFICATION_ID_ORDER = 1001
+    const val NOTIFICATION_ID_PROMO = 1002
+    const val NOTIFICATION_ID_SYSTEM = 1003
+
     // Константы для работы с корзиной
     const val CART_CACHE_FILE = "cart_cache.json"
     const val MAX_CART_ITEMS = 99
@@ -47,52 +57,73 @@ object Constants {
     const val MIN_PASSWORD_LENGTH = 6
     const val MIN_PHONE_LENGTH = 10
     const val PHONE_REGEX = "^\\+?[0-9]{10,15}$"
-    const val EMAIL_REGEX = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$"
+    const val EMAIL_REGEX = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
 
-    // Константы для работы с файлами
-    const val TEMP_FILE_PREFIX = "melochei_temp_"
-    const val CSV_MIME_TYPE = "text/csv"
-    const val EXCEL_MIME_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    const val PDF_MIME_TYPE = "application/pdf"
-    const val IMAGE_QUALITY = 85
-    const val MAX_IMAGE_WIDTH = 1200
-    const val MAX_IMAGE_HEIGHT = 1200
+    // Константы для пагинации
+    const val PAGE_SIZE = 20
+    const val INITIAL_LOAD_SIZE = 40
 
-    // Константы для работы с API
-    const val CONNECTION_TIMEOUT = 30000L
-    const val READ_TIMEOUT = 30000L
-    const val WRITE_TIMEOUT = 30000L
-    const val MAX_RETRY_ATTEMPTS = 3
-    const val RETRY_DELAY_MS = 1000L
+    // Константы для изображений
+    const val MAX_IMAGE_SIZE_MB = 5
+    const val IMAGE_QUALITY = 80
+    const val THUMBNAIL_SIZE = 300
 
-    // Константы для системных настроек
-    const val DEFAULT_DELIVERY_COST = 1000.0
-    const val FREE_DELIVERY_THRESHOLD = 20000.0
+    // Константы для доставки
+    const val FREE_DELIVERY_THRESHOLD = 20000.0 // Бесплатная доставка от суммы в тенге
+    const val DELIVERY_COST_PER_KM = 100.0 // Стоимость доставки за км в тенге
+    const val MAX_DELIVERY_DISTANCE = 50 // Максимальное расстояние доставки в км
 
-    // Константы для уведомлений
-    const val NOTIFICATION_CHANNEL_ORDER_ID = "channel_orders"
-    const val NOTIFICATION_CHANNEL_PROMO_ID = "channel_promo"
-    const val NOTIFICATION_CHANNEL_SYSTEM_ID = "channel_system"
+    // Форматирование
+    const val CURRENCY_SYMBOL = "₸"
+    const val DATE_FORMAT_DISPLAY = "dd.MM.yyyy"
+    const val DATE_TIME_FORMAT_DISPLAY = "dd.MM.yyyy HH:mm"
+    const val DATE_FORMAT_API = "yyyy-MM-dd"
 
-    // ID уведомлений
-    const val NOTIFICATION_NEW_ORDER_ID = 1001
-    const val NOTIFICATION_ORDER_STATUS_ID = 1002
-    const val NOTIFICATION_PROMO_ID = 2001
-    const val NOTIFICATION_SYSTEM_ID = 3001
+    // Таймауты сети
+    const val NETWORK_TIMEOUT = 30L // секунды
+    const val CACHE_TIMEOUT = 300L // 5 минут в секундах
 
-    // Действия для broadcast receiver
-    const val ACTION_UPDATE_DATA = "com.example.a1000_melochei.ACTION_UPDATE_DATA"
-    const val ACTION_VIEW_PRODUCT = "com.example.a1000_melochei.ACTION_VIEW_PRODUCT"
-    const val ACTION_VIEW_CATEGORY = "com.example.a1000_melochei.ACTION_VIEW_CATEGORY"
-    const val ACTION_VIEW_ORDER = "com.example.a1000_melochei.ACTION_VIEW_ORDER"
+    // Константы для экспорта/импорта
+    const val EXPORT_FILE_PREFIX = "melochei_export_"
+    const val IMPORT_FILE_EXTENSIONS = arrayOf("csv", "xlsx", "xls")
 
-    // Константы для FileProvider
-    const val FILE_PROVIDER_AUTHORITY = "com.example.a1000_melochei.fileprovider"
+    // Максимальные значения
+    const val MAX_PRODUCT_NAME_LENGTH = 100
+    const val MAX_PRODUCT_DESCRIPTION_LENGTH = 1000
+    const val MAX_CATEGORY_NAME_LENGTH = 50
+    const val MAX_ORDER_ITEMS = 50
 
-    // Лимиты и ограничения
-    const val MAX_PRODUCT_IMAGES = 5
-    const val PRICE_DECIMALS = 2
+    // Статусы заказов
+    const val ORDER_STATUS_PENDING = "pending"
+    const val ORDER_STATUS_CONFIRMED = "confirmed"
+    const val ORDER_STATUS_PROCESSING = "processing"
+    const val ORDER_STATUS_READY = "ready"
+    const val ORDER_STATUS_DELIVERING = "delivering"
+    const val ORDER_STATUS_DELIVERED = "delivered"
+    const val ORDER_STATUS_CANCELLED = "cancelled"
 
-    // Лимиты для пагинации
-    const val DEFAULT_PAGE_SIZE = 20
+    // Методы доставки
+    const val DELIVERY_METHOD_PICKUP = "pickup"
+    const val DELIVERY_METHOD_DELIVERY = "delivery"
+
+    // Методы оплаты
+    const val PAYMENT_METHOD_CASH = "cash"
+    const val PAYMENT_METHOD_CARD = "card"
+    const val PAYMENT_METHOD_KASPI = "kaspi"
+
+    // Роли пользователей
+    const val USER_ROLE_CUSTOMER = "customer"
+    const val USER_ROLE_ADMIN = "admin"
+    const val USER_ROLE_MODERATOR = "moderator"
+
+    // Типы продуктов
+    const val PRODUCT_TYPE_REGULAR = "regular"
+    const val PRODUCT_TYPE_FEATURED = "featured"
+    const val PRODUCT_TYPE_SALE = "sale"
+
+    // Уровни логирования
+    const val LOG_LEVEL_DEBUG = "debug"
+    const val LOG_LEVEL_INFO = "info"
+    const val LOG_LEVEL_WARNING = "warning"
+    const val LOG_LEVEL_ERROR = "error"
 }

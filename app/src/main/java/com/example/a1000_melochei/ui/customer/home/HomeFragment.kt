@@ -218,7 +218,7 @@ class HomeFragment : Fragment() {
 
     private fun navigateToSearch() {
         // Переход на экран поиска через интент
-        val intent = android.content.Intent(requireContext(), com.yourstore.app.ui.customer.catalog.SearchActivity::class.java)
+        val intent = android.content.Intent(requireContext(), com.example.a1000_melochei.ui.customer.catalog.SearchActivity::class.java)
         startActivity(intent)
     }
 

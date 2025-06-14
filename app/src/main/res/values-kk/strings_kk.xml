@@ -340,9 +340,7 @@
 
     <!-- Хабарландырулар -->
     <string name="notification_channel_orders">Тапсырыстар</string>
-    <string name="notification_channel_orders_description">Тапсырыстар және олардың мәртебелері туралы хабарландырулар</string>
     <string name="notification_channel_promo">Акциялар</string>
-    <string name="notification_channel_promo_description">Жеңілдіктер мен арнайы ұсыныстар туралы хабарландырулар</string>
     <string name="notification_channel_system">Жүйелік</string>
     <string name="notification_channel_system_description">Жүйелік хабарландырулар</string>
     <string name="notification_new_order_title">Жаңа тапсырыс</string>

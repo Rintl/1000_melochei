@@ -67,19 +67,19 @@ val viewModelModule = module {
     viewModel { AuthViewModel(get()) }
 
     // Customer ViewModels
-    viewModel { HomeViewModel(get(), get(), get()) }
-    viewModel { CatalogViewModel(get(), get()) }
-    viewModel { ProductViewModel(get()) }
-    viewModel { CartViewModel(get()) }
-    viewModel { OrderViewModel(get()) }
-    viewModel { ProfileViewModel(get()) }
+    viewModel { HomeViewModel(get(), get()) } // CategoryRepository, ProductRepository
+    viewModel { CatalogViewModel(get(), get()) } // CategoryRepository, ProductRepository
+    viewModel { ProductViewModel(get()) } // ProductRepository
+    viewModel { CartViewModel(get(), get(), get()) } // CartRepository, UserRepository, OrderRepository
+    viewModel { OrderViewModel(get(), get()) } // OrderRepository, CartRepository
+    viewModel { ProfileViewModel(get(), get()) } // UserRepository, PreferencesManager
 
     // Admin ViewModels
-    viewModel { DashboardViewModel(get(), get(), get()) }
-    viewModel { AdminProductViewModel(get()) }
-    viewModel { CategoryViewModel(get()) }
-    viewModel { AdminOrderViewModel(get()) }
-    viewModel { AnalyticsViewModel(get(), get()) }
+    viewModel { DashboardViewModel(get(), get(), get()) } // OrderRepository, ProductRepository, CategoryRepository
+    viewModel { AdminProductViewModel(get(), get()) } // ProductRepository, CategoryRepository
+    viewModel { CategoryViewModel(get()) } // CategoryRepository
+    viewModel { AdminOrderViewModel(get()) } // OrderRepository
+    viewModel { AnalyticsViewModel(get(), get()) } // OrderRepository, CategoryRepository
 }
 
 /**

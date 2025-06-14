@@ -56,7 +56,7 @@ class MyApplication : Application() {
             // Канал для заказов
             val orderChannel = NotificationChannel(
                 Constants.NOTIFICATION_CHANNEL_ORDER_ID,
-                getString(R.string.notification_channel_orders_name),
+                getString(R.string.notification_channel_orders), // Исправлено с notification_channel_orders_name
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = getString(R.string.notification_channel_orders_description)
@@ -67,7 +67,7 @@ class MyApplication : Application() {
             // Канал для промо-акций
             val promoChannel = NotificationChannel(
                 Constants.NOTIFICATION_CHANNEL_PROMO_ID,
-                getString(R.string.notification_channel_promo_name),
+                getString(R.string.notification_channel_promo), // Исправлено с notification_channel_promo_name
                 NotificationManager.IMPORTANCE_DEFAULT
             ).apply {
                 description = getString(R.string.notification_channel_promo_description)
@@ -78,7 +78,7 @@ class MyApplication : Application() {
             // Канал для системных уведомлений
             val systemChannel = NotificationChannel(
                 Constants.NOTIFICATION_CHANNEL_SYSTEM_ID,
-                getString(R.string.notification_channel_system_name),
+                getString(R.string.notification_channel_system), // Исправлено с notification_channel_system_name
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
                 description = getString(R.string.notification_channel_system_description)

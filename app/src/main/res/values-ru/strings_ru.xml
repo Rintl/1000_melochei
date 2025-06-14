@@ -340,9 +340,7 @@
 
     <!-- Уведомления -->
     <string name="notification_channel_orders">Заказы</string>
-    <string name="notification_channel_orders_description">Уведомления о заказах и их статусах</string>
     <string name="notification_channel_promo">Акции</string>
-    <string name="notification_channel_promo_description">Уведомления о скидках и специальных предложениях</string>
     <string name="notification_channel_system">Системные</string>
     <string name="notification_channel_system_description">Системные уведомления</string>
     <string name="notification_new_order_title">Новый заказ</string>

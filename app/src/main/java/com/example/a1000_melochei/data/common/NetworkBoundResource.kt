@@ -31,7 +31,7 @@ abstract class NetworkBoundResource<ResultType, RequestType> {
                 emitAll(loadFromDb().map { Resource.Success(it) })
             } catch (e: Exception) {
                 // В случае ошибки загружаем данные из кэша, если они есть
-                emit(Resource.Error(e.message, firstDbValue))
+                emit(Resource.Error(e.message ?: "Неизвестная ошибка", firstDbValue))
             }
         } else {
             // Если обновление не требуется, возвращаем кэшированные данные

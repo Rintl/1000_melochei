@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.yourstore.app.ui.admin.dashboard.DashboardFragment"
+        android:name="com.example.a1000_melochei.ui.admin.dashboard.DashboardFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_admin_dashboard">
         <action
@@ -20,7 +20,7 @@
 
     <fragment
         android:id="@+id/navigation_products"
-        android:name="com.yourstore.app.ui.admin.products.ProductListFragment"
+        android:name="com.example.a1000_melochei.ui.admin.products.ProductListFragment"
         android:label="@string/title_products"
         tools:layout="@layout/fragment_product_list">
         <action
@@ -36,13 +36,13 @@
 
     <activity
         android:id="@+id/navigation_add_product"
-        android:name="com.yourstore.app.ui.admin.products.AddProductActivity"
+        android:name="com.example.a1000_melochei.ui.admin.products.AddProductActivity"
         android:label="@string/title_add_product"
         tools:layout="@layout/activity_add_product" />
 
     <activity
         android:id="@+id/navigation_edit_product"
-        android:name="com.yourstore.app.ui.admin.products.EditProductActivity"
+        android:name="com.example.a1000_melochei.ui.admin.products.EditProductActivity"
         android:label="@string/title_edit_product"
         tools:layout="@layout/activity_edit_product">
         <argument
@@ -52,13 +52,13 @@
 
     <activity
         android:id="@+id/navigation_import_products"
-        android:name="com.yourstore.app.ui.admin.products.ImportProductsActivity"
+        android:name="com.example.a1000_melochei.ui.admin.products.ImportProductsActivity"
         android:label="@string/title_import_products"
         tools:layout="@layout/activity_import_products" />
 
     <fragment
         android:id="@+id/navigation_categories"
-        android:name="com.yourstore.app.ui.admin.categories.CategoryListFragment"
+        android:name="com.example.a1000_melochei.ui.admin.categories.CategoryListFragment"
         android:label="@string/title_categories"
         tools:layout="@layout/fragment_category_list">
         <action
@@ -68,7 +68,7 @@
 
     <activity
         android:id="@+id/navigation_add_category"
-        android:name="com.yourstore.app.ui.admin.categories.AddCategoryActivity"
+        android:name="com.example.a1000_melochei.ui.admin.categories.AddCategoryActivity"
         android:label="@string/title_add_category"
         tools:layout="@layout/activity_add_category">
         <argument
@@ -80,7 +80,7 @@
 
     <fragment
         android:id="@+id/navigation_orders"
-        android:name="com.yourstore.app.ui.admin.orders.AdminOrdersFragment"
+        android:name="com.example.a1000_melochei.ui.admin.orders.AdminOrdersFragment"
         android:label="@string/title_orders"
         tools:layout="@layout/fragment_admin_orders">
         <action
@@ -90,7 +90,7 @@
 
     <activity
         android:id="@+id/navigation_order_detail"
-        android:name="com.yourstore.app.ui.admin.orders.OrderDetailAdminActivity"
+        android:name="com.example.a1000_melochei.ui.admin.orders.OrderDetailAdminActivity"
         android:label="@string/title_order_detail"
         tools:layout="@layout/activity_order_detail_admin">
         <argument
@@ -100,7 +100,7 @@
 
     <fragment
         android:id="@+id/navigation_analytics"
-        android:name="com.yourstore.app.ui.admin.analytics.AnalyticsFragment"
+        android:name="com.example.a1000_melochei.ui.admin.analytics.AnalyticsFragment"
         android:label="@string/title_analytics"
         tools:layout="@layout/fragment_analytics" />
 </navigation>

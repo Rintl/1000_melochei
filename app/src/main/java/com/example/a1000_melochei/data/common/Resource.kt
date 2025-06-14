@@ -6,7 +6,7 @@ package com.example.a1000_melochei.data.common
  *
  * @param T тип данных, которые обрабатываются
  */
-sealed class Resource<T>(
+sealed class Resource<out T>(
     val data: T? = null,
     val message: String? = null
 ) {
@@ -90,10 +90,14 @@ sealed class Resource<T>(
     fun <R> map(transform: (T) -> R): Resource<R> {
         return when (this) {
             is Success -> {
-                try {
-                    Success(transform(data))
-                } catch (e: Exception) {
-                    Error(e.message ?: "Ошибка преобразования данных")
+                if (data != null) {
+                    try {
+                        Success(transform(data))
+                    } catch (e: Exception) {
+                        Error(e.message ?: "Ошибка преобразования данных")
+                    }
+                } else {
+                    Error("Данные отсутствуют")
                 }
             }
             is Error -> Error(message ?: "Неизвестная ошибка", null)
@@ -102,13 +106,18 @@ sealed class Resource<T>(
     }
 
     /**
-     * Преобразует данные в Resource другого типа с возможностью ошибки
+     * Преобразует данные в Resource другого типа с обработкой nullable
      */
-    inline fun <R> flatMap(transform: (T) -> Resource<R>): Resource<R> {
+    fun <R> mapNullable(transform: (T?) -> R?): Resource<R> {
         return when (this) {
             is Success -> {
                 try {
-                    transform(data)
+                    val result = transform(data)
+                    if (result != null) {
+                        Success(result)
+                    } else {
+                        Error("Результат преобразования равен null")
+                    }
                 } catch (e: Exception) {
                     Error(e.message ?: "Ошибка преобразования данных")
                 }
@@ -122,109 +131,53 @@ sealed class Resource<T>(
      * Возвращает данные или значение по умолчанию
      */
     fun getDataOrDefault(defaultValue: T): T {
-        return when (this) {
-            is Success -> data
-            else -> defaultValue
-        }
-    }
-
-    /**
-     * Возвращает данные или выбрасывает исключение
-     */
-    fun getDataOrThrow(): T {
-        return when (this) {
-            is Success -> data
-            is Error -> throw Exception(message ?: "Неизвестная ошибка")
-            is Loading -> throw Exception("Данные еще загружаются")
-        }
-    }
-
-    override fun toString(): String {
-        return when (this) {
-            is Success -> "Success[data=$data]"
-            is Error -> "Error[message=$message]"
-            is Loading -> "Loading[data=$data]"
-        }
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Resource<*>) return false
-
-        return when {
-            this is Success && other is Success -> this.data == other.data
-            this is Error && other is Error -> this.message == other.message && this.data == other.data
-            this is Loading && other is Loading -> this.data == other.data
-            else -> false
-        }
-    }
-
-    override fun hashCode(): Int {
-        return when (this) {
-            is Success -> data?.hashCode() ?: 0
-            is Error -> (message?.hashCode() ?: 0) * 31 + (data?.hashCode() ?: 0)
-            is Loading -> data?.hashCode() ?: 0
-        }
+        return if (this is Success && data != null) data else defaultValue
     }
 
     companion object {
         /**
-         * Создает успешный Resource
+         * Создает Resource.Success с данными
          */
         fun <T> success(data: T): Resource<T> = Success(data)
 
         /**
-         * Создает Resource с ошибкой
+         * Создает Resource.Error с сообщением
          */
         fun <T> error(message: String, data: T? = null): Resource<T> = Error(message, data)
 
         /**
-         * Создает Resource в состоянии загрузки
+         * Создает Resource.Loading
          */
         fun <T> loading(data: T? = null): Resource<T> = Loading(data)
-
-        /**
-         * Создает Resource из nullable значения
-         */
-        fun <T> fromNullable(data: T?, errorMessage: String = "Данные не найдены"): Resource<T> {
-            return if (data != null) {
-                Success(data)
-            } else {
-                Error(errorMessage)
-            }
-        }
-
-        /**
-         * Создает Resource из результата операции
-         */
-        inline fun <T> fromResult(operation: () -> T): Resource<T> {
-            return try {
-                Success(operation())
-            } catch (e: Exception) {
-                Error(e.message ?: "Неизвестная ошибка")
-            }
-        }
-
-        /**
-         * Объединяет два Resource в один
-         */
-        fun <T, R, S> combine(
-            resource1: Resource<T>,
-            resource2: Resource<R>,
-            combiner: (T, R) -> S
-        ): Resource<S> {
-            return when {
-                resource1 is Success && resource2 is Success -> {
-                    try {
-                        Success(combiner(resource1.data, resource2.data))
-                    } catch (e: Exception) {
-                        Error(e.message ?: "Ошибка объединения данных")
-                    }
-                }
-                resource1 is Error -> Error(resource1.message ?: "Ошибка в первом источнике")
-                resource2 is Error -> Error(resource2.message ?: "Ошибка во втором источнике")
-                else -> Loading()
-            }
-        }
     }
+}
+
+/**
+ * Расширение для удобной работы с Resource в coroutines
+ */
+suspend fun <T> Resource<T>.doOnSuccess(action: suspend (T) -> Unit): Resource<T> {
+    if (this is Resource.Success && data != null) {
+        action(data)
+    }
+    return this
+}
+
+/**
+ * Расширение для удобной работы с Resource в coroutines при ошибке
+ */
+suspend fun <T> Resource<T>.doOnError(action: suspend (String) -> Unit): Resource<T> {
+    if (this is Resource.Error && message != null) {
+        action(message)
+    }
+    return this
+}
+
+/**
+ * Расширение для удобной работы с Resource в coroutines при загрузке
+ */
+suspend fun <T> Resource<T>.doOnLoading(action: suspend () -> Unit): Resource<T> {
+    if (this is Resource.Loading) {
+        action()
+    }
+    return this
 }

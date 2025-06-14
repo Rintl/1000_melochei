@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.yourstore.app.ui.customer.home.HomeFragment"
+        android:name="com.example.a1000_melochei.ui.customer.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home">
         <action
@@ -35,7 +35,7 @@
 
     <fragment
         android:id="@+id/navigation_catalog"
-        android:name="com.yourstore.app.ui.customer.catalog.CatalogFragment"
+        android:name="com.example.a1000_melochei.ui.customer.catalog.CatalogFragment"
         android:label="@string/title_catalog"
         tools:layout="@layout/fragment_catalog">
         <action
@@ -48,7 +48,7 @@
 
     <fragment
         android:id="@+id/navigation_category"
-        android:name="com.yourstore.app.ui.customer.catalog.CategoryFragment"
+        android:name="com.example.a1000_melochei.ui.customer.catalog.CategoryFragment"
         android:label="@string/title_category"
         tools:layout="@layout/fragment_category">
         <argument
@@ -64,7 +64,7 @@
 
     <activity
         android:id="@+id/navigation_product_detail"
-        android:name="com.yourstore.app.ui.customer.catalog.ProductDetailActivity"
+        android:name="com.example.a1000_melochei.ui.customer.catalog.ProductDetailActivity"
         android:label="@string/title_product_detail"
         tools:layout="@layout/activity_product_detail">
         <argument
@@ -74,7 +74,7 @@
 
     <activity
         android:id="@+id/navigation_search"
-        android:name="com.yourstore.app.ui.customer.catalog.SearchActivity"
+        android:name="com.example.a1000_melochei.ui.customer.catalog.SearchActivity"
         android:label="@string/title_search"
         tools:layout="@layout/activity_search">
         <argument
@@ -91,7 +91,7 @@
 
     <fragment
         android:id="@+id/navigation_cart"
-        android:name="com.yourstore.app.ui.customer.cart.CartFragment"
+        android:name="com.example.a1000_melochei.ui.customer.cart.CartFragment"
         android:label="@string/title_cart"
         tools:layout="@layout/fragment_cart">
         <action
@@ -104,13 +104,13 @@
 
     <activity
         android:id="@+id/navigation_checkout"
-        android:name="com.yourstore.app.ui.customer.cart.CheckoutActivity"
+        android:name="com.example.a1000_melochei.ui.customer.cart.CheckoutActivity"
         android:label="@string/title_checkout"
         tools:layout="@layout/activity_checkout" />
 
     <fragment
         android:id="@+id/navigation_orders"
-        android:name="com.yourstore.app.ui.customer.orders.OrdersFragment"
+        android:name="com.example.a1000_melochei.ui.customer.orders.OrdersFragment"
         android:label="@string/title_orders"
         tools:layout="@layout/fragment_orders">
         <action
@@ -120,7 +120,7 @@
 
     <activity
         android:id="@+id/navigation_order_detail"
-        android:name="com.yourstore.app.ui.customer.orders.OrderDetailActivity"
+        android:name="com.example.a1000_melochei.ui.customer.orders.OrderDetailActivity"
         android:label="@string/title_order_detail"
         tools:layout="@layout/activity_order_detail">
         <argument
@@ -130,7 +130,7 @@
 
     <fragment
         android:id="@+id/navigation_profile"
-        android:name="com.yourstore.app.ui.customer.profile.ProfileFragment"
+        android:name="com.example.a1000_melochei.ui.customer.profile.ProfileFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_profile">
         <action
@@ -143,13 +143,13 @@
 
     <activity
         android:id="@+id/navigation_edit_profile"
-        android:name="com.yourstore.app.ui.customer.profile.EditProfileActivity"
+        android:name="com.example.a1000_melochei.ui.customer.profile.EditProfileActivity"
         android:label="@string/title_edit_profile"
         tools:layout="@layout/activity_edit_profile" />
 
     <activity
         android:id="@+id/navigation_address"
-        android:name="com.yourstore.app.ui.customer.profile.AddressActivity"
+        android:name="com.example.a1000_melochei.ui.customer.profile.AddressActivity"
         android:label="@string/title_address"
         tools:layout="@layout/activity_address">
         <argument
