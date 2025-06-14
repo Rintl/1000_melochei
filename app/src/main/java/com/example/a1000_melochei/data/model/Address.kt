@@ -63,6 +63,24 @@ data class Address(
 
         return if (sb.isNotEmpty()) sb.toString() else address
     }
+
+    /**
+     * Проверяет валидность адреса
+     */
+    fun isValid(): Boolean {
+        return city.isNotBlank() &&
+                street.isNotBlank() &&
+                house.isNotBlank()
+    }
+
+    companion object {
+        /**
+         * Создает пустой адрес
+         */
+        fun empty(): Address {
+            return Address()
+        }
+    }
 }
 
 /**

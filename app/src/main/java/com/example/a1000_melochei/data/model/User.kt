@@ -36,7 +36,7 @@ data class User(
      * Возвращает основной адрес пользователя
      */
     fun getPrimaryAddress(): Address? {
-        return addresses.firstOrNull { it.isPrimary } ?: addresses.firstOrNull()
+        return addresses.firstOrNull { it.isDefault } ?: addresses.firstOrNull()
     }
 
     /**
@@ -102,71 +102,6 @@ data class User(
             return name.isNotBlank() &&
                     name.trim().length >= 2 &&
                     name.trim().length <= 50
-        }
-    }
-}
-
-/**
- * Модель адреса пользователя
- */
-@Parcelize
-data class Address(
-    val id: String = "",
-    val label: String = "", // Дом, Работа, и т.д.
-    val city: String = "",
-    val street: String = "",
-    val house: String = "",
-    val apartment: String = "",
-    val entrance: String = "",
-    val floor: String = "",
-    val postalCode: String = "",
-    val notes: String = "",
-    val isPrimary: Boolean = false,
-    val latitude: Double = 0.0,
-    val longitude: Double = 0.0
-) : Parcelable {
-
-    /**
-     * Возвращает полный адрес в виде строки
-     */
-    fun getFullAddress(): String {
-        val parts = mutableListOf<String>()
-
-        if (city.isNotBlank()) parts.add("г. $city")
-        if (street.isNotBlank()) parts.add("ул. $street")
-        if (house.isNotBlank()) parts.add("д. $house")
-        if (apartment.isNotBlank()) parts.add("кв. $apartment")
-
-        return parts.joinToString(", ")
-    }
-
-    /**
-     * Возвращает краткий адрес
-     */
-    fun getShortAddress(): String {
-        return when {
-            label.isNotBlank() -> label
-            street.isNotBlank() && house.isNotBlank() -> "ул. $street, д. $house"
-            city.isNotBlank() -> "г. $city"
-            else -> "Адрес не указан"
-        }
-    }
-
-    /**
-     * Проверяет валидность адреса
-     */
-    fun isValid(): Boolean {
-        return city.isNotBlank() &&
-                street.isNotBlank() &&
-                house.isNotBlank()
-    }
-
-    companion object {
-        /**
-         * Создает пустой адрес
-         */
-        fun empty(): Address {
-            return Address()
         }
     }
 }

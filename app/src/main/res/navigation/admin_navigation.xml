@@ -5,102 +5,123 @@
     android:id="@+id/admin_navigation"
     app:startDestination="@id/navigation_dashboard">
 
+    <!-- Dashboard Fragment -->
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="com.example.a1000_melochei.ui.admin.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_admin_dashboard">
-        <action
-            android:id="@+id/action_dashboard_to_orders"
-            app:destination="@id/navigation_orders" />
-        <action
-            android:id="@+id/action_dashboard_to_products"
-            app:destination="@id/navigation_products" />
-    </fragment>
+        android:label="Панель управления"
+        tools:layout="@layout/fragment_dashboard" />
 
+    <!-- Products Fragment -->
     <fragment
         android:id="@+id/navigation_products"
-        android:name="com.example.a1000_melochei.ui.admin.products.ProductListFragment"
-        android:label="@string/title_products"
-        tools:layout="@layout/fragment_product_list">
+        android:name="com.example.a1000_melochei.ui.admin.products.ProductsFragment"
+        android:label="Товары"
+        tools:layout="@layout/fragment_admin_products">
         <action
             android:id="@+id/action_products_to_add_product"
             app:destination="@id/navigation_add_product" />
         <action
             android:id="@+id/action_products_to_edit_product"
             app:destination="@id/navigation_edit_product" />
-        <action
-            android:id="@+id/action_products_to_import_products"
-            app:destination="@id/navigation_import_products" />
     </fragment>
 
-    <activity
-        android:id="@+id/navigation_add_product"
-        android:name="com.example.a1000_melochei.ui.admin.products.AddProductActivity"
-        android:label="@string/title_add_product"
-        tools:layout="@layout/activity_add_product" />
-
-    <activity
-        android:id="@+id/navigation_edit_product"
-        android:name="com.example.a1000_melochei.ui.admin.products.EditProductActivity"
-        android:label="@string/title_edit_product"
-        tools:layout="@layout/activity_edit_product">
-        <argument
-            android:name="productId"
-            app:argType="string" />
-    </activity>
-
-    <activity
-        android:id="@+id/navigation_import_products"
-        android:name="com.example.a1000_melochei.ui.admin.products.ImportProductsActivity"
-        android:label="@string/title_import_products"
-        tools:layout="@layout/activity_import_products" />
-
+    <!-- Categories Fragment -->
     <fragment
         android:id="@+id/navigation_categories"
-        android:name="com.example.a1000_melochei.ui.admin.categories.CategoryListFragment"
-        android:label="@string/title_categories"
-        tools:layout="@layout/fragment_category_list">
+        android:name="com.example.a1000_melochei.ui.admin.categories.CategoriesFragment"
+        android:label="Категории"
+        tools:layout="@layout/fragment_admin_categories">
         <action
             android:id="@+id/action_categories_to_add_category"
             app:destination="@id/navigation_add_category" />
+        <action
+            android:id="@+id/action_categories_to_edit_category"
+            app:destination="@id/navigation_edit_category" />
     </fragment>
 
-    <activity
-        android:id="@+id/navigation_add_category"
-        android:name="com.example.a1000_melochei.ui.admin.categories.AddCategoryActivity"
-        android:label="@string/title_add_category"
-        tools:layout="@layout/activity_add_category">
-        <argument
-            android:name="parentCategoryId"
-            app:argType="string"
-            app:nullable="true"
-            android:defaultValue="@null" />
-    </activity>
-
+    <!-- Orders Fragment -->
     <fragment
         android:id="@+id/navigation_orders"
-        android:name="com.example.a1000_melochei.ui.admin.orders.AdminOrdersFragment"
-        android:label="@string/title_orders"
+        android:name="com.example.a1000_melochei.ui.admin.orders.OrdersFragment"
+        android:label="Заказы"
         tools:layout="@layout/fragment_admin_orders">
         <action
             android:id="@+id/action_orders_to_order_detail"
             app:destination="@id/navigation_order_detail" />
     </fragment>
 
-    <activity
-        android:id="@+id/navigation_order_detail"
-        android:name="com.example.a1000_melochei.ui.admin.orders.OrderDetailAdminActivity"
-        android:label="@string/title_order_detail"
-        tools:layout="@layout/activity_order_detail_admin">
-        <argument
-            android:name="orderId"
-            app:argType="string" />
-    </activity>
-
+    <!-- Analytics Fragment -->
     <fragment
         android:id="@+id/navigation_analytics"
         android:name="com.example.a1000_melochei.ui.admin.analytics.AnalyticsFragment"
-        android:label="@string/title_analytics"
-        tools:layout="@layout/fragment_analytics" />
+        android:label="Аналитика"
+        tools:layout="@layout/fragment_admin_analytics" />
+
+    <!-- Add Product Fragment -->
+    <fragment
+        android:id="@+id/navigation_add_product"
+        android:name="com.example.a1000_melochei.ui.admin.products.AddEditProductFragment"
+        android:label="Добавить товар"
+        tools:layout="@layout/fragment_add_edit_product">
+        <argument
+            android:name="product_id"
+            app:argType="long"
+            android:defaultValue="-1L" />
+    </fragment>
+
+    <!-- Edit Product Fragment -->
+    <fragment
+        android:id="@+id/navigation_edit_product"
+        android:name="com.example.a1000_melochei.ui.admin.products.AddEditProductFragment"
+        android:label="Редактировать товар"
+        tools:layout="@layout/fragment_add_edit_product">
+        <argument
+            android:name="product_id"
+            app:argType="long" />
+    </fragment>
+
+    <!-- Add Category Fragment -->
+    <fragment
+        android:id="@+id/navigation_add_category"
+        android:name="com.example.a1000_melochei.ui.admin.categories.AddEditCategoryFragment"
+        android:label="Добавить категорию"
+        tools:layout="@layout/fragment_add_edit_category">
+        <argument
+            android:name="category_id"
+            app:argType="long"
+            android:defaultValue="-1L" />
+    </fragment>
+
+    <!-- Edit Category Fragment -->
+    <fragment
+        android:id="@+id/navigation_edit_category"
+        android:name="com.example.a1000_melochei.ui.admin.categories.AddEditCategoryFragment"
+        android:label="Редактировать категорию"
+        tools:layout="@layout/fragment_add_edit_category">
+        <argument
+            android:name="category_id"
+            app:argType="long" />
+    </fragment>
+
+    <!-- Order Detail Fragment -->
+    <fragment
+        android:id="@+id/navigation_order_detail"
+        android:name="com.example.a1000_melochei.ui.admin.orders.OrderDetailFragment"
+        android:label="Детали заказа"
+        tools:layout="@layout/fragment_order_detail">
+        <argument
+            android:name="order_id"
+            app:argType="long" />
+    </fragment>
+
+    <!-- Global Actions -->
+    <action
+        android:id="@+id/action_global_add_product"
+        app:destination="@id/navigation_add_product" />
+
+    <action
+        android:id="@+id/action_global_order_detail"
+        app:destination="@id/navigation_order_detail" />
+
 </navigation>

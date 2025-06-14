@@ -127,13 +127,6 @@ sealed class Resource<out T>(
         }
     }
 
-    /**
-     * Возвращает данные или значение по умолчанию
-     */
-    fun getDataOrDefault(defaultValue: T): T {
-        return if (this is Success && data != null) data else defaultValue
-    }
-
     companion object {
         /**
          * Создает Resource.Success с данными
@@ -150,6 +143,22 @@ sealed class Resource<out T>(
          */
         fun <T> loading(data: T? = null): Resource<T> = Loading(data)
     }
+}
+
+/**
+ * Расширение для получения данных или значения по умолчанию
+ * Решает проблему с вариантностью типов
+ */
+fun <T> Resource<T>.getDataOrElse(defaultValueFactory: () -> T): T {
+    return if (this is Resource.Success && data != null) data else defaultValueFactory()
+}
+
+/**
+ * Расширение для получения данных или значения по умолчанию (простая версия)
+ */
+@Suppress("UNCHECKED_CAST")
+fun <T> Resource<out T>.getDataOrElse(defaultValue: @UnsafeVariance T): T {
+    return if (this is Resource.Success && data != null) data else defaultValue
 }
 
 /**

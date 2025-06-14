@@ -132,146 +132,89 @@ data class Cart(
     }
 
     /**
-     * Возвращает пустую корзину
+     * Возвращает копию пустой корзины
      */
-    fun cleared(): Cart {
+    fun emptyCopy(): Cart {
         return this.copy(
             items = emptyList(),
             updatedAt = System.currentTimeMillis()
         )
     }
 
+    /**
+     * Проверяет валидность корзины
+     */
+    fun isValid(): Boolean {
+        return items.all { it.isValid() }
+    }
+
     companion object {
         /**
          * Создает пустую корзину
          */
-        fun empty(id: String = ""): Cart {
-            return Cart(id = id)
+        fun empty(userId: String = ""): Cart {
+            return Cart(id = userId)
         }
+
+        /**
+         * Максимальное количество товаров одного типа в корзине
+         */
+        const val MAX_ITEM_QUANTITY = 99
+
+        /**
+         * Максимальное количество разных товаров в корзине
+         */
+        const val MAX_CART_ITEMS = 50
     }
 }
 
 /**
- * Модель товара в корзине
- * @property productId Идентификатор товара
- * @property productName Название товара
- * @property productImage URL изображения товара
- * @property price Цена за единицу товара
- * @property originalPrice Оригинальная цена (если есть скидка)
- * @property quantity Количество товара в корзине
- * @property subtotal Общая стоимость позиции (price * quantity)
- * @property categoryId Идентификатор категории товара
- * @property sku Артикул товара
- * @property addedAt Время добавления в корзину
+ * Модель общих данных корзины для отображения
  */
 @Parcelize
-data class CartItem(
-    val productId: String = "",
-    val productName: String = "",
-    val productImage: String = "",
-    val price: Double = 0.0,
-    val originalPrice: Double = 0.0,
-    val quantity: Int = 1,
+data class CartTotal(
+    val itemsCount: Int = 0,
     val subtotal: Double = 0.0,
-    val categoryId: String = "",
-    val sku: String = "",
-    val addedAt: Long = System.currentTimeMillis()
+    val discount: Double = 0.0,
+    val deliveryFee: Double = 0.0,
+    val total: Double = 0.0
 ) : Parcelable {
 
     /**
-     * Проверяет, есть ли скидка на товар
+     * Возвращает отформатированную общую сумму
      */
-    fun hasDiscount(): Boolean {
-        return originalPrice > 0 && originalPrice > price
+    fun getFormattedTotal(): String {
+        return "${total.toInt()} ₸"
     }
 
     /**
-     * Возвращает размер скидки в процентах
-     */
-    fun getDiscountPercent(): Int {
-        return if (hasDiscount()) {
-            ((originalPrice - price) / originalPrice * 100).toInt()
-        } else {
-            0
-        }
-    }
-
-    /**
-     * Возвращает отформатированную цену
-     */
-    fun getFormattedPrice(): String {
-        return "${price.toInt()} ₸"
-    }
-
-    /**
-     * Возвращает отформатированную оригинальную цену
-     */
-    fun getFormattedOriginalPrice(): String {
-        return if (hasDiscount()) "${originalPrice.toInt()} ₸" else ""
-    }
-
-    /**
-     * Возвращает отформатированную общую стоимость
+     * Возвращает отформатированную подсумму
      */
     fun getFormattedSubtotal(): String {
         return "${subtotal.toInt()} ₸"
     }
 
     /**
-     * Проверяет валидность данных товара в корзине
+     * Возвращает отформатированную скидку
      */
-    fun isValid(): Boolean {
-        return productId.isNotBlank() &&
-                productName.isNotBlank() &&
-                price >= 0 &&
-                quantity > 0 &&
-                subtotal >= 0
+    fun getFormattedDiscount(): String {
+        return "-${discount.toInt()} ₸"
     }
 
     /**
-     * Возвращает копию товара с новым количеством
+     * Возвращает отформатированную стоимость доставки
      */
-    fun withQuantity(newQuantity: Int): CartItem {
-        return this.copy(
-            quantity = newQuantity.coerceAtLeast(1),
-            subtotal = newQuantity * price
-        )
+    fun getFormattedDeliveryFee(): String {
+        return if (deliveryFee > 0) "${deliveryFee.toInt()} ₸" else "Бесплатно"
     }
 
     /**
-     * Возвращает копию товара с обновленной ценой
+     * Проверяет, есть ли скидка
      */
-    fun withPrice(newPrice: Double): CartItem {
-        return this.copy(
-            price = newPrice.coerceAtLeast(0.0),
-            subtotal = quantity * newPrice
-        )
-    }
+    fun hasDiscount(): Boolean = discount > 0
 
-    companion object {
-        /**
-         * Создает CartItem из Product
-         */
-        fun fromProduct(product: Product, quantity: Int = 1): CartItem {
-            return CartItem(
-                productId = product.id,
-                productName = product.name,
-                productImage = product.getMainImage(),
-                price = product.price,
-                originalPrice = product.originalPrice,
-                quantity = quantity,
-                subtotal = product.price * quantity,
-                categoryId = product.categoryId,
-                sku = product.sku,
-                addedAt = System.currentTimeMillis()
-            )
-        }
-
-        /**
-         * Создает пустой CartItem
-         */
-        fun empty(): CartItem {
-            return CartItem()
-        }
-    }
+    /**
+     * Проверяет, бесплатная ли доставка
+     */
+    fun isFreeDelivery(): Boolean = deliveryFee == 0.0
 }

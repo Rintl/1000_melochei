@@ -695,5 +695,13 @@
     <string name="no_categories_found" translatable="false">Категория не найдена</string>
     <string name="add_first_category" translatable="false">Добавьте первую категорию</string>
     <string name="trend" translatable="false">Тренд</string>
+    <string name="total_revenue" translatable="false">Общая выручка</string>
+    <string name="products_count" translatable="false">Всего товаров</string>
+    <string name="customers_count" translatable="false">Клиентов</string>
+
+    <!-- Order Statuses -->
+    <string name="order_status_new" translatable="false">Новый</string>
+    <string name="refresh" translatable="false">Обновить</string>
+
 
 </resources>
